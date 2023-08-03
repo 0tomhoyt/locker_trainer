@@ -1,4 +1,4 @@
-from ..DatabaseConnection import MachineDB,DBconnect
+from DatabaseConnection import MachineDB,DBconnect
 
 
 def machineOnController(machineID, status):

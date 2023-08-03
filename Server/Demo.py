@@ -24,7 +24,7 @@ def machineStart():
 
 
 @app.post("/machineStop")
-def machineStart():
+def machineStop():
     data = request.get_json()  # 获取数据
     machine_id = data.get('machineID')  # 获取machineid
     result = MachineController.machineOnController(machine_id, 1)
