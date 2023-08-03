@@ -5,7 +5,7 @@ def databaseConnect():
     cnx = mysql.connector.connect(user='root',
                                   password='hjqCYS1301',
                                   host='localhost',
-                                  database='my_test_database_test')
+                                  database='zy_database')
     return cnx
 
 
