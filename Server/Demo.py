@@ -12,6 +12,12 @@ from waitress import serve
 app = Flask(__name__)
 ##router
 
+@app.before_request
+def log_request_info():
+    print('Headers: %s', request.headers)
+    print('Body: %s', request.get_data())
+
+
 @app.post("/machineStart")
 def machineStart():
     data = request.get_json()  # 获取数据
@@ -27,7 +33,7 @@ def machineStart():
 def machineStop():
     data = request.get_json()  # 获取数据
     machine_id = data.get('machineID')  # 获取machineid
-    result = MachineController.machineOnController(machine_id, 1)
+    result = MachineController.machineOnController(machine_id, 0)
     if result == 1:
         return {"success": True, "code": 200}
     else:
@@ -35,4 +41,5 @@ def machineStop():
 
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port=5000)
+    serve(app, host="localhost", port=5000)
+

@@ -1,11 +1,17 @@
-import json, urllib
-from urllib import request
+import requests
 
 
 def main():
-    data = json.dumps({"machineID": 1}).encode(encoding='utf-8')
-    req = urllib.request.Request(url='0.0.0.0:5000' + '/machineStart', data=data)
-    req = urllib.request.Request(url='0.0.0.0:5000' + '/machineStop', data=data)
+    response_start = requests.post("http://localhost:5000/machineStart", json={"machineID": 1})
+
+    print("Response Status Code for /machineStart: ", response_start.status_code)
+    print("Response Content for /machineStart: ", response_start.json())
+
+    # 访问 /machineStop 端口
+    response_stop = requests.post("http://localhost:5000/machineStop", json={"machineID": 1})
+
+    print("Response Status Code for /machineStop: ", response_stop.status_code)
+    print("Response Content for /machineStop: ", response_stop.json())
     return 0
 
 
