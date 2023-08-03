@@ -18,7 +18,6 @@ def execute_query(cnx, query):
     cursor = cnx.cursor()
     try:
         cursor.execute(query)
-        cnx.commit()
         return cursor
     except Exception as exp:
         return str(exp)

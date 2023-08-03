@@ -18,12 +18,12 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         try:
             json_data = json.loads(data)
         except json.JSONDecodeError:
-            print('Received data is not in JSON format.')
+            print(f'接收到的消息不是json格式 : {data}')
             return
 
         # 检查接收到的json是否包含event和data两个部分
         if 'event' not in json_data or 'data' not in json_data:
-            print('Received JSON does not contain event and data.')
+            print(f'接收到的socket消息json不包含event和data: {data}')
             return
 
         # 读取event和data

@@ -17,12 +17,16 @@ def createUser(cnx, UserName, Password, Role, AuthToken, HeadUrl, EnrolledDate):
 # 用户登录
 def login(cnx, UserName, Password):
     # 查询数据，UserName 为字符串类型，Password 为字符串类型
-    query = f"SELECT Password, AuthToken FROM users WHERE UserName = '{UserName}'"
-    result = execute_query(cnx, query)
-    if type(result) == str:  # 捕获错误，返回错误信息
-        return result
-    else:  # 返回查询结果
-        return result.fetchone()
+    query = f"SELECT * FROM users WHERE UserName = '{UserName}' and Password = '{Password}'"
+    cursor = cnx.cursor()
+    try:
+        cursor.execute(query)
+        result = cursor.fetchone()
+    except Exception as exp:
+        return str(exp)
+
+    return result
+
 
 
 # 获取用户信息
@@ -30,10 +34,11 @@ def getUser(cnx, UserID):
     # 查询数据，UserID 为整数类型
     query = f'SELECT * FROM users WHERE UserID = {UserID}'
     result = execute_query(cnx, query)
+    result = result.fetchone()
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 返回查询结果
-        return result.fetchone()
+        return result
 
 
 # 根据AuthToken获取UserID
@@ -41,21 +46,22 @@ def getUserIdFromAuthToken(cnx, AuthToken):
     # 查询数据，AuthToken 为字符串类型
     query = f"SELECT UserID FROM users WHERE AuthToken = '{AuthToken}'"
     result = execute_query(cnx, query)
+    result = result.fetchone()
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 返回查询结果
-        return result.fetchone()
-
+        return result
 
 # 根据UserID获取AuthToken
 def getAuthTokenFromUserId(cnx, UserID):
     # 查询数据，UserID 为整数类型
     query = f"SELECT AuthToken FROM users WHERE UserID = {UserID}"
     result = execute_query(cnx, query)
+    result = result.fetchone()
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 返回查询结果
-        return result.fetchone()
+        return result
 
 
 # 获取用户头像URL
@@ -63,10 +69,11 @@ def getUserHeadUrl(cnx, UserID):
     # 查询数据，UserID 为整数类型
     query = f"SELECT HeadUrl FROM users WHERE UserID = {UserID}"
     result = execute_query(cnx, query)
+    result = result.fetchone()
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 返回查询结果
-        return result.fetchone()
+        return result
 
 
 # 获取用户注册日期
@@ -74,10 +81,11 @@ def getUserEnrolledDate(cnx, UserID):
     # 查询数据，UserID 为整数类型
     query = f"SELECT EnrolledDate FROM users WHERE UserID = {UserID}"
     result = execute_query(cnx, query)
+    result = result.fetchone()
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 返回查询结果
-        return result.fetchone()
+        return result
 
 
 # 更新用户角色

@@ -13,5 +13,8 @@ def machineOnController(machineID, status):
         DBconnect.databaseDisconnect(cnx)
         return 1
     else:
+        DBconnect.databaseDisconnect(cnx)
         print(f"机器开关数据库连接错误，{dbresult}")
         return f"机器开关数据库连接错误，{dbresult}"
+
+
