@@ -2,7 +2,7 @@
 import socketserver
 import json
 
-from Controller import MachineController
+import Router
 
 
 # 定义一个请求处理器，它从BaseRequestHandler类继承
@@ -30,10 +30,8 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         event = json_data['event']
         data = json_data['data']
 
-        response = SocketConnectionRouter(event, data)
-
+        response = Router.SocketConnectionRouter(event, data)
         message = json.dumps(response).encode('utf-8')
-
         # 将响应数据发送回客户端
         self.request.sendall(message)
 
@@ -55,21 +53,7 @@ def start_server():
     server.serve_forever()
 
 
-def SocketConnectionRouter(event, data):
-    # 根据不同的事件进行不同的处理
-    if event == 'machineStart':
-        if 'machineId' not in data:
-            print('Received data does not contain machineID.')
-            return 'Received data does not contain machineID.'
-        return MachineController.machineOnController(data['machineId'], 1)
-    elif event == 'machineStop':
-        if 'machineId' not in data:
-            print('Received data does not contain machineID.')
-            return 'Received data does not contain machineID.'
-        return MachineController.machineOnController(data['machineId'], 0)
-    else:
-        print(f"Unknown event: {event}")
-        return 1
+
 
 
 if __name__ == "__main__":
