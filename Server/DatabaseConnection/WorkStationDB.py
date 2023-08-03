@@ -1,75 +1,70 @@
+from DatabaseConnection.DBconnect import execute_query
 
+
+# 创建新工作站
+def addWorkstation(cnx, machine_ID, status=0):
+    # 插入数据
+    query = f'INSERT INTO workstations (MachineID, IsLoggedIn) VALUES ({machine_ID}, {status})'
+    result = execute_query(cnx, query)
+    if type(result) == str:
+        return result
+    else:
+        return 1
+
+
+# 获取所有工作站的状态
 def getAllWorkstationStatuses(cnx):
-    cursor = cnx.cursor()
+    # 查询数据
     query = 'SELECT * FROM workstations'
-    try:
-        cursor.execute(query)
-        results = cursor.fetchall()
-        return results
-    except Exception as exp:
-        return str(exp)
+    result = execute_query(cnx, query)
+    if type(result) == str:
+        return result
+    else:
+        return result.fetchall()
 
 
+# 获取指定工作站的状态
 def getWorkstationStatus(cnx, workstation_ID):
-    cursor = cnx.cursor()
+    # 查询数据
     query = f'SELECT * FROM workstations WHERE WorkStationID = {workstation_ID}'
-    try:
-        cursor.execute(query)
-        if cursor.rowcount == 1:
-            return cursor[0]
-        else:
-            return 500
-    except Exception as exp:
-        return str(exp)
+    result = execute_query(cnx, query)
+    if type(result) == str:
+        return result
+    else:
+        return result.fetchone()
 
 
+# 更新工作站的登录状态
 def updateWorkstationLogin(cnx, workstation_ID, status):
     if status != 0 and status != 1:
         status = 0
 
-    cursor = cnx.cursor()
+    # 更新数据
     query = f'UPDATE workstations SET IsLoggedIn = {status} WHERE WorkStationID = {workstation_ID}'
-
-    try:
-        cursor.execute(query)
-        cnx.commit()
-    except Exception as exp:
-        return str(exp)
-    return 1
+    result = execute_query(cnx, query)
+    if type(result) == str:
+        return result
+    else:
+        return 1
 
 
+# 将用户分配给指定工作站
 def assignUserToWorkstation(cnx, workstation_ID, user_ID):
-    cursor = cnx.cursor()
+    # 更新数据
     query = f'UPDATE workstations SET UserID = {user_ID} WHERE WorkStationID = {workstation_ID}'
-
-    try:
-        cursor.execute(query)
-        cnx.commit()
-    except Exception as exp:
-        return str(exp)
-    return 1
+    result = execute_query(cnx, query)
+    if type(result) == str:
+        return result
+    else:
+        return 1
 
 
-def addWorkstation(cnx, machine_ID, status=0):
-    cursor = cnx.cursor()
-    query = f'INSERT INTO workstations (MachineID, IsLoggedIn) VALUES ({machine_ID}, {status})'
-
-    try:
-        cursor.execute(query)
-        cnx.commit()
-    except Exception as exp:
-        return str(exp)
-    return 1
-
-
+# 删除指定工作站
 def deleteWorkstation(cnx, workstation_ID):
-    cursor = cnx.cursor()
+    # 删除数据
     query = f'DELETE FROM workstations WHERE WorkStationID = {workstation_ID}'
-
-    try:
-        cursor.execute(query)
-        cnx.commit()
-    except Exception as exp:
-        return str(exp)
-    return 1
-
+    result = execute_query(cnx, query)
+    if type(result) == str:
+        return result
+    else:
+        return 1

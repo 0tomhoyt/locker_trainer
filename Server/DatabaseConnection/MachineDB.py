@@ -1,59 +1,58 @@
-def getAllMachineStatuses(cnx):
-    cursor = cnx.cursor()
-    query = 'SELECT * FROM machineinfo'
-    try:
-        cursor.execute(query)
-        results = cursor.fetchall()
-        return results
-    except Exception as exp:
-        return str(exp)
+from DatabaseConnection.LockDB import execute_query
 
 
-def getMachineStatus(cnx, machine_ID):
-    cursor = cnx.cursor()
-    query = f'select * from machineinfo where MachineID = {machine_ID}'
-    try:
-        cursor.execute(query)
-        if cursor.rowcount == 1:
-            return cursor[0][1]
-        else:
-            return 500
-    except Exception as exp:
-        return str(exp)
-
-
+# 添加机器
 def addMachine(cnx, status=0):
-    cursor = cnx.cursor()
+    # 插入数据，status为整数类型，取值只能为0或1
     query = f'INSERT INTO machineinfo (IsStarted) VALUES ({status})'
-    try:
-        cursor.execute(query)
-        cnx.commit()
-    except Exception as exp:
-        return str(exp)
-    return 1
+    result = execute_query(cnx, query)
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 操作成功，返回1
+        return 1
 
 
+# 删除机器
 def deleteMachine(cnx, machine_ID):
-    cursor = cnx.cursor()
+    # 删除数据，machine_ID为整数类型
     query = f'DELETE FROM machineinfo WHERE MachineID = {machine_ID}'
-    try:
-        cursor.execute(query)
-        cnx.commit()
-    except Exception as exp:
-        return str(exp)
-    return 1
+    result = execute_query(cnx, query)
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 操作成功，返回1
+        return 1
 
 
+# 获取所有机器状态
+def getAllMachineStatuses(cnx):
+    # 查询数据
+    query = 'SELECT * FROM machineinfo'
+    result = execute_query(cnx, query)
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 返回查询结果
+        return result.fetchall()
+
+
+# 获取某一机器状态
+def getMachineStatus(cnx, machine_ID):
+    # 查询数据，machine_ID为整数类型
+    query = f'SELECT * FROM machineinfo WHERE MachineID = {machine_ID}'
+    result = execute_query(cnx, query)
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 返回查询结果
+        return result.fetchone()
+
+
+# 改变机器状态
 def machineOn_Off(cnx, machine_ID, status):
+    # status为整数类型，取值只能为0或1，machine_ID为整数类型
     if status != 0 and status != 1:
         status = 0
-
-    cursor = cnx.cursor()
-    query = f'update machineinfo SET IsStarted = {status} where MachineID = {machine_ID}'
-
-    try:
-        cursor.execute(query)
-        cursor.close()
-    except Exception as exp:
-        return str(exp)
-    return 1
+    query = f'UPDATE machineinfo SET IsStarted = {status} WHERE MachineID = {machine_ID}'
+    result = execute_query(cnx, query)
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 操作成功，返回1
+        return 1
