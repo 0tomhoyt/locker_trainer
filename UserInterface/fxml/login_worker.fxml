@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<fx:root type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="UserInterface.controllers.LoginWorkerController"
+            prefHeight="700.0" prefWidth="450.0"
+            fx:id="anchorPane">
+    <children>
+        <Label alignment="CENTER" layoutX="182.0" layoutY="150.0" text="工位" textAlignment="CENTER">
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Label>
+        <TextField layoutX="141.0" layoutY="238.0" />
+        <TextField layoutX="141.0" layoutY="339.0" />
+        <Button fx:id="btn_login" layoutX="181.0" layoutY="433.0" mnemonicParsing="false" onAction="#login" text="登录">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Button>
+        <Label layoutX="141.0" layoutY="222.0" text="用户名" />
+        <Label layoutX="141.0" layoutY="324.0" text="密码" />
+    </children>
+</fx:root>
