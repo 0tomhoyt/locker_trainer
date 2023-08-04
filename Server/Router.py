@@ -2,7 +2,11 @@ from Controller import MachineController, UserController
 
 
 def SocketConnectionRouter(event, data):
-    # 根据不同的事件进行不同的处理
+    #检查本机是否为主服务器，分服务器转发
+
+
+
+    # 如果本机是主服务器，根据不同的事件进行不同的处理
     if event == 'machineStart':
         if 'machineId' not in data:
             print(f'machineStart: 收到的data包不正确{data}')
