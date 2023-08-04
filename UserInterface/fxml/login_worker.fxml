@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <fx:root type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="UserInterface.controllers.LoginWorkerController"
+            fx:controller="controllers.LoginWorkerController"
             prefHeight="700.0" prefWidth="450.0"
             fx:id="anchorPane">
     <children>

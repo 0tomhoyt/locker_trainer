@@ -1,7 +1,7 @@
-package UserInterface.main;
+package main;
 
-import UserInterface.controllers.LoginWorkerController;
-import UserInterface.controllers.MainController;
+import controllers.LoginWorkerController;
+import controllers.MainController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -41,6 +41,7 @@ public class Main extends Application {
 
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

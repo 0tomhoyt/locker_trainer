@@ -1,6 +1,6 @@
-package UserInterface.controllers;
+package controllers;
 
-import UserInterface.main.Main;
+import main.Main;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import java.net.URL;
@@ -12,7 +12,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Main.controllers.put("TestController",this);
+        Main.controllers.put(this.getClass().getSimpleName(),this);
     }
 
     public void setOuterLoader(FXMLLoader outerLoader){
