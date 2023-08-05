@@ -14,6 +14,41 @@ def add_server(cnx, is_main_server, server_ip_address, client_ip_address, is_sel
     return 1 if type(result) != str else result
 
 
+def get_all_servers(cnx):
+    # 获取所有服务器的信息
+    query = 'SELECT * FROM server'
+    result = execute_query(cnx, query)
+    return result.fetchall() if type(result) != str else result
+
+
+def get_server(cnx, server_id):
+    # 获取指定服务器的信息
+    query = f'SELECT * FROM server WHERE serverId = {server_id}'
+    result = execute_query(cnx, query)
+    return result.fetchone() if type(result) != str else result
+
+
+def delete_server(cnx, server_id):
+    # 删除指定服务器
+    query = f'DELETE FROM server WHERE serverId = {server_id}'
+    result = execute_query(cnx, query)
+    return 1 if type(result) != str else result
+
+
+def change_server_ip_address(cnx, server_id, new_ip_address):
+    # 修改指定服务器的IP地址
+    query = f'UPDATE server SET serverIpAddress = "{new_ip_address}" WHERE serverId = {server_id}'
+    result = execute_query(cnx, query)
+    return 1 if type(result) != str else result
+
+
+def change_client_ip_address(cnx, server_id, new_ip_address):
+    # 修改指定服务器的客户端IP地址
+    query = f'UPDATE server SET clientIpAddress = "{new_ip_address}" WHERE serverId = {server_id}'
+    result = execute_query(cnx, query)
+    return 1 if type(result) != str else result
+
+
 def reset_all_main_server(cnx):
     # 将所有服务器的 isMainServer 设置为 0
     query = f'UPDATE server SET isMainServer = 0'
@@ -48,36 +83,15 @@ def change_self(cnx, server_id, is_self):
     return 1 if type(result) != str else result
 
 
-def get_all_servers(cnx):
-    # 获取所有服务器的信息
-    query = 'SELECT * FROM server'
-    result = execute_query(cnx, query)
-    return result.fetchall() if type(result) != str else result
-
-
-def get_server(cnx, server_id):
-    # 获取指定服务器的信息
-    query = f'SELECT * FROM server WHERE serverId = {server_id}'
+def get_main_server(cnx):
+    # 获取主服务器的信息
+    query = f'SELECT * FROM server WHERE isMainServer = 1'
     result = execute_query(cnx, query)
     return result.fetchone() if type(result) != str else result
 
 
-def delete_server(cnx, server_id):
-    # 删除指定服务器
-    query = f'DELETE FROM server WHERE serverId = {server_id}'
+def get_self_server(cnx):
+    # 获取主服务器的信息
+    query = f'SELECT * FROM server WHERE isSelf = 1'
     result = execute_query(cnx, query)
-    return 1 if type(result) != str else result
-
-
-def change_server_ip_address(cnx, server_id, new_ip_address):
-    # 修改指定服务器的IP地址
-    query = f'UPDATE server SET serverIpAddress = "{new_ip_address}" WHERE serverId = {server_id}'
-    result = execute_query(cnx, query)
-    return 1 if type(result) != str else result
-
-
-def change_client_ip_address(cnx, server_id, new_ip_address):
-    # 修改指定服务器的客户端IP地址
-    query = f'UPDATE server SET clientIpAddress = "{new_ip_address}" WHERE serverId = {server_id}'
-    result = execute_query(cnx, query)
-    return 1 if type(result) != str else result
+    return result.fetchone() if type(result) != str else result

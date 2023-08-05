@@ -12,7 +12,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         # 使用self.request.recv，从客户端读取数据。规定收发的数据都要是json
         data = self.request.recv(1024).decode('utf-8')
         # 打印从客户端收到的数据和客户端的地址
-        print(f"接收到来自{self.client_address[0]}的数据：{data}")
+        print(f"接收到来自{self.client_address[0]}:{self.client_address[1]}的数据：{data}")
 
         # 检查接收到的data是不是json类型
         try:
@@ -30,7 +30,10 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         event = json_data['event']
         data = json_data['data']
 
-        response = Router.SocketConnectionRouter(event, data)
+        if 'fromServer' in json_data and 'serverIp' in json_data:
+            print(f"frowarded data from other server:{data}")
+
+        response = Router.main_server_event_router(event,data)
         message = json.dumps(response).encode('utf-8')
         # 将响应数据发送回客户端
         self.request.sendall(message)

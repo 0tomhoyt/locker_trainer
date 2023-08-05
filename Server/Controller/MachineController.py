@@ -7,7 +7,7 @@ def machineOnController(machineID, status):
         cnx = DBconnect.databaseConnect()
     except Exception as e:
         print("连接数据库失败：", e)
-        return f"连接数据库失败:{e}"
+        return json.dumps({"message":f"连接数据库失败:{e}"})
     machineResult = MachineDB.getMachineStatus(cnx,machineID)
     if machineResult is None:
         return json.dumps({
@@ -25,6 +25,6 @@ def machineOnController(machineID, status):
     else:
         DBconnect.databaseDisconnect(cnx)
         print(f"机器开关数据库连接错误，{dbresult}")
-        return f"机器开关数据库连接错误，{dbresult}"
+        return json.dumps({"message":f"机器开关数据库连接错误，{dbresult}"})
 
 
