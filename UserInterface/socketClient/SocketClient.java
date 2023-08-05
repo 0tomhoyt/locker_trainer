@@ -21,15 +21,22 @@ public class SocketClient {
     }
 
     public void send(String message) throws IOException {
-        OutputStream outToServer = client.getOutputStream();
-        DataOutputStream out = new DataOutputStream(outToServer);
-        out.writeUTF(message);
+        OutputStream os = client.getOutputStream();
+        PrintWriter pw = new PrintWriter(os);
+        pw.write(message);
+        pw.flush();
+
+        client.shutdownOutput();
     }
 
     public String receive() throws IOException {
-        InputStream inFromServer = client.getInputStream();
-        DataInputStream in = new DataInputStream(inFromServer);
-        return in.readUTF();
+        InputStream is = client.getInputStream();
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String info = br.readLine();
+
+        br.close();
+        is.close();
+        return info;
     }
 
     public void close() throws IOException {
