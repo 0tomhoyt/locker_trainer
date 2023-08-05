@@ -33,8 +33,8 @@ public class Main extends Application {
         innerLoader2.setRoot(outerLoader.getNamespace().get("insertionPoint2"));
         innerLoader2.load();
 
-        MainController testController = outerLoader.getController();
-        testController.setOuterLoader(outerLoader);
+        MainController mainController = outerLoader.getController();
+        mainController.setOuterLoader(outerLoader);
 
         LoginWorkerController loginWorkerController1 = innerLoader1.getController();
         loginWorkerController1.setOuterFXMLLoader(outerLoader);
