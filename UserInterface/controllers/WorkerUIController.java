@@ -54,6 +54,13 @@ public class WorkerUIController implements Initializable {
         const_time_btn.setToggleGroup(toggleGroup);
         var_time_btn.setToggleGroup(toggleGroup);
         const_time_btn.setSelected(true);
+
+        seconds = 0;
+        timer = new Timeline(new KeyFrame(Duration.seconds(1),actionEvent -> {
+            seconds++;
+            time_label.setText(seconds+"s");
+        }));
+        timer.setCycleCount(Animation.INDEFINITE);
     }
 
     public void setOuterLoader(FXMLLoader outerLoader) {
@@ -89,13 +96,6 @@ public class WorkerUIController implements Initializable {
 
     @FXML
     void start(ActionEvent event) {
-        time_label.setText("0s");
-        seconds = 0;
-        timer = new Timeline(new KeyFrame(Duration.seconds(1),actionEvent -> {
-            seconds++;
-            time_label.setText(seconds+"s");
-        }));
-        timer.setCycleCount(Animation.INDEFINITE);
         timer.play();
     }
 }

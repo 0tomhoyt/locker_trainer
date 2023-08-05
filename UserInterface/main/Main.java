@@ -7,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import models.Machine;
+import socketClient.SocketClient;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,6 +19,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        Machine machine = new Machine(true);
+        machine.setId(1);
+
         FXMLLoader outerLoader = new FXMLLoader(getClass().getResource("../fxml/main.fxml"));
         Parent root = outerLoader.load();
 
@@ -34,15 +39,26 @@ public class Main extends Application {
         LoginWorkerController loginWorkerController1 = innerLoader1.getController();
         loginWorkerController1.setOuterFXMLLoader(outerLoader);
         loginWorkerController1.setPanePosition("insertionPoint1");
+        loginWorkerController1.setMachine(machine);
 
         LoginWorkerController loginWorkerController2 = innerLoader2.getController();
         loginWorkerController2.setOuterFXMLLoader(outerLoader);
         loginWorkerController2.setPanePosition("insertionPoint2");
+        loginWorkerController2.setMachine(machine);
 
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
+
+        //等SocketClient做好了
+//        SocketClient client = new SocketClient("localhost", 12345);
+//        client.connect();
+//
+//        client.send(machine.getStartJson());
+//
+//        System.out.println("Server says " + client.receive());
+//        client.close();
     }
 
     public static void main(String[] args) {

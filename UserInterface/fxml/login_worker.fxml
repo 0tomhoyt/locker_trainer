@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-<fx:root type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.LoginWorkerController"
-            prefHeight="700.0" prefWidth="450.0"
-            fx:id="anchorPane">
+
+<fx:root fx:id="anchorPane" prefHeight="700.0" prefWidth="450.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginWorkerController">
     <children>
         <Label alignment="CENTER" layoutX="182.0" layoutY="150.0" text="工位" textAlignment="CENTER">
             <font>
                 <Font size="30.0" />
             </font>
         </Label>
-        <TextField layoutX="141.0" layoutY="238.0" />
-        <TextField layoutX="141.0" layoutY="339.0" />
+        <TextField fx:id="field_username" layoutX="141.0" layoutY="238.0" />
+        <TextField fx:id="field_password" layoutX="141.0" layoutY="339.0" />
         <Button fx:id="btn_login" layoutX="181.0" layoutY="433.0" mnemonicParsing="false" onAction="#login" text="登录">
             <font>
                 <Font size="24.0" />
