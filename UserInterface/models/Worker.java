@@ -54,6 +54,10 @@ public class Worker {
         this.headerURL = headerURL;
     }
 
+    public void setWorkLength(int workLength){
+
+    }
+
     public int getId() {
         return id;
     }

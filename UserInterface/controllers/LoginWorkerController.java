@@ -8,14 +8,21 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
 import models.Machine;
 import models.Worker;
+import org.apache.commons.text.StringEscapeUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import socketClient.SocketClient;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LoginWorkerController implements Initializable {
     private FXMLLoader outerLoader;
     private Machine machine;
+    private Worker worker;
     @FXML
     private AnchorPane anchorPane;
     @FXML
@@ -43,25 +50,38 @@ public class LoginWorkerController implements Initializable {
     }
 
     @FXML
-    void btn_login(Event event) throws IOException {
+    void btn_login(Event event) throws IOException, JSONException {
         String username = field_username.getText();
         String password = field_password.getText();
         int workStationID = panePosition.equals("insertionPoint1") ? 1:2;
 
-        Worker worker = new Worker(username,password,machine.getId(),workStationID);
+        worker = new Worker(username,password,machine.getId(),workStationID);
+        login(worker);
+    }
 
-//        SocketClient client = new SocketClient("localhost", 12345);
-//        client.connect();
-//
-//        client.send(worker.getLoginJson());
-//        client.receive();
+    private boolean login(Worker worker) throws IOException, JSONException {
+        SocketClient client = new SocketClient("localhost", 12345);
+        client.connect();
 
-        if(true){ //等SocketClient做好了，再更改if条件
+        client.send(worker.getLoginJson());
+        String data = client.receive();
+        System.out.println(data);
+        // 反转义java字符串
+        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
+        // 去除前后的双引号
+        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() -1);
+        // 转换为json对象
+        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
+        boolean loginSuccess = jsonObject.getBoolean("loginSuccess");
+
+        if(loginSuccess){
             try{
                 anchorPane.getChildren().clear();
                 FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/worker_UI.fxml"));
                 innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
                 innerLoader.load();
+
+                updateWorker(jsonObject);
 
                 WorkerUIController workerUIController = innerLoader.getController();
                 workerUIController.setWorker(worker);
@@ -70,6 +90,14 @@ public class LoginWorkerController implements Initializable {
                 e.printStackTrace();
             }
         }
-//        client.close();
+        client.close();
+        System.out.println("loginStatus:"+loginSuccess);
+        return loginSuccess;
+    }
+
+    private void updateWorker(JSONObject object) throws JSONException {
+        worker.setAuthToken(object.getString("authToken"));
+        worker.setHeaderURL(object.getString("headerURL"));
+        worker.setWorkLength(object.getInt("worklength"));
     }
 }
