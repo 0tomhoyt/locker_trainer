@@ -54,6 +54,10 @@ public class Worker {
         this.headerURL = headerURL;
     }
 
+    public void setWorkLength(int workLength){
+
+    }
+
     public int getId() {
         return id;
     }
@@ -132,6 +136,17 @@ public class Worker {
         return String.format("{ \"event\": \"workerLogout\", \"data\": { \"machineId\": %d, \"workstationId\": %d } }",
                 machineID,
                 workStationID
+        );
+    }
+
+    public String getStartTrainingJson(TrainingHistory trainingHistory){
+        return String.format("{ \"event\": \"startTraining\", \"data\": { \"authToken\": %s, \"machineId\": %d, \"workStationId\": %d, \"trainingType\": %d, \"difficulty\": %d, \"totalTime\": %d } }",
+                authToken,
+                machineID,
+                workStationID,
+                trainingHistory.getTrainingType(),
+                trainingHistory.getDifficulty(),
+                trainingHistory.getTotalTime()
         );
     }
 }

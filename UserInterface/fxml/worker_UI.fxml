@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
@@ -32,12 +33,12 @@
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <Label fx:id="time_label" layoutX="337.0" layoutY="76.0" prefHeight="27.0" prefWidth="46.0" text="时间">
+                        <Label fx:id="time_label" layoutX="324.0" layoutY="76.0" prefHeight="27.0" prefWidth="46.0" text="时间">
                            <font>
                               <Font size="20.0" />
                            </font>
                         </Label>
-                        <Button layoutX="208.0" layoutY="596.0" mnemonicParsing="false" onAction="#btn_start" prefHeight="40.0" prefWidth="80.0" text="开始" />
+                        <Button layoutX="186.0" layoutY="549.0" mnemonicParsing="false" onAction="#start_btn_click" prefHeight="40.0" prefWidth="80.0" text="开始" />
                         <GridPane fx:id="gridPane" alignment="CENTER" layoutX="99.0" layoutY="176.0" prefHeight="367.0" prefWidth="271.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -59,8 +60,10 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <RadioButton fx:id="const_time_btn" layoutX="324.0" layoutY="25.0" mnemonicParsing="false" text="定时训练" />
-                        <RadioButton fx:id="var_time_btn" layoutX="324.0" layoutY="45.0" mnemonicParsing="false" text="计时训练" />
+                        <RadioButton fx:id="const_time_btn" layoutX="324.0" layoutY="25.0" mnemonicParsing="false" onAction="#const_time_btn_click" text="定时训练" />
+                        <RadioButton fx:id="var_time_btn" layoutX="324.0" layoutY="45.0" mnemonicParsing="false" onAction="#var_time_btn_click" text="计时训练" />
+                        <Spinner fx:id="time_spinner" layoutX="317.0" layoutY="120.0" prefHeight="27.0" prefWidth="90.0" />
+                        <Button fx:id="end_btn" layoutX="187.0" layoutY="600.0" mnemonicParsing="false" onAction="#end_btn_click" prefHeight="40.0" prefWidth="80.0" text="结束" />
                      </children>
                   </javafx.scene.layout.AnchorPane>
                </content>

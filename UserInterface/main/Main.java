@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import models.Machine;
-import socketClient.SocketClient;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,10 +16,11 @@ import java.util.Map;
 
 public class Main extends Application {
     public static Map<String,Object> controllers = new HashMap<String, Object>();
+    private Machine machine;
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
-        Machine machine = new Machine(true);
+    public void start(Stage primaryStage) throws IOException, JSONException {
+        machine = new Machine(true);
         machine.setId(1);
 
         FXMLLoader outerLoader = new FXMLLoader(getClass().getResource("../fxml/main.fxml"));
@@ -34,7 +35,7 @@ public class Main extends Application {
         innerLoader2.load();
 
         MainController mainController = outerLoader.getController();
-        mainController.setOuterLoader(outerLoader);
+        mainController.setMachine(machine);
 
         LoginWorkerController loginWorkerController1 = innerLoader1.getController();
         loginWorkerController1.setOuterFXMLLoader(outerLoader);
@@ -50,15 +51,6 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-
-        //等SocketClient做好了
-//        SocketClient client = new SocketClient("localhost", 12345);
-//        client.connect();
-//
-//        client.send(machine.getStartJson());
-//
-//        System.out.println("Server says " + client.receive());
-//        client.close();
     }
 
     public static void main(String[] args) {
