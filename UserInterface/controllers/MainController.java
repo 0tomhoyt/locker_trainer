@@ -8,6 +8,7 @@ import main.Main;
 import javafx.fxml.Initializable;
 import models.Machine;
 import org.apache.commons.text.StringEscapeUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
