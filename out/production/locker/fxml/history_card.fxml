@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="200.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HistoryCardController">
+   <children>
+      <Label fx:id="time_label" layoutX="42.0" layoutY="39.0" text="时间" />
+      <Label fx:id="score_label" layoutX="39.0" layoutY="117.0" text="分数" />
+      <Label fx:id="total_time_label" layoutX="135.0" layoutY="117.0" text="总用时" />
+      <Label fx:id="unlocked_label" layoutX="225.0" layoutY="117.0" text="未开锁数" />
+      <Label fx:id="operator_label" layoutX="312.0" layoutY="117.0" text="操作人数" />
+   </children>
+</AnchorPane>

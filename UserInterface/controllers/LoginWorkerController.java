@@ -13,13 +13,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoginWorkerController implements Initializable {
+public class LoginWorkerController implements Initializable, Controller {
     private FXMLLoader outerLoader;
     private Machine machine;
     private Worker worker;
@@ -50,12 +48,14 @@ public class LoginWorkerController implements Initializable {
     }
 
     @FXML
-    void btn_login(Event event) throws IOException, JSONException {
+    void login_btn_click(Event event) throws IOException, JSONException {
         String username = field_username.getText();
         String password = field_password.getText();
-        int workStationID = panePosition.equals("insertionPoint1") ? 1:2;
+        int machineID = machine.getId();
+        int workStationID = panePosition.equals("insertionPoint1") ? 2 * machineID - 1 : 2 * machineID;
 
-        worker = new Worker(username,password,machine.getId(),workStationID);
+        worker = new Worker(username,password,workStationID,machine.getId());
+        System.out.println(worker.getLoginJson());
         login(worker);
     }
 
@@ -73,8 +73,10 @@ public class LoginWorkerController implements Initializable {
         // 转换为json对象
         JSONObject jsonObject = new JSONObject(tokenInfoEsca);
         boolean loginSuccess = jsonObject.getBoolean("loginSuccess");
+        int machineID = jsonObject.getInt("machineId");
+        int workerStationID = jsonObject.getInt("workstationId");
 
-        if(loginSuccess){
+        if(loginSuccess && machineID == worker.getMachineID() && workerStationID == worker.getWorkStationID()){
             try{
                 anchorPane.getChildren().clear();
                 FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/worker_UI.fxml"));

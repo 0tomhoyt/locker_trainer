@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class HistoryCardController implements Initializable {
+public class HistoryCardController implements Initializable, Controller {
     @FXML
     private Label time_label;
     @FXML
