@@ -49,6 +49,23 @@ def main_server_event_router(event, data):
             print(f'workerLogout: 收到的data包不正确{data}')
             return json.dumps({"replyMessage": True, "message": f'machineStart: 收到的data包不正确{data}'})
         return UserController.workerLogout(data['machineId'], data['workstationId'])
+    # 输入username:hyt
+    #  password:hjqCYS1301
+    #  machineId:1
+    # 输出"loginSuccess": True,
+    #             "code": 200,
+    #             "authToken": AuthToken,
+    #             "machineId": machineId,
+    #             "userName": userName,
+    #             "headerURL": headerUrl,
+    #             "worklength": worklength,
+    #             "message": "登录成功"
+    #         })
+    #     或者
+    #         return json.dumps({
+    #             "loginSucess": False,
+    #             "code": 500,
+    #             "message": "没有管理员权限"
     elif event == 'adminLogin':
         if "username" not in data or "password" not in data or "machineId" not in data:
             print(f'admin login: 收到的data包不正确{data}')
