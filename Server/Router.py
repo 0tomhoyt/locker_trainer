@@ -1,37 +1,14 @@
 import json
 
 from Controller import MachineController, UserController
-from Util import Util
 
 
-def server_message_router(from_server, server_ip, event, data):
-    is_server = Util.checkIfSelfIsMainServer() == 1
-    if is_server == 1:
-        return main_server_event_router(event, data).update({"replyMessage": True})
-    else:
-        print(f"服务器配置信息错误,from {from_server},{server_ip},event:{event},data:{data}")
-        return json.dumps({"replyMessage": True,
-                           "message": f"服务器配置信息错误,from {from_server},{server_ip},event:{event},data:{data}"})
-
-
-def client_message_router(event, data):
-    is_server = Util.checkIfSelfIsMainServer() == 1
-    if is_server == 1:
-        return main_server_event_router(event, data).update({"replyMessage": True})
-    elif is_server == 0:
-        return 1
-    else:
-        print(f"服务器配置信息错误,from client {event},data:{data}")
-        return json.dumps({"replyMessage": True,
-                           "message": f"服务器配置信息错误,from client event:{event},data:{data}"})
-
-
-##分服务器提供的route
+# 分服务器提供的route
 def client_server_event_router(event, data):
-    return 1
+    return json.dumps({"message": "当前分服务器未连接主服务器，无法处理"})
 
 
-##主服务器提供的route
+# 主服务器提供的route
 def main_server_event_router(event, data):
     # 如果本机是主服务器，根据不同的事件进行不同的处理
     if event == 'machineStart':

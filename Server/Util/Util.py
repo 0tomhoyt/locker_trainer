@@ -1,5 +1,5 @@
 import hashlib
-from DatabaseConnection import ServerDB,DBconnect
+from DatabaseConnection import ServerDB, DBconnect
 
 
 ##对密码进行哈希处理
@@ -22,7 +22,7 @@ def checkIfSelfIsMainServer():
     if type(server_info) == str:
         return server_info  # return error message if any
     else:
-        is_main = server_info[1] # we expect 'isMainServer' is at the second position in the tuple
+        is_main = server_info[1]  # we expect 'isMainServer' is at the second position in the tuple
         return 1 if is_main == 1 else 0
 
 

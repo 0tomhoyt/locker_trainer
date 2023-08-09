@@ -4,6 +4,8 @@ import json
 
 import Router
 
+global server_conn, client_conn
+
 
 # 定义一个请求处理器，它从BaseRequestHandler类继承
 class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
@@ -33,7 +35,7 @@ class ThreadedTCPRequestHandler(socketserver.BaseRequestHandler):
         if 'fromServer' in json_data and 'serverIp' in json_data:
             print(f"frowarded data from other server:{data}")
 
-        response = Router.main_server_event_router(event,data)
+        response = Router.main_server_event_router(event, data)
         message = json.dumps(response).encode('utf-8')
         # 将响应数据发送回客户端
         self.request.sendall(message)
@@ -48,7 +50,7 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 # 开启服务器的函数
 def start_server():
     # 设置服务器地址和端口
-    HOST, PORT = "localhost", 12345
+    HOST, PORT = "localhost", 5000
     # 创建服务器实例
     server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
     # 使服务器开始监听并处理连接
