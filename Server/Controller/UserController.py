@@ -114,3 +114,32 @@ def adminLogin(userName, Password, machineId):
             "code": 500,
             "message": "没有管理员权限"
         })
+
+
+def getAllWorkersController(authToken):
+    try:
+        cnx = DBconnect.databaseConnect()
+    except Exception as e:
+        print("连接数据库失败：", e)
+        return json.dumps({"message": f"连接数据库失败:{e}"})
+    isAdmin = UserDB.checkAdminToken(cnx, authToken)
+    if isAdmin != 1:
+        return json.dumps({"message": "权限不足", "code": 403})
+
+    result = UserDB.getAllWorker(cnx)
+
+    workers_list = []
+    for worker in result:
+        worker_json = {
+            "UserID": worker[0],
+            "UserName": worker[1],
+            "Password": worker[2],
+            "Role": worker[3],
+            "AuthToken": worker[4],
+            "HeadUrl": worker[5],
+            "EnrolledDate": worker[6].strftime('%Y-%m-%d') if worker[6] else None
+        }
+        workers_list.append(worker_json)
+        print(workers_list)
+
+    return json.dumps({"workers": workers_list, "message": "查询成功", "code": 200})

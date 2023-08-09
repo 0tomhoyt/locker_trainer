@@ -102,38 +102,52 @@ if __name__ == "__main__":
     # data = {"authToken": 22222}
     # start_client(event, data)
 
-    print("测试13：创建新训练")
-    event = 'startNewTraining'
-    data = {"authToken": 123456,"workstationID":1,"difficulty":5,"totalTime":15}
+    # print("测试13：创建新训练")
+    # event = 'startNewTraining'
+    # data = {"authToken": 123456,"workstationID":1,"difficulty":5,"totalTime":15}
+    # start_client(event, data)
+    #
+    # print("测试14：创建新训练,错误测试")
+    # event = 'startNewTraining'
+    # data = {"authToken": 123456,"workstationID":2,"difficulty":5,"totalTime":15}
+    # start_client(event, data)
+    # print("测试15：创建新训练,错误测试")
+    # event = 'startNewTraining'
+    # data = {"authToken": 2222,"workstationID":1,"difficulty":5,"totalTime":15}
+    # start_client(event, data)
+    # print("测试16：更新训练,正确测试")
+    # event = 'updateTraining'
+    # data = {"authToken": 123456,"trainingID":22,"score":5,"unlockedNum":15,"isOn":1}
+    # start_client(event, data)
+    # print("测试17：更新训练,错误测试")
+    # event = 'updateTraining'
+    # data = {"authToken": 22222,"trainingID":22,"score":5,"unlockedNum":15,"isOn":1}
+    # start_client(event, data)
+    # print("测试18：更新训练,错误测试")
+    # event = 'updateTraining'
+    # data = {"authToken": 123456,"trainingID":254654,"score":5,"unlockedNum":15,"isOn":1}
+    # start_client(event, data)
+    # print("测试19：结束训练,正确测试")
+    # event = 'stopTraining'
+    # data = {"authToken": 123456,"trainingID":22}
+    # start_client(event, data)
+    # print("测试19：结束训练,错误测试")
+    # event = 'stopTraining'
+    # data = {"authToken": 123456,"trainingID":28}
+    # start_client(event, data)
+    print("测试20：获取所有工人信息,正确测试")
+    event = 'getWorkerStatus'
+    data = {"authToken": "888666"} # 确保这是有效的管理员令牌
     start_client(event, data)
 
-    print("测试14：创建新训练,错误测试")
-    event = 'startNewTraining'
-    data = {"authToken": 123456,"workstationID":2,"difficulty":5,"totalTime":15}
+    print("测试21：获取所有工人信息,错误测试")
+    event = 'getWorkerStatus'
+    data = {"authToken": "123456"} # 使用无效的管理员令牌
     start_client(event, data)
-    print("测试15：创建新训练,错误测试")
-    event = 'startNewTraining'
-    data = {"authToken": 2222,"workstationID":1,"difficulty":5,"totalTime":15}
-    start_client(event, data)
-    print("测试16：更新训练,正确测试")
-    event = 'updateTraining'
-    data = {"authToken": 123456,"trainingID":22,"score":5,"unlockedNum":15,"isOn":1}
-    start_client(event, data)
-    print("测试17：更新训练,错误测试")
-    event = 'updateTraining'
-    data = {"authToken": 22222,"trainingID":22,"score":5,"unlockedNum":15,"isOn":1}
-    start_client(event, data)
-    print("测试18：更新训练,错误测试")
-    event = 'updateTraining'
-    data = {"authToken": 123456,"trainingID":254654,"score":5,"unlockedNum":15,"isOn":1}
-    start_client(event, data)
-    print("测试19：结束训练,正确测试")
-    event = 'stopTraining'
-    data = {"authToken": 123456,"trainingID":22}
-    start_client(event, data)
-    print("测试19：结束训练,错误测试")
-    event = 'stopTraining'
-    data = {"authToken": 123456,"trainingID":28}
+    print("测试22：获取所有工人信息,错误测试")
+    event = 'getWorkerStatus'
+    data = {"authToken": "555555"} # 使用无效的管理员令牌
     start_client(event, data)
 
-    # unittest.main()
+
+# unittest.main()

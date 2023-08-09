@@ -132,9 +132,9 @@ def main_server_event_router(event, data):
     # code: 整数类型，代表响应的状态代码。常见代码有200表示成功，500表示服务器内部错误。
     elif event == 'updateTraining':
         if "authToken" not in data or "trainingID" not in data or "score" not in data or "unlockedNum" not in data or "isOn" not in data:
-            print(f'startNewTraining: 收到的data包不正确{data}')
+            print(f'updateTraining: 收到的data包不正确{data}')
             return json.dumps(
-                {"replyMessage": True, "message": f'startNewTraining: 收到的data包不正确{data}'})
+                {"replyMessage": True, "message": f'updateTraining: 收到的data包不正确{data}'})
         return TrainingController.updateTrainingController(data["authToken"], data["trainingID"], data["score"],
                                                            data["unlockedNum"], data["isOn"])
 
@@ -146,10 +146,24 @@ def main_server_event_router(event, data):
     # code: 整数类型，代表响应的状态代码。常见代码有200表示成功，500表示服务器内部错误。
     elif event == 'stopTraining':
         if "authToken" not in data or "trainingID" not in data:
-            print(f'startNewTraining: 收到的data包不正确{data}')
+            print(f'stopTraining: 收到的data包不正确{data}')
             return json.dumps(
-                {"replyMessage": True, "message": f'startNewTraining: 收到的data包不正确{data}'})
+                {"replyMessage": True, "message": f'stopTraining: 收到的data包不正确{data}'})
         return TrainingController.stopTrainingController(data["authToken"], data["trainingID"])
+
+    # 输入
+    # authToken: 字符串类型，用于验证管理员身份。
+    # 输出
+    # workers: 包含所有工人信息的JSON对象列表。
+    # message: 字符串，表示查询状态。
+    # code: 整数，表示HTTP状态代码，如200表示成功。
+    elif event == "getWorkerStatus":
+        if "authToken" not in data:
+            print(f'getWorkerStatus: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'getWorkerStatus: 收到的data包不正确{data}'})
+        return UserController.getAllWorkersController(data['authToken'])
+
 
     else:
         print(f'unknown event: {event},data:{data}')
