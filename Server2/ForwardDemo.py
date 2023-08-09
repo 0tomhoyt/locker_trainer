@@ -13,16 +13,18 @@ class SubServerClient:
         self.main_server_port = main_server_port
         self.server_socket = None
         self.main_server_socket = None
+        self.client_connections = []
 
     def handle_client_connection(self, client_conn, addr):
         print(f"Connected to {addr}")
         while True:
             message_from_client = client_conn.recv(1024).decode('utf-8')
+            print("接收消息",message_from_client)
             # 检查
             try:
                 json_data = json.loads(message_from_client)
-            except json.JSONDecodeError:
-                print(f'接收到来自主服务器的消息不是json格式 : {message_from_client}')
+            except json.JSONDecodeError as e:
+                print(f'接收到来自客户端的消息不是json格式 : {message_from_client}',e)
                 return
             if 'event' not in json_data or 'data' not in json_data:
                 print(f'接收到来自客户端的消息格式不正确: {json_data}')
@@ -34,29 +36,46 @@ class SubServerClient:
                 data = json_data['data']
                 Router.client_server_event_router(event, data)
             else:
-                self.main_server_socket.sendall(message_from_client.encode('utf-8'))
+                print("发送给主服务器消息",message_from_client)
+                try:
+                    self.main_server_socket.sendall(message_from_client.encode('utf-8'))
+                except ConnectionAbortedError:
+                    print("连接已中断，无法发送消息")
 
     def handle_main_server_connection(self):
         while True:
             message_from_server = self.main_server_socket.recv(1024).decode('utf-8')
+            print("接收消息",message_from_server)
             try:
                 json_data = json.loads(message_from_server)
             except json.JSONDecodeError:
                 print(f'接收到来自主服务器的消息不是json格式 : {message_from_server}')
                 return
-            if 'replyMessage' not in json_data:
-                print(f'接收到来自主服务器的消息不是回复消息: {message_from_server}')
-                return
+            print(self.client_connections)
             # 直接转发
-            self.server_socket.sendall(message_from_server.encode('utf-8'))
+            for client_conn in self.client_connections:
+                print("发送客户端消息",message_from_server)
+                try:
+                    client_conn.sendall(message_from_server.encode('utf-8'))
+                except ConnectionAbortedError:
+                    print("连接已中断，无法发送消息")
 
     # 检查主服务器连接是否有效
     def check_main_server_connection(self):
+        if self.main_server_socket is None:
+            return 0
+
         try:
-            if self.main_server_socket is None or not self.main_server_socket.is_valid():
-                return 0
-        except Exception as e:
+            # 使用 select 检查连接是否有效
+            import select
+            ready_to_read, _, _ = select.select([self.main_server_socket], [], [], 0)
+            if ready_to_read:
+                return 1
+        except socket.error as e:
+            # 如果返回错误，则连接可能已关闭
             print(f"检查主服务器连接时出错: {e}")
+            return 0
+
         return 1
 
     def connect_to_main_server(self):
@@ -81,6 +100,7 @@ class SubServerClient:
 
         while True:
             client_conn, addr = self.server_socket.accept()
+            self.client_connections.append(client_conn)
             threading.Thread(target=self.handle_client_connection, args=(client_conn, addr), daemon=True).start()
 
     def close(self):
@@ -93,11 +113,13 @@ class MainServerClient:
         self.host = host
         self.port = port
         self.server_socket = None
+        self.client_conn = []
 
     def handle_connection(self, client_conn, addr):
         print(f"Connected to {addr}")
         while True:
             message_from_client = client_conn.recv(1024).decode('utf-8')
+            print("接收消息",message_from_client)
             # 检查
             try:
                 json_data = json.loads(message_from_client)
@@ -111,7 +133,12 @@ class MainServerClient:
             event = json_data['event']
             data = json_data['data']
             reply_message = Router.main_server_event_router(event, data)
-            client_conn.sendall(reply_message.encode('utf-8'))
+            print("主服务器回复消息",reply_message)
+
+            try:
+                client_conn.sendall(reply_message.encode('utf-8'))
+            except ConnectionAbortedError:
+                print("连接已中断，无法发送消息")
 
     def start(self):
         # Start server to handle client messages
@@ -122,6 +149,7 @@ class MainServerClient:
 
         while True:
             client_conn, addr = self.server_socket.accept()
+            self.client_conn.append(client_conn)
             threading.Thread(target=self.handle_connection, args=(client_conn, addr), daemon=True).start()
 
     def close(self):

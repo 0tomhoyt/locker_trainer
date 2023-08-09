@@ -39,4 +39,4 @@ def main_server_event_router(event, data):
 
     else:
         print(f'unknown event: {event},data:{data}')
-        return json.dumps({"replyMessage": True, "message": f'unknown event: {event},data:{data}'})
+        return json.dumps({ "message": f'unknown event: {event},data:{data}'})

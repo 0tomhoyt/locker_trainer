@@ -9,7 +9,7 @@ import socket, json
 
 def start_client(event, data):
     host = 'localhost'  # 服务器的主机名或IP地址
-    port = 5000  # 服务器的端口号
+    port = 5002  # 服务器的端口号
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((host, port))  # 连接到服务器
