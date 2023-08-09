@@ -138,4 +138,15 @@ public class Worker {
                 workStationID
         );
     }
+
+    public String getStartTrainingJson(TrainingHistory trainingHistory){
+        return String.format("{ \"event\": \"startTraining\", \"data\": { \"authToken\": %s, \"machineId\": %d, \"workStationId\": %d, \"trainingType\": %d, \"difficulty\": %d, \"totalTime\": %d } }",
+                authToken,
+                machineID,
+                workStationID,
+                trainingHistory.getTrainingType(),
+                trainingHistory.getDifficulty(),
+                trainingHistory.getTotalTime()
+        );
+    }
 }

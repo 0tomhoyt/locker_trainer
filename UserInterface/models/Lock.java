@@ -2,10 +2,10 @@ package models;
 
 public class Lock {
     private int id;
-    private String status;
+    private LockStatus status;
     private int workStation;
 
-    public Lock(String status, int workStation) {
+    public Lock(LockStatus status, int workStation) {
         this.status = status;
         this.workStation = workStation;
     }
@@ -14,7 +14,7 @@ public class Lock {
         this.id = id;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(LockStatus status) {
         this.status = status;
     }
 
@@ -26,7 +26,7 @@ public class Lock {
         return id;
     }
 
-    public String getStatus() {
+    public LockStatus getStatus() {
         return status;
     }
 

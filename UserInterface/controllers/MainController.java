@@ -1,9 +1,14 @@
 package controllers;
 
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import main.Main;
 import javafx.fxml.Initializable;
 import models.Machine;
 import org.apache.commons.text.StringEscapeUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
@@ -13,7 +18,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-public class MainController implements Initializable {
+public class MainController implements Initializable, Controller {
     private Machine machine;
 
     @Override
