@@ -24,7 +24,6 @@ class SubServerClient:
             try:
                 json_data = json.loads(message_from_client)
             except json.JSONDecodeError as e:
-                print(f'接收到来自客户端的消息不是json格式 : {message_from_client}',e)
                 return
             if 'event' not in json_data or 'data' not in json_data:
                 print(f'接收到来自客户端的消息格式不正确: {json_data}')
@@ -49,7 +48,6 @@ class SubServerClient:
             try:
                 json_data = json.loads(message_from_server)
             except json.JSONDecodeError:
-                print(f'接收到来自主服务器的消息不是json格式 : {message_from_server}')
                 return
             print(self.client_connections)
             # 直接转发
@@ -124,7 +122,6 @@ class MainServerClient:
             try:
                 json_data = json.loads(message_from_client)
             except json.JSONDecodeError:
-                print(f'接收到来自客户端的消息不是json格式 : {message_from_client}')
                 return
             if 'event' not in json_data or 'data' not in json_data:
                 print(f'接收到来自客户端的消息格式不正确: {json_data}')

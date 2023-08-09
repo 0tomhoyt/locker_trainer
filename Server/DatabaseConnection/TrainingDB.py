@@ -1,18 +1,21 @@
 import time
 import datetime
+
 from DatabaseConnection.DBconnect import execute_query
 
 
 # 创建一个训练记录
 def createTraining(cnx, IsMatch, MatchID, UserID, WorkstationID, Score, UnlockedNum, TotalTime, TrainingType,
                    Difficulty, IsOn):
-    TrainingID = int(time.time() * 10)  # 乘以10来保留时间戳小数点后一位
+    TrainingID = int(time.time() * 100)  # 乘以10来保留时间戳小数点后一位
     query = f'''INSERT INTO trainings (TrainingID, IsMatch, MatchID, UserID, WorkstationID, Score, UnlockedNum, TotalTime, TrainingType, Difficulty, IsOn) 
                 VALUES ({TrainingID}, {IsMatch}, {MatchID}, {UserID}, {WorkstationID}, {Score}, {UnlockedNum}, {TotalTime}, {TrainingType}, {Difficulty}, {IsOn})'''
     result = execute_query(cnx, query)
+    print(result)
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return TrainingID
 
 
