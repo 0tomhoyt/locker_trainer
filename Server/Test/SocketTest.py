@@ -115,7 +115,25 @@ if __name__ == "__main__":
     event = 'startNewTraining'
     data = {"authToken": 2222,"workstationID":1,"difficulty":5,"totalTime":15}
     start_client(event, data)
-
+    print("测试16：更新训练,正确测试")
+    event = 'updateTraining'
+    data = {"authToken": 123456,"trainingID":22,"score":5,"unlockedNum":15,"isOn":1}
+    start_client(event, data)
+    print("测试17：更新训练,错误测试")
+    event = 'updateTraining'
+    data = {"authToken": 22222,"trainingID":22,"score":5,"unlockedNum":15,"isOn":1}
+    start_client(event, data)
+    print("测试18：更新训练,错误测试")
+    event = 'updateTraining'
+    data = {"authToken": 123456,"trainingID":254654,"score":5,"unlockedNum":15,"isOn":1}
+    start_client(event, data)
+    print("测试19：结束训练,正确测试")
+    event = 'stopTraining'
+    data = {"authToken": 123456,"trainingID":22}
+    start_client(event, data)
+    print("测试19：结束训练,错误测试")
+    event = 'stopTraining'
+    data = {"authToken": 123456,"trainingID":28}
     start_client(event, data)
 
     # unittest.main()

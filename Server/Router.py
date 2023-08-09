@@ -104,6 +104,35 @@ def main_server_event_router(event, data):
                 {"replyMessage": True, "message": f'startNewTraining: 收到的data包不正确{data}'})
         return TrainingController.addTrainingRecord(data["authToken"], data["workstationID"], data["difficulty"],
                                                     data["totalTime"])
+    # 输入
+    # authToken: 字符串类型，用于验证用户并从中提取用户ID。
+    # trainingID: 整数类型，标识要更新的训练记录的ID。
+    # score: 整数类型，表示要更新的训练记录的得分。
+    # unlockedNum: 整数类型，表示要更新的训练记录的解锁数量。
+    # IsOn: 整数类型，用于表示训练记录的状态（例如，1表示开启，0表示关闭）。
+    # 输出
+    # message: 字符串类型，描述了操作的结果，例如"更新训练成功"或具体的错误消息。
+    # code: 整数类型，代表响应的状态代码。常见代码有200表示成功，500表示服务器内部错误。
+    elif event == 'updateTraining':
+        if "authToken" not in data or "trainingID" not in data or "score" not in data or "unlockedNum" not in data or "isOn" not in data:
+            print(f'startNewTraining: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'startNewTraining: 收到的data包不正确{data}'})
+        return TrainingController.updateTrainingController(data["authToken"], data["trainingID"], data["score"],
+                                                           data["unlockedNum"], data["isOn"])
+
+    # 输入
+    # authToken: 字符串类型，用于验证用户并从中提取用户ID。
+    # trainingID: 整数类型，标识要更新的训练记录的ID。
+    # 输出
+    # message: 字符串类型，描述了操作的结果，例如"结束训练成功"或具体的错误消息。
+    # code: 整数类型，代表响应的状态代码。常见代码有200表示成功，500表示服务器内部错误。
+    elif event == 'stopTraining':
+        if "authToken" not in data or "trainingID" not in data:
+            print(f'startNewTraining: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'startNewTraining: 收到的data包不正确{data}'})
+        return TrainingController.stopTrainingController(data["authToken"], data["trainingID"])
 
     else:
         print(f'unknown event: {event},data:{data}')
