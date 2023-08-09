@@ -83,9 +83,11 @@ class SubServerClient:
             self.main_server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.main_server_socket.connect((self.main_server_host, self.main_server_port))
             print(f"Connected to main server at {self.main_server_host}:{self.main_server_port}")
+            threading.Thread(target=self.handle_main_server_connection, daemon=True).start()
             return 1
         except Exception as e:
             print(f"连接主服务器失败: {e}")
+            return e
 
     def start(self):
         # Start server to handle client messages
@@ -95,8 +97,6 @@ class SubServerClient:
         print(f"Server started at {self.host}:{self.port}")
 
         self.connect_to_main_server()
-
-        threading.Thread(target=self.handle_main_server_connection, daemon=True).start()
 
         while True:
             client_conn, addr = self.server_socket.accept()
