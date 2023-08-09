@@ -44,10 +44,10 @@ public class SocketClient {
     }
 
     public static void main(String[] args) throws IOException {
-        SocketClient client = new SocketClient("localhost", 12345);
+        SocketClient client = new SocketClient("localhost", 5001);
         client.connect();
 
-        String jsonString = "{ \"event\": \"workerLogin\", \"data\": { \"username\": \"hyt\", \"password\": \"hjqCYS1301\", \"machineId\": 1, \"workstationId\": 1 } }";
+        String jsonString = "{ \"event\": \"workerLogin\", \"data\": { \"username\": \"hyt\", \"password\": \"123\", \"machineId\": 1, \"workstationId\": 1 } }";
         client.send(jsonString);
 
         System.out.println("Server says " + client.receive());

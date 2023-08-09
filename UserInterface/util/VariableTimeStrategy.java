@@ -1,33 +1,40 @@
 package util;
 
-import javafx.scene.control.Label;
+import models.TrainingHistory;
 
 public class VariableTimeStrategy implements TimerStrategy{
-    private Label label;
-    private int seconds;
+    private TrainingHistory trainingHistory;
     @Override
     public void doWork() {
-        seconds++;
-        label.setText(seconds+"s");
+        trainingHistory.incSeconds();
     }
 
     @Override
     public void reset() {
-        label.setText("时间");
-        seconds = 0;
+        trainingHistory.setSeconds(0);
+        trainingHistory.setMinutes(0);
     }
 
     @Override
-    public int getSeconds() {
-        return seconds;
+    public int getDifficulty() {
+        if(trainingHistory.getTime() < 60){
+            return 5;
+        }
+        else if(trainingHistory.getTime() < 2 * 60){
+            return 4;
+        }
+        else if(trainingHistory.getTime() < 3 * 60){
+            return 3;
+        }
+        else if(trainingHistory.getTime() < 4 * 60){
+            return 2;
+        }
+        else {
+            return 1;
+        }
     }
 
-    @Override
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
-    }
-
-    public VariableTimeStrategy(Label label) {
-        this.label = label;
+    public VariableTimeStrategy(TrainingHistory trainingHistory){
+        this.trainingHistory = trainingHistory;
     }
 }

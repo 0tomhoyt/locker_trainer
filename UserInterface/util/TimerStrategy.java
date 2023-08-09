@@ -7,7 +7,5 @@ public interface TimerStrategy {
 
     void reset();
 
-    int getSeconds();
-
-    void setSeconds(int seconds);
+    int getDifficulty();
 }

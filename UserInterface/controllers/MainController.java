@@ -46,10 +46,11 @@ public class MainController implements Initializable, Controller {
     }
 
     private boolean start() throws IOException, JSONException {
-        SocketClient client = new SocketClient("localhost", 12345);
+        SocketClient client = new SocketClient("localhost", 5001);
         client.connect();
         client.send(machine.getStartJson());
         String data = client.receive();
+        System.out.println(data);
         // 反转义java字符串
         String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
         // 去除前后的双引号
