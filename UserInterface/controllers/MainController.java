@@ -51,6 +51,7 @@ public class MainController implements Initializable, Controller {
         client.send(machine.getStartJson());
         String data = client.receive();
         System.out.println(data);
+
         // 反转义java字符串
         String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
         // 去除前后的双引号
@@ -58,8 +59,10 @@ public class MainController implements Initializable, Controller {
         // 转换为json对象
         JSONObject jsonObject = new JSONObject(tokenInfoEsca);
         boolean machineStatus = jsonObject.getBoolean("machinestatus");
-        client.close();
         System.out.println("MachineStatus:"+machineStatus);
+
+        client.close();
+
         return machineStatus;
     }
 }

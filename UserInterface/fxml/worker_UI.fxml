@@ -76,9 +76,9 @@
                         <ToolBar prefHeight="40.0" prefWidth="450.0">
                            <items>
                               <Label prefWidth="250.0" />
-                              <RadioButton fx:id="all_btn" mnemonicParsing="false" text="全部" />
-                              <RadioButton fx:id="train_btn" mnemonicParsing="false" text="训练" />
-                              <RadioButton fx:id="match_btn" mnemonicParsing="false" text="比赛" />
+                              <RadioButton fx:id="all_btn" mnemonicParsing="false" onAction="#all_btn_click" text="全部" />
+                              <RadioButton fx:id="train_btn" mnemonicParsing="false" onAction="#train_btn_click" text="训练" />
+                              <RadioButton fx:id="match_btn" mnemonicParsing="false" onAction="#game_btn_click" text="比赛" />
                            </items>
                         </ToolBar>
                         <ScrollPane layoutY="40.0" prefHeight="660.0" prefWidth="450.0">

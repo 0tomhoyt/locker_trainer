@@ -1,6 +1,9 @@
 package models;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -20,6 +23,11 @@ public class Worker {
         this.password = password;
         this.workStationID = workStation;
         this.machineID = machineID;
+    }
+
+    public Worker(int id, int workStationID){
+        this.id = id;
+        this.workStationID = workStationID;
     }
 
     public void setId(int id) {
@@ -55,7 +63,13 @@ public class Worker {
     }
 
     public void setWorkLength(int workLength){
+        LocalDate today = LocalDate.now();
 
+        // 计算报名日期
+        LocalDate enrollDate = today.minus(workLength, ChronoUnit.DAYS);
+
+        // 将报名日期对象格式化为字符串并返回
+        this.enrollDate = enrollDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     public int getId() {
@@ -91,36 +105,16 @@ public class Worker {
     }
 
     public int getWorkLength() throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date enrollDay = sdf.parse(enrollDate);
+        // 获取今天的日期
+        LocalDate today = LocalDate.now();
 
-        Calendar cal = Calendar.getInstance();
+        // 将报名日期字符串解析为LocalDate对象
+        LocalDate enrollDateObj = LocalDate.parse(enrollDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        if (cal.before(enrollDay)) { //入职日期晚于当前时间，无法计算
-            throw new IllegalArgumentException(
-                    "The birthDay is before Now.It's unbelievable!");
-        }
+        // 计算工作天数
+        long daysBetween = ChronoUnit.DAYS.between(enrollDateObj, today);
 
-        int yearNow = cal.get(Calendar.YEAR); //当前年份
-        int monthNow = cal.get(Calendar.MONTH); //当前月份
-        int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH); //当前日期
-
-        cal.setTime(enrollDay);
-
-        int yearBirth = cal.get(Calendar.YEAR);
-        int monthBirth = cal.get(Calendar.MONTH);
-        int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
-        int age = yearNow - yearBirth; //计算工龄
-
-        if (monthNow <= monthBirth) {
-            if (monthNow == monthBirth) {
-                if (dayOfMonthNow < dayOfMonthBirth) age--;//当前日期在入职日期之前，年龄减一
-            }else{
-                age--;//当前月份在入职日期之前，年龄减一
-            }
-        }
-
-        return age;
+        return (int)daysBetween;
     }
 
     public String getLoginJson(){
@@ -154,5 +148,28 @@ public class Worker {
 
     public boolean isAdmifuckn(){
         return false;
+    }
+
+    public String getUpdateTrainingJson(TrainingHistory trainingHistory){
+        return String.format("{ \"event\": \"updateTraining\", \"data\": { \"authToken\": \"%s\", \"trainingID\": %d, \"score\": %d, \"unlockedNum\": %d, \"isOn\": %d} }",
+                authToken,
+                trainingHistory.getId(),
+                trainingHistory.getScore(),
+                trainingHistory.getUnlocked(),
+                trainingHistory.isOn() ? 1 : 0
+        );
+    }
+
+    public String getEndTrainingJson(TrainingHistory trainingHistory){
+        return String.format("{ \"event\": \"stopTraining\", \"data\": { \"authToken\": \"%s\", \"trainingID\": %d} }",
+                authToken,
+                trainingHistory.getId()
+        );
+    }
+
+    public String getTrainingHistoriesJson(){
+        return String.format("{ \"event\": \"workerGetSelfTrainingHistory\", \"data\": { \"authToken\":\"%s\"} }",
+                authToken
+        );
     }
 }

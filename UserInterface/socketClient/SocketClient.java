@@ -23,7 +23,7 @@ public class SocketClient {
     public void send(String message) throws IOException {
         OutputStream os = client.getOutputStream();
         PrintWriter pw = new PrintWriter(os);
-        pw.write(message);
+        pw.write(message+"\n");
         pw.flush();
 
         client.shutdownOutput();
