@@ -114,6 +114,7 @@ def main_server_event_router(event, data):
     # 输出:
     # - "message": 字符串，描述操作结果。
     # - "code": 整数，响应状态码。200表示成功，500表示错误。
+    # - "TrainingID": 12316512
     elif event == 'startNewTraining':
         if "authToken" not in data or "workstationID" not in data or "difficulty" not in data or "totalTime" not in data:
             print(f'startNewTraining: 收到的data包不正确{data}')
