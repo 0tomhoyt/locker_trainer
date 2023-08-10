@@ -19,7 +19,7 @@ class SubServerClient:
         print(f"Connected to {addr}")
         while True:
             message_from_client = client_conn.recv(1024).decode('utf-8')
-            print("接收消息",message_from_client)
+            print("接收消息", message_from_client)
             # 检查
             try:
                 json_data = json.loads(message_from_client)
@@ -35,7 +35,7 @@ class SubServerClient:
                 data = json_data['data']
                 Router.client_server_event_router(event, data)
             else:
-                print("发送给主服务器消息",message_from_client)
+                print("发送给主服务器消息", message_from_client)
                 try:
                     self.main_server_socket.sendall(message_from_client.encode('utf-8'))
                 except ConnectionAbortedError:
@@ -44,7 +44,7 @@ class SubServerClient:
     def handle_main_server_connection(self):
         while True:
             message_from_server = self.main_server_socket.recv(1024).decode('utf-8')
-            print("接收消息",message_from_server)
+            print("接收消息", message_from_server)
             try:
                 json_data = json.loads(message_from_server)
             except json.JSONDecodeError:
@@ -52,7 +52,7 @@ class SubServerClient:
             print(self.client_connections)
             # 直接转发
             for client_conn in self.client_connections:
-                print("发送客户端消息",message_from_server)
+                print("发送客户端消息", message_from_server)
                 try:
                     client_conn.sendall(message_from_server.encode('utf-8'))
                 except ConnectionAbortedError:
@@ -117,11 +117,12 @@ class MainServerClient:
         print(f"Connected to {addr}")
         while True:
             message_from_client = client_conn.recv(1024).decode('utf-8')
-            print("接收消息",message_from_client)
+            print("接收消息", message_from_client)
             # 检查
             try:
                 json_data = json.loads(message_from_client)
             except json.JSONDecodeError:
+                print(f'接收到来自客户端的消息格式不正确')
                 return
             if 'event' not in json_data or 'data' not in json_data:
                 print(f'接收到来自客户端的消息格式不正确: {json_data}')
@@ -129,11 +130,11 @@ class MainServerClient:
             # 处理消息，回复客户端
             event = json_data['event']
             data = json_data['data']
-            reply_message = Router.main_server_event_router(event, data)
-
+            reply_message = json.dumps(Router.main_server_event_router(event, data))
+            reply_message = reply_message + "\n"
             try:
                 client_conn.sendall(reply_message.encode('utf-8'))
-                print("消息已发送",reply_message)
+                print("消息已发送", reply_message, "to", client_conn)
             except ConnectionAbortedError:
                 print("连接已中断，无法发送消息")
 
@@ -164,10 +165,10 @@ def main():
     main_server = ServerDB.get_main_server(cnx)
     self_ip, self_port = self[2].split(":")
     main_server_ip, main_server_port = main_server[2].split(":")
-    print(self_ip,self_port,main_server_port,main_server_ip)
+    print(self_ip, self_port, main_server_port, main_server_ip)
     if self == main_server:
         print("主服务器启动")
-        main_server_client = MainServerClient(self_ip,int(self_port))
+        main_server_client = MainServerClient(self_ip, int(self_port))
         main_server_client.start()
     else:
         print("分服务器启动")
