@@ -18,11 +18,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LoginWorkerController implements Initializable, Controller {
-    private FXMLLoader outerLoader;
+    protected FXMLLoader outerLoader;
     protected Machine machine;
     protected Worker worker;
     @FXML
-    private AnchorPane anchorPane;
+    protected AnchorPane anchorPane;
     @FXML
     protected String panePosition;
     @FXML
@@ -47,10 +47,10 @@ public class LoginWorkerController implements Initializable, Controller {
         this.machine = machine;
     }
 
-    protected String choosePage(){//方便admin继承
-        return "../fxml/worker_UI.fxml";
-    }
-    private void afterLogin(JSONObject jsonObject) {//本来想用这个来继承的，但好像上面那个少一点
+    //    protected String choosePage(){//本来想用这个来继承的，但好像afterLogin那个好一点
+//        return "../fxml/worker_UI.fxml";
+//    }
+    protected void afterLogin(JSONObject jsonObject) {
         try {
             anchorPane.getChildren().clear();
             FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/worker_UI.fxml"));
@@ -93,22 +93,24 @@ public class LoginWorkerController implements Initializable, Controller {
         JSONObject jsonObject = new JSONObject(tokenInfoEsca);
         boolean loginSuccess = jsonObject.getBoolean("loginSuccess");
         int machineID = jsonObject.getInt("machineId");
-        int workerStationID = jsonObject.getInt("workstationId");
+        int workerStationID = 0;//设置了管理员的总是0
+        if(!worker.isAdmin())//因为管理员的返回没有workstationId，所以加个判断
+            workerStationID = jsonObject.getInt("workstationId");
         if (loginSuccess && machineID == worker.getMachineID() && workerStationID == worker.getWorkStationID()) {
-//            afterLogin(jsonObject);
-            try {
-                anchorPane.getChildren().clear();
-                FXMLLoader innerLoader = new FXMLLoader(getClass().getResource(choosePage()));//把一个
-                innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
-                innerLoader.load();
-
-                updateWorker(jsonObject);
-
-                WorkerUIController workerUIController = innerLoader.getController();
-                workerUIController.setWorker(worker);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            afterLogin(jsonObject);//把下面那一段写了一个函数，方便admin继承
+//            try {
+//                anchorPane.getChildren().clear();
+//                FXMLLoader innerLoader = new FXMLLoader(getClass().getResource(choosePage()));//把一个
+//                innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
+//                innerLoader.load();
+//
+//                updateWorker(jsonObject);
+//
+//                WorkerUIController workerUIController = innerLoader.getController();
+//                workerUIController.setWorker(worker);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         }
         client.close();
         System.out.println("loginStatus:" + loginSuccess);
@@ -116,7 +118,7 @@ public class LoginWorkerController implements Initializable, Controller {
     }
 
 
-    private void updateWorker(JSONObject object) throws JSONException {
+    protected void updateWorker(JSONObject object) throws JSONException {
         worker.setAuthToken(object.getString("authToken"));
         worker.setHeaderURL(object.getString("headerURL"));
         worker.setWorkLength(object.getInt("worklength"));

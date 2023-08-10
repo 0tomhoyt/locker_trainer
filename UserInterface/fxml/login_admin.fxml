@@ -15,7 +15,7 @@
         </Label>
         <TextField fx:id="field_username" layoutX="141.0" layoutY="238.0" />
         <TextField fx:id="field_password" layoutX="141.0" layoutY="339.0" />
-        <Button fx:id="login_btn" layoutX="181.0" layoutY="433.0" mnemonicParsing="false" onAction="#login_btn_click" text="登录"> <!--onAction="#login_btn_click"-->
+        <Button fx:id="login_btn" layoutX="181.0" layoutY="433.0" mnemonicParsing="false" onAction="#login_btn_click" text="登录"> <!--管理员登录按钮，一切开始的地方-->
             <font>
                 <Font size="24.0" />
             </font>

@@ -6,10 +6,10 @@ import java.util.Date;
 
 public class Worker {
     private int id;
-    private String username;
-    private String password;
+    protected String username;
+    protected String password;
     private int workStationID;
-    private int machineID;
+    protected int machineID;
     private String authToken;
     private String enrollDate;
     private String headerURL;
@@ -146,5 +146,13 @@ public class Worker {
                 trainingHistory.getDifficulty(),
                 trainingHistory.getTotalTime()
         );
+    }
+
+    public boolean isAdmin(){
+        return false;
+    }
+
+    public boolean isAdmifuckn(){
+        return false;
     }
 }
