@@ -130,10 +130,10 @@ class MainServerClient:
             event = json_data['event']
             data = json_data['data']
             reply_message = Router.main_server_event_router(event, data)
-            print("主服务器回复消息",reply_message)
 
             try:
                 client_conn.sendall(reply_message.encode('utf-8'))
+                print("消息已发送",reply_message)
             except ConnectionAbortedError:
                 print("连接已中断，无法发送消息")
 
