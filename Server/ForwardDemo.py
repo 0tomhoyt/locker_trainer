@@ -122,7 +122,6 @@ class MainServerClient:
             try:
                 json_data = json.loads(message_from_client)
             except json.JSONDecodeError:
-                print(f'接收到来自客户端的消息格式不正确')
                 return
             if 'event' not in json_data or 'data' not in json_data:
                 print(f'接收到来自客户端的消息格式不正确: {json_data}')

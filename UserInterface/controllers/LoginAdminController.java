@@ -34,10 +34,7 @@ public class LoginAdminController extends LoginWorkerController implements Initi
         worker = new Admin(username,password,machineID);
         System.out.println(worker.getLoginJson());
         login(worker);
-
-
         System.out.println("admin button finish");
-
     }
 
     @Override

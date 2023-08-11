@@ -12,6 +12,7 @@ def createUser(cnx, UserName, Password, Role, AuthToken, HeadUrl, EnrolledDate):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -109,6 +110,7 @@ def updateUserRole(cnx, UserID, Role):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -120,6 +122,7 @@ def updateUserHeadUrl(cnx, UserID, HeadUrl):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -131,6 +134,7 @@ def updateUserEnrolledDate(cnx, UserID, EnrolledDate):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -142,6 +146,7 @@ def deleteUser(cnx, UserID):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 def getAllWorker(cnx):

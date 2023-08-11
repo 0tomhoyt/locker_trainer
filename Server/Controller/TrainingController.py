@@ -15,7 +15,7 @@ def workerGetSelfTrainingHistory(authToken):
     except Exception as e:
         return json.dumps({"message": f"{e}", "code": 500})
 
-    training_records = TrainingDB.getTrainingByUserID(cnx, userid)
+    training_records = TrainingDB.getTrainingByUserID(cnx, userid[0])
     # 如果没有训练记录，则返回错误
     if not training_records:
         return json.dumps({"message": "没有找到对应的训练记录", "code": 500})
