@@ -40,6 +40,9 @@ def workerGetSelfTrainingHistory(authToken):
 
     return json.dumps({"message": "获取训练列表成功", "code": 200, "trainingList": training_list})
 
+def getMatchTrainings(authToken,matchID):
+
+    return 0
 
 def addTrainingRecord(authToken, workstationId, difficulty, totalTime):
     try:

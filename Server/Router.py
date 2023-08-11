@@ -1,11 +1,11 @@
 import json
 
-from Controller import MachineController, UserController, TrainingController,MatchController
+from Controller import MachineController, UserController, TrainingController, MatchController
 
 
 # 分服务器提供的route
 def client_server_event_router(event, data):
-    return json.dumps({"message": "当前分服务器未连接主服务器，无法处理"})
+    return json.dumps({"message": "当前分服务器未连接主服务器，无法处理", "code": 500})
 
 
 # 主服务器提供的route
@@ -18,12 +18,12 @@ def main_server_event_router(event, data):
     if event == 'machineStart':
         if 'machineId' not in data:
             print(f'machineStart: 收到的data包不正确{data}')
-            return json.dumps({"message": f'machineStart: 收到的data包不正确{data}'})
+            return json.dumps({"message": f'machineStart: 收到的data包不正确{data}',"code":500})
         return MachineController.machineOnController(data['machineId'], 1)
     elif event == 'machineStop':
         if 'machineId' not in data:
             print(f'machineStop: 收到的data包不正确{data}')
-            return json.dumps({"message": f'machineStart: 收到的data包不正确{data}'})
+            return json.dumps({"message": f'machineStart: 收到的data包不正确{data}',"code":500})
         return MachineController.machineOnController(data['machineId'], 0)
     # 输入username:hyt
     #  password:hjqCYS1301
@@ -42,12 +42,12 @@ def main_server_event_router(event, data):
     elif event == 'workerLogin':
         if "username" not in data or "password" not in data or "machineId" not in data or "workstationId" not in data:
             print(f'workerLogin: 收到的data包不正确{data}')
-            return json.dumps({"replyMessage": True, "message": f'machineStart: 收到的data包不正确{data}'})
+            return json.dumps({"replyMessage": True, "message": f'machineStart: 收到的data包不正确{data}', "code": 500})
         return UserController.WorkerLogin(data['username'], data['password'], data['machineId'], data['workstationId'])
     elif event == 'workerLogout':
         if "machineId" not in data or "workstationId" not in data:
             print(f'workerLogout: 收到的data包不正确{data}')
-            return json.dumps({"replyMessage": True, "message": f'machineStart: 收到的data包不正确{data}'})
+            return json.dumps({"replyMessage": True, "message": f'machineStart: 收到的data包不正确{data}',"code":500})
         return UserController.workerLogout(data['machineId'], data['workstationId'])
     # 输入username:hyt
     #  password:hjqCYS1301
@@ -69,7 +69,7 @@ def main_server_event_router(event, data):
     elif event == 'adminLogin':
         if "username" not in data or "password" not in data or "machineId" not in data:
             print(f'admin login: 收到的data包不正确{data}')
-            return json.dumps({"replyMessage": True, "message": f'machineStart: 收到的data包不正确{data}'})
+            return json.dumps({"replyMessage": True, "message": f'machineStart: 收到的data包不正确{data}',"code":500})
         return UserController.adminLogin(data['username'], data['password'], data['machineId'])
 
     # 根据提供的authToken获取对应用户的训练历史记录。
@@ -104,8 +104,47 @@ def main_server_event_router(event, data):
         if "authToken" not in data:
             print(f'workerGetSelfTrainingHistory: 收到的data包不正确{data}')
             return json.dumps(
-                {"replyMessage": True, "message": f'workerGetSelfTrainingHistory: 收到的data包不正确{data}'})
+                {"replyMessage": True, "message": f'workerGetSelfTrainingHistory: 收到的data包不正确{data}',"code":500})
         return TrainingController.workerGetSelfTrainingHistory(data['authToken'])
+
+    # 根据提供的authToken获取对应用户的训练历史记录。
+    #
+    # 输入:
+    # authToken (str): 用于验证用户并获取其ID的身份验证令牌。
+    # matchID
+    #
+    # 输出:
+    # JSON字符串，包含以下字段:
+    # - "message": 字符串，描述操作结果。
+    # - "code": 整数，响应状态码。200表示成功，500表示错误。
+    # - "trainingList": 列表 (仅在code为200时存在)，包含用户的训练历史记录，每个记录是一个字典。
+    # - 	TrainingID (bigint): 训练的ID。
+    # - 	IsMatch (tinyint): 是否是比赛。
+    # - 	MatchID (int): 比赛的ID（如果有）。
+    # - 	UserID (int): 用户的ID。
+    # - 	WorkstationID (int): 工作站的ID。
+    # - 	Score (int): 分数。
+    # - 	UnlockedNum (int): 解锁数量。
+    # - 	TotalTime (int): 总时间。
+    # - 	TrainingType (int): 训练类型。
+    # - 	Difficulty (int): 难度。
+    # - 	IsOn (tinyint): 是否开启。
+
+    # 示例输出:
+    # {
+    #     "message": "获取训练列表成功",
+    #     "code": 200,
+    #     "trainingList": [训练记录1, 训练记录2, ...]
+    # }
+    elif event == 'getMatchTrainings':
+        if "authToken" not in data or 'matchID' not in data:
+            print(f'getMatchTrainings: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'workerGetSelfTrainingHistory: 收到的data包不正确{data}',"code":500})
+        return TrainingController.workerGetSelfTrainingHistory(data['authToken'])
+
+
+
     # 输入:
     # authToken:123456
     # workstationID:1
@@ -119,7 +158,7 @@ def main_server_event_router(event, data):
         if "authToken" not in data or "workstationID" not in data or "difficulty" not in data or "totalTime" not in data:
             print(f'startNewTraining: 收到的data包不正确{data}')
             return json.dumps(
-                {"replyMessage": True, "message": f'startNewTraining: 收到的data包不正确{data}'})
+                {"replyMessage": True, "message": f'startNewTraining: 收到的data包不正确{data}',"code":500})
         return TrainingController.addTrainingRecord(data["authToken"], data["workstationID"], data["difficulty"],
                                                     data["totalTime"])
     # 输入
@@ -135,7 +174,7 @@ def main_server_event_router(event, data):
         if "authToken" not in data or "trainingID" not in data or "score" not in data or "unlockedNum" not in data or "isOn" not in data:
             print(f'updateTraining: 收到的data包不正确{data}')
             return json.dumps(
-                {"replyMessage": True, "message": f'updateTraining: 收到的data包不正确{data}'})
+                {"replyMessage": True, "message": f'updateTraining: 收到的data包不正确{data}',"code":500})
         return TrainingController.updateTrainingController(data["authToken"], data["trainingID"], data["score"],
                                                            data["unlockedNum"], data["isOn"])
 
@@ -149,7 +188,7 @@ def main_server_event_router(event, data):
         if "authToken" not in data or "trainingID" not in data:
             print(f'stopTraining: 收到的data包不正确{data}')
             return json.dumps(
-                {"replyMessage": True, "message": f'stopTraining: 收到的data包不正确{data}'})
+                {"replyMessage": True, "message": f'stopTraining: 收到的data包不正确{data}',"code":500})
         return TrainingController.stopTrainingController(data["authToken"], data["trainingID"])
 
     # 输入
@@ -169,7 +208,7 @@ def main_server_event_router(event, data):
         if "authToken" not in data:
             print(f'getWorkerStatus: 收到的data包不正确{data}')
             return json.dumps(
-                {"replyMessage": True, "message": f'getWorkerStatus: 收到的data包不正确{data}'})
+                {"replyMessage": True, "message": f'getWorkerStatus: 收到的data包不正确{data}',"code":500})
         return UserController.getAllWorkersController(data['authToken'])
 
     # data输入
@@ -186,7 +225,7 @@ def main_server_event_router(event, data):
         if "authToken" not in data:
             print(f'getWorkerStatus: 收到的data包不正确{data}')
             return json.dumps(
-                {"replyMessage": True, "message": f'getWorkerStatus: 收到的data包不正确{data}'})
+                {"replyMessage": True, "message": f'getWorkerStatus: 收到的data包不正确{data}',"code":500})
         return MachineController.getWorkStationsStatusController(data['authToken'])
 
 
@@ -203,6 +242,7 @@ def main_server_event_router(event, data):
     # 返回：
     # message: 字符串，表示状态。
     # code: 整数，表示HTTP状态代码，如200表示成功。
+    #
     # 给每个客户端发送:
     # match:1
     # trainingID:int
@@ -215,12 +255,11 @@ def main_server_event_router(event, data):
         if "authToken" not in data or "trainings" not in data:
             print(f'getWorkerStatus: 收到的data包不正确{data}')
             return json.dumps(
-                {"replyMessage": True, "startMatch": 1})
-        return MatchController.start_match_controller(data['authToken'],data['trainings'])
-
+                {"replyMessage": True, "message": f'startMatch: 收到的data包不正确{data}',"code":500})
+        return MatchController.start_match_controller(data['authToken'], data['trainings'])
 
 
 
     else:
         print(f'unknown event: {event},data:{data}')
-        return json.dumps({"message": f'unknown event: {event},data:{data}'})
+        return json.dumps({"message": f'unknown event: {event},data:{data}',"code":500})
