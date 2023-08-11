@@ -50,7 +50,7 @@ public class LoginWorkerController implements Initializable, Controller {
     //    protected String choosePage(){//本来想用这个来继承的，但好像afterLogin那个好一点
 //        return "../fxml/worker_UI.fxml";
 //    }
-    protected void afterLogin(JSONObject jsonObject) {
+    protected void afterLogin(JSONObject jsonObject) throws IOException, JSONException {
         try {
             anchorPane.getChildren().clear();
             FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/worker_UI.fxml"));

@@ -28,22 +28,27 @@ public class LoginAdminController extends LoginWorkerController implements Initi
 
         worker = new Admin(username,password,machineID);
 
-        String s = ((Admin)worker).getWorkerList();
 
-//        String data = socketConnect(s);
-//        JSONObject jsonObject = transferToJSON(data);
-//        System.out.println(jsonObject);
+
+
 
         System.out.println(worker.getLoginJson());
         login(worker);
 
 
+
         System.out.println("admin button finish");
 
     }
-// 喂喂喂，看到我鼠标了吗 fxnb
+
     @Override
-    protected void afterLogin(JSONObject jsonObject) {
+    protected void afterLogin(JSONObject jsonObject) throws IOException, JSONException{
+        updateWorker(jsonObject);
+
+        String s = ((Admin)worker).getWorkerList();
+        String data = socketConnect(s);
+        JSONObject jsonObject2 = transferToJSON(data);
+        System.out.println(jsonObject2);
 
         try {
             anchorPane.getChildren().clear();
@@ -51,7 +56,7 @@ public class LoginAdminController extends LoginWorkerController implements Initi
             innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
             innerLoader.load();
 
-            updateWorker(jsonObject);
+
 
             AdminUIController adminUIController = innerLoader.getController();
             adminUIController.setWorker(worker);//这里还需要写写，UI相关
