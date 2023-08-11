@@ -20,6 +20,9 @@ public class Main extends Application {//继承抽象类，重写抽象函数
     public static Map<String, Object> controllers = new HashMap<String, Object>();
     private Machine machine;
 
+
+
+
     @Override
     public void start(Stage primaryStage) throws IOException, JSONException {
         machine = new Machine(true);

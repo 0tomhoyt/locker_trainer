@@ -37,23 +37,23 @@ public class LoginAdminController extends LoginWorkerController implements Initi
         System.out.println("admin button finish");
     }
 
-    @Override
-    protected void afterLogin(JSONObject jsonObject) {
-        getWorkerList();
-        try {
-            anchorPane.getChildren().clear();
-            FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/admin_UI.fxml"));
-            innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
-            innerLoader.load();
-
-            updateWorker(jsonObject);
-
-            AdminUIController adminUIController = innerLoader.getController();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    protected void afterLogin(JSONObject jsonObject) {
+//        getWorkerList();
+//        try {
+//            anchorPane.getChildren().clear();
+//            FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/admin_UI.fxml"));
+//            innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
+//            innerLoader.load();
+//
+//            updateWorker(jsonObject);
+//
+//            AdminUIController adminUIController = innerLoader.getController();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void getWorkerList(){
 

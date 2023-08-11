@@ -2,7 +2,7 @@ import time
 import datetime
 
 from DatabaseConnection.DBconnect import execute_query
-import DBconnect
+
 
 
 # 创建一个训练记录
@@ -186,9 +186,9 @@ def getTrainingCreationTime(TrainingID):
     return dt_object
 
 
-if __name__ == "__main__":
-    try:
-        cnx = DBconnect.databaseConnect()
-    except Exception as e:
-        print("连接数据库失败：", e)
-    print(setTrainingOn(cnx,22))
+# if __name__ == "__main__":
+#     try:
+#         cnx = DBconnect.databaseConnect()
+#     except Exception as e:
+#         print("连接数据库失败：", e)
+#     print(setTrainingOn(cnx,22))

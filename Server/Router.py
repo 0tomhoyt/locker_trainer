@@ -1,6 +1,6 @@
 import json
 
-from Controller import MachineController, UserController, TrainingController
+from Controller import MachineController, UserController, TrainingController,MatchController
 
 
 # 分服务器提供的route
@@ -156,6 +156,13 @@ def main_server_event_router(event, data):
     # authToken: 字符串类型，用于验证管理员身份。
     # 输出
     # workers: 包含所有工人信息的JSON对象列表。
+    #         "UserID": worker[0],
+    #         "UserName": worker[1],
+    #         "Password": worker[2],
+    #         "Role": worker[3],
+    #         "AuthToken": worker[4],
+    #         "HeadUrl": worker[5],
+    #         "EnrolledDate": worker[6].strftime('%Y-%m-%d') if worker[6] else None
     # message: 字符串，表示查询状态。
     # code: 整数，表示HTTP状态代码，如200表示成功。
     elif event == "getWorkerStatus":
@@ -164,6 +171,54 @@ def main_server_event_router(event, data):
             return json.dumps(
                 {"replyMessage": True, "message": f'getWorkerStatus: 收到的data包不正确{data}'})
         return UserController.getAllWorkersController(data['authToken'])
+
+    # data输入
+    # authToken: 字符串类型，用于验证管理员身份。
+    # 输出
+    # workstations: 包含所有workstaions信息的json对象列表 ， list包含json对象
+    #			{"workstationID":int
+    #			"machineID":int
+    #			"isLoggedIn":int      1表示登陆
+    #			"userID":int		登陆的userid，未登录为-1
+    # message: 字符串，表示查询状态。
+    # code: 整数，表示HTTP状态代码，如200表示成功。
+    elif event == "getWorkStationStatus":
+        if "authToken" not in data:
+            print(f'getWorkerStatus: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'getWorkerStatus: 收到的data包不正确{data}'})
+        return MachineController.getWorkStationsStatusController(data['authToken'])
+
+
+
+
+    # 输入
+    # authToken:字符串类型，用于验证管理员身份
+    # trainings:列表，包含这次比赛包含的所有training信息
+    # 		单个training结构：
+    # 			userID:这个training对应的user
+    # 			difficulty:难度系数
+    # 			time:总时长
+    # 			workstaionID：工作站ID  服务器会检查userID和工作站ID是否匹配，如果不匹配则以userID为准
+    # 返回：
+    # message: 字符串，表示状态。
+    # code: 整数，表示HTTP状态代码，如200表示成功。
+    # 给每个客户端发送:
+    # match:1
+    # trainingID:int
+    # userID: int
+    # difficulty:难度系数
+    # time:总时长
+    # workstationID
+
+    elif event == "startMatch":
+        if "authToken" not in data or "trainings" not in data:
+            print(f'getWorkerStatus: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "startMatch": 1})
+        return MatchController.start_match_controller(data['authToken'],data['trainings'])
+
+
 
 
     else:

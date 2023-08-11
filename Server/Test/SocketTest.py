@@ -149,5 +149,10 @@ if __name__ == "__main__":
     data = {"authToken": "555555"} # 使用无效的管理员令牌
     start_client(event, data)
 
+    print("测试22：获取所有工作站信息，正确")
+    event = 'getWorkStationStatus'
+    data = {"authToken": "888666"} # 使用无效的管理员令牌
+    start_client(event, data)
+
 
 # unittest.main()
