@@ -1,14 +1,17 @@
 package models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class TrainingHistory {
-    private int id;
+    private long id;
     private int score;
     private int totalTime;
     private int unlocked;
     private int difficulty;
     private int trainingType;
     private boolean isMatch;
-    private int MatchID;
+    private int matchID;
     private Worker worker;
     private boolean isOn;
     private int seconds;
@@ -28,7 +31,20 @@ public class TrainingHistory {
         this.worker = worker;
     }
 
-    public void setId(int id) {
+    public TrainingHistory(JSONObject object) throws JSONException {
+        score = object.getInt("Score");
+        isMatch = object.getInt("IsMatch") == 1;
+        id = object.getInt("TrainingID");
+        worker = new Worker(object.getInt("UserID"), object.getInt("WorkstationID"));
+        difficulty = object.getInt("Difficulty");
+        matchID = object.getInt("MatchID");
+        totalTime = object.getInt("TotalTime");
+        trainingType = object.getInt("TrainingType");
+        isOn = object.getInt("IsOn") == 1;
+        unlocked = object.getInt("UnlockedNum");
+    }
+
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -57,7 +73,7 @@ public class TrainingHistory {
     }
 
     public void setMatchID(int matchID) {
-        MatchID = matchID;
+        this.matchID = matchID;
     }
 
     public void setWorker(Worker worker) {
@@ -76,7 +92,7 @@ public class TrainingHistory {
         this.minutes = minutes;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -105,7 +121,7 @@ public class TrainingHistory {
     }
 
     public int getMatchID() {
-        return MatchID;
+        return matchID;
     }
 
     public Worker getWorker() {

@@ -13,6 +13,7 @@ def createMatch(cnx, MatchDuration, SameTime=0):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return MatchID
 
 
@@ -53,6 +54,7 @@ def setMatchOn(cnx, MatchID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -63,6 +65,7 @@ def setMatchOff(cnx, MatchID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -73,6 +76,7 @@ def deleteMatch(cnx, MatchID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -83,6 +87,7 @@ def updateMatchDuration(cnx, MatchID, MatchDuration):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 

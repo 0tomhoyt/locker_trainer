@@ -9,6 +9,7 @@ def addMachine(cnx, status=0):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -20,6 +21,7 @@ def deleteMachine(cnx, machine_ID):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -55,4 +57,5 @@ def machineOn_Off(cnx, machine_ID, status):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1

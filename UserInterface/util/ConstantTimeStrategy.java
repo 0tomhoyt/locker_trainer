@@ -2,12 +2,15 @@ package util;
 
 import controllers.WorkerUIController;
 import models.TrainingHistory;
+import org.json.JSONException;
+
+import java.io.IOException;
 
 public class ConstantTimeStrategy implements TimerStrategy{
     private TrainingHistory trainingHistory;
     private WorkerUIController workerUIController;
     @Override
-    public void doWork() {
+    public void doWork() throws JSONException, IOException {
         if(trainingHistory.getTime() == 0)
             workerUIController.notifyEndingTrain();
         else {

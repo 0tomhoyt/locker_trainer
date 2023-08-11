@@ -10,6 +10,7 @@ def addWorkstation(cnx, machine_ID, status=0):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -49,6 +50,7 @@ def updateWorkstationLogin(cnx, workstation_ID, status):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -61,6 +63,7 @@ def assignUserToWorkstation(cnx, workstation_ID, user_ID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -73,6 +76,7 @@ def deleteWorkstation(cnx, workstation_ID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -101,6 +105,7 @@ def workstationLogin(cnx, workstation_ID, user_ID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -113,4 +118,5 @@ def workstationLogout(cnx, workstation_ID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1

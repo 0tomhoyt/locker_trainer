@@ -31,6 +31,7 @@ def deleteLock(cnx, LockID):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -42,6 +43,7 @@ def updateLockStatus(cnx, LockID, LockStatus):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 

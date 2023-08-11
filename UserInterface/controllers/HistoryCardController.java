@@ -9,26 +9,23 @@ import java.util.ResourceBundle;
 
 public class HistoryCardController implements Initializable, Controller {
     @FXML
-    private Label time_label;
-    @FXML
     private Label score_label;
     @FXML
     private Label total_time_label;
     @FXML
     private Label unlocked_label;
     @FXML
-    private Label operator_label;
+    private Label difficulty_label;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         MainController.addController(this);
     }
 
-    public void setInfo(String time, String score, String total_time, String unlocked, String operator){
-        time_label.setText(time);
-        score_label.setText(score);
-        total_time_label.setText(total_time);
-        unlocked_label.setText(unlocked);
-        operator_label.setText(operator);
+    public void setInfo(int score, int total_time, int unlocked, int difficulty){
+        score_label.setText("分数："+score);
+        total_time_label.setText("总用时："+total_time);
+        unlocked_label.setText("未解锁数："+unlocked);
+        difficulty_label.setText("难度："+difficulty);
     }
 }
