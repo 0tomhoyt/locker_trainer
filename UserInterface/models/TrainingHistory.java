@@ -55,6 +55,9 @@ public class TrainingHistory {
     public void setTotalTime(int minutes, int seconds) {
         this.totalTime = minutes * 60 + seconds;
     }
+    public void setTotalTime(int totalTime){
+        this.totalTime = totalTime;
+    }
 
     public void setUnlocked(int unlocked) {
         this.unlocked = unlocked;

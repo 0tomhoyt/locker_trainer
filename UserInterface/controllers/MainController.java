@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
 import socketClient.SocketClient2;
+import util.Tools;
 
 import java.io.IOException;
 import java.net.URL;
@@ -69,7 +70,7 @@ public class MainController implements Initializable, Controller {
         start();
     }
 
-    private void start() throws JSONException {
+    private boolean start() throws JSONException {
 //        //监听match的socket
 //        SocketClient2 socketClient2 = new SocketClient2(this, "localhost", 50001);
 //        new Thread(() -> {
@@ -99,17 +100,21 @@ public class MainController implements Initializable, Controller {
             JSONObject jsonObject = new JSONObject(tokenInfoEsca);
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 // 启动机器成功
+                return true;
             }
             else {
                 // 启动机器失败
-                popUpAlter("ERROR","启动机器失败",unicodeToChinese(jsonObject.getString("message")));
+                popUpAlter("ERROR","启动机器失败", Tools.unicodeToChinese(jsonObject.getString("message")));
+                return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
             System.out.println("Socket receive timeout: " + e.getMessage());
+            return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
             System.out.println("ERROR:"+e.getMessage());
+            return false;
         }
     }
 
@@ -122,33 +127,5 @@ public class MainController implements Initializable, Controller {
 
         // 显示警告窗
         alert.showAndWait();
-    }
-
-    public static String unicodeToChinese(String unicodeString) {
-        StringBuilder chineseText = new StringBuilder();
-        int startIndex = 0;
-
-        while (startIndex < unicodeString.length()) {
-            int slashIndex = unicodeString.indexOf("\\u", startIndex);
-            if (slashIndex == -1) {
-                chineseText.append(unicodeString.substring(startIndex));
-                break;
-            }
-            chineseText.append(unicodeString, startIndex, slashIndex);
-
-            int codeStart = slashIndex + 2;
-            int codeEnd = codeStart + 4;
-            if (codeEnd <= unicodeString.length()) {
-                String unicodeCode = unicodeString.substring(codeStart, codeEnd);
-                char character = (char) Integer.parseInt(unicodeCode, 16);
-                chineseText.append(character);
-                startIndex = codeEnd;
-            } else {
-                chineseText.append(unicodeString.substring(slashIndex));
-                break;
-            }
-        }
-
-        return chineseText.toString();
     }
 }
