@@ -1,17 +1,13 @@
 package controllers;
 
 import javafx.event.Event;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import models.Admin;
-import models.Worker;
+import models.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 
 public class LoginAdminController extends LoginWorkerController implements Initializable, Controller {
@@ -30,8 +26,14 @@ public class LoginAdminController extends LoginWorkerController implements Initi
         String password = field_password.getText();
         int machineID = machine.getId();
 
-
         worker = new Admin(username,password,machineID);
+
+        String s = ((Admin)worker).getWorkerList();
+
+//        String data = socketConnect(s);
+//        JSONObject jsonObject = transferToJSON(data);
+//        System.out.println(jsonObject);
+
         System.out.println(worker.getLoginJson());
         login(worker);
 
@@ -39,10 +41,10 @@ public class LoginAdminController extends LoginWorkerController implements Initi
         System.out.println("admin button finish");
 
     }
-
+// 喂喂喂，看到我鼠标了吗 fxnb
     @Override
     protected void afterLogin(JSONObject jsonObject) {
-        getWorkerList();
+
         try {
             anchorPane.getChildren().clear();
             FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/admin_UI.fxml"));
@@ -52,7 +54,7 @@ public class LoginAdminController extends LoginWorkerController implements Initi
             updateWorker(jsonObject);
 
             AdminUIController adminUIController = innerLoader.getController();
-
+            adminUIController.setWorker(worker);//这里还需要写写，UI相关
         } catch (Exception e) {
             e.printStackTrace();
         }

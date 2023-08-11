@@ -77,25 +77,54 @@ public class LoginWorkerController implements Initializable, Controller {
         System.out.println(worker.getLoginJson());
         login(worker);
     }
-
-    protected boolean login(Worker worker) throws IOException, JSONException {
+    protected String socketConnect(String s) throws IOException{
         SocketClient client = new SocketClient("localhost", 5001);
         client.connect();
 
-        client.send(worker.getLoginJson());
-        String data = client.receive();
-        System.out.println(data + "in LoginWorkerController Login method");
-        // 反转义java字符串
-        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
+        client.send(s);
+        String s2 = client.receive();
+        client.close();
+        return s2;
+    }
+
+    protected JSONObject transferToJSON(String s) throws JSONException{
+        String tokenInfoEsca = StringEscapeUtils.unescapeJava(s);
         // 去除前后的双引号
         tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
         // 转换为json对象
         JSONObject jsonObject = new JSONObject(tokenInfoEsca);
+
+
+        return jsonObject;
+    }
+    protected boolean login(Worker worker) throws IOException, JSONException {
+        //变成了函数socketConnect
+//        SocketClient client = new SocketClient("localhost", 5001);
+//        client.connect();
+//
+//        client.send(worker.getLoginJson());
+//        String data = client.receive();
+
+        String data = socketConnect(worker.getLoginJson());
+
+        //变成函数transferToJSON
+//        System.out.println(data + "in LoginWorkerController Login method");
+//        // 反转义java字符串
+//        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
+//        // 去除前后的双引号
+//        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
+//        // 转换为json对象
+//        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
+
+        JSONObject jsonObject = transferToJSON(data);
+
         boolean loginSuccess = jsonObject.getBoolean("loginSuccess");
         int machineID = jsonObject.getInt("machineId");
         int workerStationID = 0;//设置了管理员的总是0
         if(!worker.isAdmin())//因为管理员的返回没有workstationId，所以加个判断
             workerStationID = jsonObject.getInt("workstationId");
+
+
         if (loginSuccess && machineID == worker.getMachineID() && workerStationID == worker.getWorkStationID()) {
             afterLogin(jsonObject);//把下面那一段写了一个函数，方便admin继承
 //            try {
@@ -112,7 +141,7 @@ public class LoginWorkerController implements Initializable, Controller {
 //                e.printStackTrace();
 //            }
         }
-        client.close();
+//        client.close();
         System.out.println("loginStatus:" + loginSuccess);
         return loginSuccess;
     }

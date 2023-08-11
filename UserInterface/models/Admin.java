@@ -30,6 +30,11 @@ public class Admin extends Worker{
         return true;
     }
 
+    public String getWorkerList(){
+        return String.format("{\"event\": \"getWorkerStatus\", \"data\": { \"authToken\": \"%s\"}",
+                authToken
+        );
+    }
 
     //    public void setId(int id) {
 //        this.id = id;
