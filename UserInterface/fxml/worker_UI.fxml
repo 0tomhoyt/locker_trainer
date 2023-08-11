@@ -19,7 +19,7 @@
    <children>
       <TabPane prefHeight="700.0" prefWidth="450.0">
          <tabs>
-            <Tab text="训练">
+            <Tab closable="false" text="训练">
                <content>
                   <javafx.scene.layout.AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="450.0">
                      <children>
@@ -69,7 +69,7 @@
                   </javafx.scene.layout.AnchorPane>
                </content>
             </Tab>
-            <Tab text="训练历史">
+            <Tab closable="false" text="训练历史">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
