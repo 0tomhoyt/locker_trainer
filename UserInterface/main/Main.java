@@ -7,7 +7,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Tab;
 import javafx.stage.Stage;
 import models.Machine;
 import org.json.JSONException;
@@ -15,13 +14,13 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main extends Application {//继承抽象类，重写抽象函数
     public static Map<String, Object> controllers = new HashMap<String, Object>();
+    public static ExecutorService executorService = Executors.newFixedThreadPool(5);
     private Machine machine;
-
-
-
 
     @Override
     public void start(Stage primaryStage) throws IOException, JSONException {
@@ -71,6 +70,11 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         primaryStage.setResizable(false);
         primaryStage.setTitle("lockerTrainer");
         primaryStage.show();
+    }
+
+    @Override
+    public void stop(){
+        executorService.shutdown();
     }
 
     public static void main(String[] args) {

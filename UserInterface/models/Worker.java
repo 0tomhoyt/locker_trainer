@@ -13,7 +13,7 @@ public class Worker {
     protected String password;
     private int workStationID;
     protected int machineID;
-    private String authToken;
+    protected String authToken;
     private String enrollDate;
     private String headerURL;
 

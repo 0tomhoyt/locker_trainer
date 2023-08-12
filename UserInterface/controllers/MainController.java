@@ -21,16 +21,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
 import socketClient.SocketClient2;
+import util.Tools;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class MainController implements Initializable, Controller {
     private Machine machine;
-
-
     @FXML
     private Button joinMatchButton1;
     @FXML
@@ -40,8 +43,6 @@ public class MainController implements Initializable, Controller {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Main.controllers.put(this.getClass().getSimpleName(),this);
     }
-
-
 
     public void setJoinMatchButtonsVisible(int buttonNum, boolean visible) {
         if (buttonNum == 1)
@@ -69,7 +70,7 @@ public class MainController implements Initializable, Controller {
         start();
     }
 
-    private boolean start() throws IOException, JSONException {
+    private boolean start() throws JSONException {
 //        //监听match的socket
 //        SocketClient2 socketClient2 = new SocketClient2(this, "localhost", 50001);
 //        new Thread(() -> {
@@ -80,24 +81,51 @@ public class MainController implements Initializable, Controller {
 //            }
 //        }).start();
 
+        Future<String> future = Main.executorService.submit(() -> {
+            SocketClient client = new SocketClient("localhost", 5001);
+            client.connect();
+            client.send(machine.getStartJson());
+            String data = client.receive();
+            client.close();
+            return data;
+        });
 
-        SocketClient client = new SocketClient("localhost", 5001);
-        client.connect();
-        client.send(machine.getStartJson());
-        String data = client.receive();
-        System.out.println(data);
+        try {
+            String receivedMessage = future.get(5, TimeUnit.SECONDS); // 设置超时时间为5秒
+            // 反转义java字符串
+            String tokenInfoEsca = StringEscapeUtils.unescapeJava(receivedMessage);
+            // 去除前后的双引号
+            tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() -1);
+            // 转换为json对象
+            JSONObject jsonObject = new JSONObject(tokenInfoEsca);
+            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+                // 启动机器成功
+                return true;
+            }
+            else {
+                // 启动机器失败
+                popUpAlter("ERROR","启动机器失败", Tools.unicodeToChinese(jsonObject.getString("message")));
+                return false;
+            }
+        } catch (TimeoutException e) {
+            // 超时处理
+            System.out.println("Socket receive timeout: " + e.getMessage());
+            return false;
+        } catch (InterruptedException | ExecutionException e) {
+            // 其他异常处理
+            System.out.println("ERROR:"+e.getMessage());
+            return false;
+        }
+    }
 
-        // 反转义java字符串
-        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
-        // 去除前后的双引号
-        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() -1);
-        // 转换为json对象
-        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
-        boolean machineStatus = jsonObject.getBoolean("machinestatus");
-        System.out.println("MachineStatus:"+machineStatus);
+    public static void popUpAlter(String title, String headerText, String contentText){
+        // 创建警告窗
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
 
-        client.close();
-
-        return machineStatus;
+        // 显示警告窗
+        alert.showAndWait();
     }
 }

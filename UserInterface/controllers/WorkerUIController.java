@@ -12,22 +12,26 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import main.Main;
 import models.Lock;
 import models.LockStatus;
 import models.TrainingHistory;
 import models.Worker;
-import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import socketClient.SocketClient;
 import util.ConstantTimeStrategy;
 import util.TimerStrategy;
+import util.Tools;
 import util.VariableTimeStrategy;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class WorkerUIController implements Initializable, Controller {
     private List<Lock> locks = new ArrayList<>(50);
@@ -306,122 +310,250 @@ public class WorkerUIController implements Initializable, Controller {
                 .count();
         int trainingType = timerStrategy instanceof VariableTimeStrategy ? 1 : 2;
         boolean isOn = timer.statusProperty().isEqualTo(Animation.Status.RUNNING).get();
+        int totalTime = timerStrategy instanceof VariableTimeStrategy ? trainingHistory.getTime() : trainingHistory.getTotalTime();
 
         trainingHistory.setScore(score);
         trainingHistory.setUnlocked(unlocked);
         trainingHistory.setTrainingType(trainingType);
         trainingHistory.setOn(isOn);
+        trainingHistory.setTotalTime(totalTime);
         trainingHistory.setDifficulty(timerStrategy.getDifficulty());
+        System.out.println(trainingHistory.getTotalTime());
     }
 
     //Socket调用，数据库部分
     private boolean getTrainingHistories() throws IOException, JSONException {
-        //Socket连接
-        SocketClient client = new SocketClient("localhost",5001);
-        client.connect();
+//        //Socket连接
+//        SocketClient client = new SocketClient("localhost",5001);
+//        client.connect();
+//
+//        String jsonString = worker.getTrainingHistoriesJson();
+//        client.send(jsonString);
+//        String data = client.receive();
+//        client.close();
+//
+//        // 反转义java字符串
+//        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
+//        // 去除前后的双引号
+//        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
+//        // 转换为json对象
+//        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
+//
+//        if(jsonObject.getInt("code") == 200){
+//            JSONArray jsonArray = jsonObject.getJSONArray("trainingList");
+//            trainingHistories = new ArrayList<>(jsonArray.length());
+//            showHistories = new ArrayList<>(jsonArray.length());
+//            for(int i=0;i<jsonArray.length();i++){
+//                JSONObject trainHistoryJson = jsonArray.getJSONObject(i);
+//                TrainingHistory history = new TrainingHistory(trainHistoryJson);
+//                trainingHistories.add(history);
+//                showHistories.add(history);
+//            }
+//            return true;
+//        }
+//        else
+//            return false;
 
-        String jsonString = worker.getTrainingHistoriesJson();
-        client.send(jsonString);
-        String data = client.receive();
-        client.close();
+        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getTrainingHistoriesJson()));
 
-        // 反转义java字符串
-        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
-        // 去除前后的双引号
-        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
-        // 转换为json对象
-        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
-
-        if(jsonObject.getInt("code") == 200){
-            JSONArray jsonArray = jsonObject.getJSONArray("trainingList");
+        try {
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
+            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+                JSONArray jsonArray = jsonObject.getJSONArray("trainingList");
             trainingHistories = new ArrayList<>(jsonArray.length());
             showHistories = new ArrayList<>(jsonArray.length());
-            for(int i=0;i<jsonArray.length();i++){
+            for(int i=0;i<jsonArray.length();i++) {
                 JSONObject trainHistoryJson = jsonArray.getJSONObject(i);
                 TrainingHistory history = new TrainingHistory(trainHistoryJson);
                 trainingHistories.add(history);
                 showHistories.add(history);
             }
-            return true;
-        }
-        else
+                return true;
+            }
+            else {
+                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
+                return false;
+            }
+        } catch (TimeoutException e) {
+            // 超时处理
+            System.out.println("Socket receive timeout: " + e.getMessage());
+            MainController.popUpAlter("ERROR","",e.getMessage());
             return false;
+        } catch (InterruptedException | ExecutionException e) {
+            // 其他异常处理
+            System.out.println("ERROR:"+e.getMessage());
+            MainController.popUpAlter("ERROR","",e.getMessage());
+            return false;
+        }
     }
 
     private boolean startTraining() throws IOException, JSONException {
-        //Socket连接
-        SocketClient client = new SocketClient("localhost",5001);
-        client.connect();
+//        //Socket连接
+//        SocketClient client = new SocketClient("localhost",5001);
+//        client.connect();
+//
+//        String jsonString = worker.getStartTrainingJson(trainingHistory);
+//        System.out.println(jsonString);
+//        client.send(jsonString);
+//        String data = client.receive();
+//        System.out.println(data);
+//        client.close();
+//
+//        // 反转义java字符串
+//        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
+//        // 去除前后的双引号
+//        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
+//        // 转换为json对象
+//        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
+//
+//        int code = jsonObject.getInt("code");
+//        long trainingID = jsonObject.getLong("TrainingID");
+//
+//        if(code == 200){
+//            trainingHistory.setId(trainingID);
+//            return true;
+//        }
+//        else {
+//            return false;
+//        }
 
-        String jsonString = worker.getStartTrainingJson(trainingHistory);
-        System.out.println(jsonString);
-        client.send(jsonString);
-        String data = client.receive();
-        System.out.println(data);
-        client.close();
+        //        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect());
+//
+//        try {
+//            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
+//            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+//                return true;
+//            }
+//            else {
+//                return false;
+//            }
+//        } catch (TimeoutException e) {
+//            // 超时处理
+//            System.out.println("Socket receive timeout: " + e.getMessage());
+//            MainController.popUpAlter("ERROR","",e.getMessage());
+//            return false;
+//        } catch (InterruptedException | ExecutionException e) {
+//            // 其他异常处理
+//            System.out.println("ERROR:"+e.getMessage());
+//            MainController.popUpAlter("ERROR","",e.getMessage());
+//            return false;
+//        }
 
-        // 反转义java字符串
-        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
-        // 去除前后的双引号
-        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
-        // 转换为json对象
-        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
+        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getStartTrainingJson(trainingHistory)));
 
-        int code = jsonObject.getInt("code");
-        long trainingID = jsonObject.getLong("TrainingID");
-
-        if(code == 200){
-            trainingHistory.setId(trainingID);
-            return true;
-        }
-        else {
+        try {
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
+            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+                long trainingID = jsonObject.getLong("TrainingID");
+                trainingHistory.setId(trainingID);
+                return true;
+            }
+            else {
+                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
+                return false;
+            }
+        } catch (TimeoutException e) {
+            // 超时处理
+            System.out.println("Socket receive timeout: " + e.getMessage());
+            MainController.popUpAlter("ERROR","",e.getMessage());
+            return false;
+        } catch (InterruptedException | ExecutionException e) {
+            // 其他异常处理
+            System.out.println("ERROR:"+e.getMessage());
+            MainController.popUpAlter("ERROR","",e.getMessage());
             return false;
         }
     }
 
     private boolean updateTraining() throws IOException, JSONException {
-        //Socket连接
-        SocketClient client = new SocketClient("localhost",5001);
-        client.connect();
+//        //Socket连接
+//        SocketClient client = new SocketClient("localhost",5001);
+//        client.connect();
+//
+//        String jsonString = worker.getUpdateTrainingJson(trainingHistory);
+//        System.out.println(jsonString);
+//        client.send(jsonString);
+//        String data = client.receive();
+//        System.out.println(data);
+//        client.close();
+//
+//        // 反转义java字符串
+//        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
+//        // 去除前后的双引号
+//        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
+//        // 转换为json对象
+//        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
+//
+//        int code = jsonObject.getInt("code");
+//        return code == 200;
 
-        String jsonString = worker.getUpdateTrainingJson(trainingHistory);
-        System.out.println(jsonString);
-        client.send(jsonString);
-        String data = client.receive();
-        System.out.println(data);
-        client.close();
+        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getUpdateTrainingJson(trainingHistory)));
 
-        // 反转义java字符串
-        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
-        // 去除前后的双引号
-        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
-        // 转换为json对象
-        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
-
-        int code = jsonObject.getInt("code");
-        return code == 200;
+        try {
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
+            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+                return true;
+            }
+            else {
+                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
+                return false;
+            }
+        } catch (TimeoutException e) {
+            // 超时处理
+            System.out.println("Socket receive timeout: " + e.getMessage());
+            MainController.popUpAlter("ERROR","",e.getMessage());
+            return false;
+        } catch (InterruptedException | ExecutionException e) {
+            // 其他异常处理
+            System.out.println("ERROR:"+e.getMessage());
+            MainController.popUpAlter("ERROR","",e.getMessage());
+            return false;
+        }
     }
 
     private boolean endTraining() throws IOException, JSONException {
-        //Socket连接
-        SocketClient client = new SocketClient("localhost",5001);
-        client.connect();
+//        //Socket连接
+//        SocketClient client = new SocketClient("localhost",5001);
+//        client.connect();
+//
+//        String jsonString = worker.getEndTrainingJson(trainingHistory);
+//        System.out.println(jsonString);
+//        client.send(jsonString);
+//        String data = client.receive();
+//        System.out.println(data);
+//        client.close();
+//
+//        // 反转义java字符串
+//        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
+//        // 去除前后的双引号
+//        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
+//        // 转换为json对象
+//        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
+//
+//        int code = jsonObject.getInt("code");
+//        return code == 200;
 
-        String jsonString = worker.getEndTrainingJson(trainingHistory);
-        System.out.println(jsonString);
-        client.send(jsonString);
-        String data = client.receive();
-        System.out.println(data);
-        client.close();
+        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getEndTrainingJson(trainingHistory)));
 
-        // 反转义java字符串
-        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
-        // 去除前后的双引号
-        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
-        // 转换为json对象
-        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
-
-        int code = jsonObject.getInt("code");
-        return code == 200;
+        try {
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
+            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+                return true;
+            }
+            else {
+                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
+                return false;
+            }
+        } catch (TimeoutException e) {
+            // 超时处理
+            System.out.println("Socket receive timeout: " + e.getMessage());
+            MainController.popUpAlter("ERROR","",e.getMessage());
+            return false;
+        } catch (InterruptedException | ExecutionException e) {
+            // 其他异常处理
+            System.out.println("ERROR:"+e.getMessage());
+            MainController.popUpAlter("ERROR","",e.getMessage());
+            return false;
+        }
     }
 }
