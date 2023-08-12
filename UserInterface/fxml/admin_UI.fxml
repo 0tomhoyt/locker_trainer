@@ -48,9 +48,9 @@
                   <Tab closable="false" text="工人信息">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <AnchorPane fx:id="worker_info_page" prefHeight="640.0" prefWidth="900.0" />
-                           </children>
+                          <children>
+                              <VBox fx:id="vBox_worker_info" prefHeight="660.0" prefWidth="900.0" />
+                          </children>
                         </AnchorPane>
                     </content>
                   </Tab>

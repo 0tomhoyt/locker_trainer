@@ -1,11 +1,13 @@
 package controllers;
 
 import javafx.event.Event;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import models.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import util.Tools;
 
 import java.io.IOException;
 
@@ -32,12 +34,9 @@ public class LoginAdminController extends LoginWorkerController implements Initi
     }
 
     @Override
-    protected void afterLogin() throws IOException, JSONException{
+    protected void afterLogin() {
 
-//        String s = ((Admin)worker).getWorkerList();
-//        String data = socketConnect(s);
-//        JSONObject jsonObject2 = transferToJSON(data);
-//        System.out.println(jsonObject2);
+
 
         try {
             anchorPane.getChildren().clear();
@@ -52,7 +51,5 @@ public class LoginAdminController extends LoginWorkerController implements Initi
         }
     }
 
-    private void getWorkerList(){
 
-    }
 }
