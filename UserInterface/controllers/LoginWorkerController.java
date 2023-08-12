@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Popup;
 import main.Main;
 import models.Machine;
 import models.Worker;
@@ -64,7 +65,17 @@ public class LoginWorkerController implements Initializable, Controller {
     }
 
     protected boolean login(Worker worker) throws IOException, JSONException {
-        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getLoginJson()));
+        Future<String> future = Main.executorService.submit(() -> {
+//            try{
+//                Thread.sleep(3000);
+//            }
+//            catch (InterruptedException e){
+//                e.printStackTrace();
+//            }
+            return Tools.socketConnect(worker.getLoginJson());
+        });
+
+        Popup popup = MainController.showLoadingPopup("登录中");
 
         try {
             JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
@@ -73,27 +84,30 @@ public class LoginWorkerController implements Initializable, Controller {
                 int workerStationID = worker.isAdmin() ? 0 : jsonObject.getInt("workstationId");
                 if (machineID == worker.getMachineID() && workerStationID == worker.getWorkStationID()) {
                     updateWorker(jsonObject);
+                    popup.hide();
                     afterLogin();
                     return true;
                 }
                 else {
-                    MainController.popUpAlter("问题","非本机ID","");
+                    popup.hide();
+                    MainController.popUpAlter("ERROR","","");
                     return false;
                 }
             }
             else {
-                MainController.popUpAlter("ERROR","login failed","login failed");
+                popup.hide();
+                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
-            System.out.println("Socket receive timeout: " + e.getMessage());
-            MainController.popUpAlter("ERROR","Time UP",e.getMessage());
+            popup.hide();
+            MainController.popUpAlter("ERROR","Time UP","登录超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
-            System.out.println("ERROR:"+e.getMessage());
-            MainController.popUpAlter("ERROR","ERROR",e.getMessage());
+            popup.hide();
+            MainController.popUpAlter("ERROR","ERROR","登录失败");
             return false;
         }
     }

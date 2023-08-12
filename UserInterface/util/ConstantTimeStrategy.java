@@ -46,4 +46,7 @@ public class ConstantTimeStrategy implements TimerStrategy{
         this.trainingHistory = trainingHistory;
         this.workerUIController = workerUIController;
     }
+
+    public ConstantTimeStrategy() {
+    }
 }
