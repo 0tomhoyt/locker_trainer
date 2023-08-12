@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 public class AdminStartGameController implements Initializable,Controller {
     private Admin admin;
     private List<TrainingHistory> trainingHistoryList = new ArrayList<>();
+    private List<Worker> workers = new ArrayList<>();
     private int seconds;
     private int minutes;
     private int difficulty;

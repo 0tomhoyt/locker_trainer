@@ -35,13 +35,18 @@ public class AdminUIController extends WorkerUIController implements Initializab
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        MainController.addController(this);
     }
 
     @Override
     public void setWorker(Worker worker) {
         this.worker = worker;
 
+        setupStartGamePage();
+        setupWorkerInfoPage();
+    }
+
+    private void setupStartGamePage(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_start_game.fxml"));
             start_game_page.getChildren().add(loader.load());
@@ -50,6 +55,17 @@ public class AdminUIController extends WorkerUIController implements Initializab
             adminStartGameController.setAdmin((Admin) worker);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void setupWorkerInfoPage(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_worker_info.fxml"));
+            worker_info_page.getChildren().add(loader.load());
+
+
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
 
