@@ -33,12 +33,6 @@ public class LoginAdminController extends LoginWorkerController implements Initi
 
     @Override
     protected void afterLogin() throws IOException, JSONException{
-
-//        String s = ((Admin)worker).getWorkerList();
-//        String data = socketConnect(s);
-//        JSONObject jsonObject2 = transferToJSON(data);
-//        System.out.println(jsonObject2);
-
         try {
             anchorPane.getChildren().clear();
             FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/admin_UI.fxml"));
@@ -50,9 +44,5 @@ public class LoginAdminController extends LoginWorkerController implements Initi
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void getWorkerList(){
-
     }
 }
