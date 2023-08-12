@@ -6,6 +6,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import main.Main;
 import models.Admin;
 import models.Worker;
 import org.json.JSONArray;
@@ -15,7 +17,13 @@ import util.Tools;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class AdminUIController extends WorkerUIController implements Initializable, Controller {
     @FXML
@@ -32,6 +40,9 @@ public class AdminUIController extends WorkerUIController implements Initializab
 
     @FXML
     private AnchorPane worker_info_page;
+    @FXML
+    private VBox vBox_worker_info;
+    public List<Worker> workers = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -42,8 +53,10 @@ public class AdminUIController extends WorkerUIController implements Initializab
     public void setWorker(Worker worker) {
         this.worker = worker;
 
+        getWorkerList();
+        setupWorkerInfo();
+
         setupStartGamePage();
-        setupWorkerInfoPage();
     }
 
     private void setupStartGamePage(){
@@ -53,19 +66,9 @@ public class AdminUIController extends WorkerUIController implements Initializab
 
             AdminStartGameController adminStartGameController = loader.getController();
             adminStartGameController.setAdmin((Admin) worker);
+            adminStartGameController.setWorkers(workers);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void setupWorkerInfoPage(){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_worker_info.fxml"));
-            worker_info_page.getChildren().add(loader.load());
-
-
-        } catch (IOException e){
-            e.printStackTrace();
         }
     }
 
@@ -85,11 +88,12 @@ public class AdminUIController extends WorkerUIController implements Initializab
                 for(int i=0;i<jsonArray.length();i++){
                     JSONObject object = jsonArray.getJSONObject(i);
                     Worker worker = new Worker(object.getInt("UserID"),1);
-                    worker.setUsername(object.getString("Username"));
-                    worker.setPassword(object.getString("password"));
+                    worker.setUsername(object.getString("UserName"));
+                    worker.setPassword(object.getString("Password"));
                     worker.setAuthToken(object.getString("AuthToken"));
                     worker.setHeaderURL(object.getString("HeadUrl"));
                     worker.setEnrollDate(object.getString("EnrolledDate"));
+                    workers.add(worker);
                 }
                 return true;
             }
@@ -113,7 +117,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
     private void setupWorkerInfo(){
         for(int i=0;i<workers.size();i++){
             try{
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/worker_card.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/work_card.fxml"));
                 Pane pane = loader.load();
                 vBox_worker_info.getChildren().add(pane);
                 WorkerCardController controller = loader.getController();

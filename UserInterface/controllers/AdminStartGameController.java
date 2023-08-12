@@ -48,8 +48,6 @@ public class AdminStartGameController implements Initializable,Controller {
         MainController.addController(this);
 
         setupSpinner();
-
-        setupChoiceBox();
     }
 
     private void setupSpinner(){
@@ -92,43 +90,52 @@ public class AdminStartGameController implements Initializable,Controller {
     private void setupChoiceBox(){
         //使用之前获得的员工信息初始化ChoiceBox
         ObservableList<String> options = FXCollections.observableArrayList();
-        options.add("worker1");
-        options.add("worker2");
-        options.add("worker3");
+        for(Worker worker : workers){
+            options.add(worker.getId()+":"+worker.getUsername());
+        }
 
         worker_choiceBox.setItems(options);
-        worker_choiceBox.setValue("worker1");
+        worker_choiceBox.setValue(workers.get(0).getId()+":"+workers.get(0).getUsername());
     }
 
     public void setAdmin(Admin admin) {
         this.admin = admin;
     }
 
+    public void setWorkers(List<Worker> workers){
+        this.workers.addAll(workers);
+        setupChoiceBox();
+    }
+
     @FXML
     void add_btn_click(){
         //根据员工信息来new Worker
-//        Worker worker = new Worker();
-//        TrainingHistory trainingHistory = new TrainingHistory(worker);
-//        trainingHistoryList.add(trainingHistory);
+        String user = worker_choiceBox.getValue();
+        int colonIndex = user.indexOf(":");
+        int userID = Integer.parseInt(user.substring(0, colonIndex));
+
+        Worker worker = new Worker(-1,-1);
+        for(int i=0;i<workers.size();i++){
+            if(workers.get(i).getId() == userID){
+                worker = workers.get(i);
+            }
+        }
+        TrainingHistory trainingHistory = new TrainingHistory(worker);
+        trainingHistoryList.add(trainingHistory);
 
         display_area.appendText(worker_choiceBox.getValue()+"\n");
     }
 
     @FXML
     void start_game_btn_click() {
-//        for(int i=0;i<trainingHistoryList.size();i++){
-//            trainingHistoryList.get(i).setTotalTime(minutes, seconds);
-//            trainingHistoryList.get(i).setDifficulty(difficulty);
-//        }
-
         if(minutes == 0 && seconds == 0){
             MainController.popUpAlter("ERROR","","时长不能为0");
         }
         else {
-            TrainingHistory trainingHistory = new TrainingHistory(new Worker(4,1));
-            trainingHistory.setTotalTime(minutes,seconds);
-            trainingHistory.setDifficulty(difficulty);
-            trainingHistoryList.add(trainingHistory);
+            for(int i=0;i<trainingHistoryList.size();i++){
+                trainingHistoryList.get(i).setTotalTime(minutes, seconds);
+                trainingHistoryList.get(i).setDifficulty(difficulty);
+            }
 
             //开始传输数据
             startGame();
@@ -136,13 +143,15 @@ public class AdminStartGameController implements Initializable,Controller {
     }
 
     public boolean startGame(){
-        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(admin.getStartGameJson(trainingHistoryList)));
+        String jsonString = admin.getStartGameJson(trainingHistoryList);
+        System.out.println("send:"+jsonString);
+        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(jsonString));
 
         Popup popup = MainController.showLoadingPopup("开始训练中");
 
         try {
             String data = future.get(5, TimeUnit.SECONDS);
-            System.out.println("train return: "+data);
+            System.out.println("return:"+data);
             JSONObject jsonObject = Tools.transferToJSONObject(data);
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 popup.hide();
