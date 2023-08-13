@@ -9,7 +9,7 @@ def client_server_event_router(event, data):
 
 
 # 主服务器提供的route
-def main_server_event_router(event, data):
+def main_server_event_router(event, data, main_server_client):
     # 如果本机是主服务器，根据不同的事件进行不同的处理
 
     # 输入machineId :1
@@ -217,10 +217,10 @@ def main_server_event_router(event, data):
     # authToken: 字符串类型，用于验证管理员身份。
     # 输出
     # workstations: 包含所有workstaions信息的json对象列表 ， list包含json对象
-    #			{"workstationID":int
-    #			"machineID":int
-    #			"isLoggedIn":int      1表示登陆
-    #			"userID":int		登陆的userid，未登录为-1
+    # 			{"workstationID":int
+    # 			"machineID":int
+    # 			"isLoggedIn":int      1表示登陆
+    # 			"userID":int		登陆的userid，未登录为-1
     # message: 字符串，表示查询状态。
     # code: 整数，表示HTTP状态代码，如200表示成功。
     elif event == "getWorkStationStatus":
@@ -233,36 +233,26 @@ def main_server_event_router(event, data):
     # data输入
     # authToken: 字符串类型，用于验证管理员身份。
     # 输出
-    # machines:
-    #			{"serverId":int
-    #			"isMainServer":int
-    #			"serverIpAddress":string
-    #			"clientIpAddress":string
+    # machines: list of json
+    # 			[{"serverId":int
+    # 			"isMainServer":int
+    # 			"serverIpAddress":string
+    # 			"clientIpAddress":string
+    # 			"workstations":[{     ##list of json
+    # 			"workstationId":int
+    # 			"workerId":int 	未登录 = -1
+    # 			"username":string
+    # 			"headUrl":string}}]
+    # 			]
     # message: 字符串，表示查询状态。
     # code: 整数，表示HTTP状态代码，如200表示成功。
     elif event == "getConnectedMachine":
         if "authToken" not in data:
             print(f'getConnectedMachine: 收到的data包不正确{data}')
             return json.dumps(
-                {"replyMessage": True, "message": f'getWorkerStatus: 收到的data包不正确{data}', "code": 500})
-        return MachineController.getWorkStationsStatusController(data['authToken'])
+                {"replyMessage": True, "message": f'getConnectedMachine: 收到的data包不正确{data}', "code": 500})
+        return MachineController.getConnectedMachine(data['authToken'], main_server_client)
 
-    # data输入
-    # authToken: 字符串类型，用于验证管理员身份。
-    # 输出
-    # machines:
-    #			{"serverId":int
-    #			"isMainServer":int
-    #			"serverIpAddress":string
-    #			"clientIpAddress":string
-    # message: 字符串，表示查询状态。
-    # code: 整数，表示HTTP状态代码，如200表示成功。
-    elif event == "getLoggedInWorker":
-        if "authToken" not in data:
-            print(f'getLoggedInWorker: 收到的data包不正确{data}')
-            return json.dumps(
-                {"replyMessage": True, "message": f'getWorkerStatus: 收到的data包不正确{data}', "code": 500})
-        return MachineController.getWorkStationsStatusController(data['authToken'])
 
     # data输入
     # authToken: 字符串类型，用于验证管理员身份。
