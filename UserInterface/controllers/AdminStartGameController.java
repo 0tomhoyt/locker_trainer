@@ -3,17 +3,23 @@ package controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import main.Main;
 import models.Admin;
+import models.Machine;
 import models.TrainingHistory;
 import models.Worker;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import util.Tools;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +33,8 @@ public class AdminStartGameController implements Initializable,Controller {
     private Admin admin;
     private List<TrainingHistory> trainingHistoryList = new ArrayList<>();
     private List<Worker> workers = new ArrayList<>();
+    private List<Machine> machines = new ArrayList<>();
+    private List<ConnectedMachineCardController> controllers = new ArrayList<>();
     private int seconds;
     private int minutes;
     private int difficulty;
@@ -42,6 +50,8 @@ public class AdminStartGameController implements Initializable,Controller {
     private TextArea display_area;
     @FXML
     private Button start_game_btn;
+    @FXML
+    private VBox connected_machine_vbox;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -98,6 +108,23 @@ public class AdminStartGameController implements Initializable,Controller {
         worker_choiceBox.setValue(workers.get(0).getId()+":"+workers.get(0).getUsername());
     }
 
+    private void setupVbox() {
+        for(int i=0;i<machines.size();i++){
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/connected_machine_card.fxml"));
+                Pane pane =  loader.load();
+                connected_machine_vbox.getChildren().add(pane);
+
+                ConnectedMachineCardController controller = loader.getController();
+                controller.setWorkers(workers);
+                controller.setInfo(machines.get(i).getId(), machines.get(i).getWorkers().get(0));
+                controllers.add(controller);
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void setAdmin(Admin admin) {
         this.admin = admin;
     }
@@ -105,6 +132,9 @@ public class AdminStartGameController implements Initializable,Controller {
     public void setWorkers(List<Worker> workers){
         this.workers.addAll(workers);
         setupChoiceBox();
+
+        getConnectedMachines();
+        setupVbox();
     }
 
     @FXML
@@ -132,27 +162,35 @@ public class AdminStartGameController implements Initializable,Controller {
             MainController.popUpAlter("ERROR","","时长不能为0");
         }
         else {
-            for(int i=0;i<trainingHistoryList.size();i++){
-                trainingHistoryList.get(i).setTotalTime(minutes, seconds);
-                trainingHistoryList.get(i).setDifficulty(difficulty);
+            for(int i=0;i<controllers.size();i++){
+                Worker worker = controllers.get(i).getWorker();
+                if(worker.getId() == -1){
+                    System.out.println("no worker returned");
+                }
+                else {
+                    TrainingHistory trainingHistory = new TrainingHistory(worker);
+                    trainingHistory.setTotalTime(minutes, seconds);
+                    trainingHistory.setDifficulty(difficulty);
+                    trainingHistoryList.add(trainingHistory);
+                }
             }
+//            for(int i=0;i<trainingHistoryList.size();i++){
+//                trainingHistoryList.get(i).setTotalTime(minutes, seconds);
+//                trainingHistoryList.get(i).setDifficulty(difficulty);
+//            }
 
             //开始传输数据
             startGame();
         }
     }
 
-    public boolean startGame(){
-        String jsonString = admin.getStartGameJson(trainingHistoryList);
-        System.out.println("send:"+jsonString);
-        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(jsonString));
+    private boolean startGame(){
+        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(admin.getStartGameJson(trainingHistoryList)));
 
-        Popup popup = MainController.showLoadingPopup("开始训练中");
+        Popup popup = MainController.showLoadingPopup("开始比赛中");
 
         try {
-            String data = future.get(5, TimeUnit.SECONDS);
-            System.out.println("return:"+data);
-            JSONObject jsonObject = Tools.transferToJSONObject(data);
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(10, TimeUnit.SECONDS));
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 popup.hide();
                 return true;
@@ -172,6 +210,53 @@ public class AdminStartGameController implements Initializable,Controller {
             popup.hide();
             MainController.popUpAlter("ERROR","","开始比赛失败");
             System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean getConnectedMachines(){
+        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(admin.getConnectedMachinesJson()));
+
+        Popup popup = MainController.showLoadingPopup("获取连接机器中");
+
+        try {
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5, TimeUnit.SECONDS));
+            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+                popup.hide();
+                JSONArray jsonArray_machine = jsonObject.getJSONArray("machines");
+                for(int i=0;i<jsonArray_machine.length();i++){
+                    Machine machine = new Machine(jsonArray_machine.getJSONObject(i).getInt("serverId"));
+                    machines.add(machine);
+                    JSONArray jsonArray_workstation = jsonArray_machine.getJSONObject(i).getJSONArray("workstations");
+                    for(int j=0;j<jsonArray_workstation.length();j++){
+                        JSONObject object = jsonArray_workstation.getJSONObject(j);
+                        int workStationID = object.getInt("workstationId");
+                        int workerID = object.getInt("workerId");
+                        String username = object.getString("username");
+                        String headerURL = object.getString("headUrl");
+                        Worker worker = new Worker(workerID,workStationID);
+                        worker.setUsername(username);
+                        worker.setHeaderURL(headerURL);
+                        machine.addWorker(worker);
+                    }
+                }
+                return true;
+            }
+            else {
+                popup.hide();
+                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
+                return false;
+            }
+        } catch (TimeoutException e) {
+            // 超时处理
+            popup.hide();
+            MainController.popUpAlter("ERROR","","获取连接机器超时");
+            return false;
+        } catch (InterruptedException | ExecutionException | JSONException e) {
+            // 其他异常处理
+            popup.hide();
+            MainController.popUpAlter("ERROR","","获取连接机器失败");
+            System.out.println("ERROR:"+e.getMessage());
             return false;
         }
     }

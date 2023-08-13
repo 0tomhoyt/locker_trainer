@@ -22,6 +22,8 @@ public class SocketClient {
     }
 
     public void send(String message) throws IOException {
+        client.setSendBufferSize(8192 * 2);
+
         OutputStream os = client.getOutputStream();
         PrintWriter pw = new PrintWriter(os);
         pw.write(message+"\n");
