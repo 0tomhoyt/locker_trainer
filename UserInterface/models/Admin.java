@@ -56,18 +56,20 @@ public class Admin extends Worker{
                 e.printStackTrace();
             }
         }
-        System.out.println(jsonArray);
-        return String.format("{\"event\": \"getWorkerStatus\", \"data\": { \"authToken\": \"%s\", \"trainings\": %s } }",
-            authToken,
-            jsonArray
+        String jsonString = String.format("{\"event\": \"startMatch\", \"data\": { \"authToken\": \"%s\", \"trainings\": %s } }",
+                authToken,
+                jsonArray
         );
+
+        System.out.println(jsonString);
+
+        return jsonString;
     }
 
-    public static void main(String[] args) {
-        List<TrainingHistory> trainingHistoryList = new ArrayList<>();
-        trainingHistoryList.add(new TrainingHistory(1,1,1,1,1,true,new Worker(1,1)));
-        Admin admin = new Admin("fx","123",1);
-        System.out.println(admin.getStartGameJson(trainingHistoryList));
+    public String getConnectedMachinesJson(){
+        return String.format("{\"event\": \"getConnectedMachine\", \"data\": { \"authToken\": \"%s\" } }",
+                authToken
+        );
     }
 
     //    public void setId(int id) {

@@ -117,6 +117,20 @@ public class Worker {
         return (int)daysBetween;
     }
 
+    @Override
+    public String toString() {
+        return "Worker{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", workStationID=" + workStationID +
+                ", machineID=" + machineID +
+                ", authToken='" + authToken + '\'' +
+                ", enrollDate='" + enrollDate + '\'' +
+                ", headerURL='" + headerURL + '\'' +
+                '}';
+    }
+
     public String getLoginJson(){
         return String.format("{ \"event\": \"workerLogin\", \"data\": { \"username\": \"%s\", \"password\": \"%s\", \"machineId\": %d, \"workstationId\": %d } }",
                 username,

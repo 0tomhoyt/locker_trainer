@@ -97,13 +97,9 @@ public class MainController implements Initializable, Controller {
         Popup popup = showLoadingPopup("开启机器中");
 
         try {
-            String receivedMessage = future.get(5, TimeUnit.SECONDS); // 设置超时时间为5秒
-            // 反转义java字符串
-            String tokenInfoEsca = StringEscapeUtils.unescapeJava(receivedMessage);
-            // 去除前后的双引号
-//            tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() -1);
-            // 转换为json对象
-            JSONObject jsonObject = new JSONObject(tokenInfoEsca);
+            String data = future.get(5, TimeUnit.SECONDS);
+            System.out.println(data);
+            JSONObject jsonObject = Tools.transferToJSONObject(data);
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 // 启动机器成功
                 popup.hide();
@@ -112,7 +108,7 @@ public class MainController implements Initializable, Controller {
             else {
                 popup.hide();
                 // 启动机器失败
-                popUpAlter("ERROR","启动机器失败", Tools.unicodeToChinese(jsonObject.getString("message")));
+                popUpAlter("ERROR","", "启动机器失败");
                 return false;
             }
         } catch (TimeoutException e) {
