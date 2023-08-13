@@ -95,6 +95,17 @@ def findWorkstation(cnx, workstation_ID, machine_ID):
         # 否则，返回查询结果的第一行，这应该是一个包含工作站状态信息的元组
         return result.fetchone()
 
+def findWorkstationByMachineID(cnx,  machine_ID):
+    # 在workstations表中使用WHERE子句来匹配WorkStationID和MachineID
+    query = f'SELECT * FROM workstations WHERE  MachineID = {machine_ID}'
+    # 使用execute_query函数执行查询并获取结果
+    result = execute_query(cnx, query)
+    # 如果结果是字符串类型（即发生错误），则返回错误信息
+    if type(result) == str:
+        return result
+    else:
+        # 否则，返回查询结果的第一行，这应该是一个包含工作站状态信息的元组
+        return result.fetchall()
 
 # 工作站登录函数
 # 输入：cnx (数据库连接对象)，workstation_ID (int)，user_ID (int)

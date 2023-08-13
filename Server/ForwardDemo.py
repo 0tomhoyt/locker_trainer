@@ -119,7 +119,7 @@ class MainServerClient:
         self.host = host
         self.port = port
         self.server_socket = None
-        self.client_conn = []
+        self.client_connections = []
 
     def handle_connection(self, client_conn, addr):
         print(f"Connected to {addr}")
@@ -138,7 +138,7 @@ class MainServerClient:
             event = json_data['event']
             data = json_data['data']
 
-            reply_message = json.loads(Router.main_server_event_router(event, data))
+            reply_message = json.loads(Router.main_server_event_router(event, data,self))
             if 'clientAddress' in json_data:
                 reply_message['clientAddress'] = json_data['clientAddress']
             reply_message = json.dumps(reply_message)
@@ -158,7 +158,8 @@ class MainServerClient:
 
         while True:
             client_conn, addr = self.server_socket.accept()
-            self.client_conn.append(client_conn)
+            client_dict = {"connection":client_conn,"clientAddress":addr}
+            self.client_connections.append(client_dict)
             threading.Thread(target=self.handle_connection, args=(client_conn, addr), daemon=True).start()
 
     def close(self):

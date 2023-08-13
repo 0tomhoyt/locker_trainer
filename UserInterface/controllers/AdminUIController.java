@@ -54,6 +54,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
         this.worker = worker;
 
         getWorkerList();
+
         setupWorkerInfo();
 
         setupStartGamePage();
@@ -66,6 +67,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
 
             AdminStartGameController adminStartGameController = loader.getController();
             adminStartGameController.setAdmin((Admin) worker);
+            System.out.println(workers);
             adminStartGameController.setWorkers(workers);
         } catch (IOException e) {
             throw new RuntimeException(e);

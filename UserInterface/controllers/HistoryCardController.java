@@ -19,7 +19,7 @@ public class HistoryCardController implements Initializable, Controller {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        MainController.addController(this);
+//        MainController.addController(this);
     }
 
     public void setInfo(int score, int total_time, int unlocked, int difficulty){
