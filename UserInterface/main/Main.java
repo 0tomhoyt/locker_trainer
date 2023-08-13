@@ -39,9 +39,14 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         innerLoader2.load();
 
         //加载管理员标签的登录页面
-        FXMLLoader tab2Loader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
-        tab2Loader.setRoot(outerLoader.getNamespace().get("adminTab"));
-        tab2Loader.load();
+        FXMLLoader tabAdminLoader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
+        tabAdminLoader.setRoot(outerLoader.getNamespace().get("adminTab"));
+        tabAdminLoader.load();
+
+        //加载管理员标签的登录页面
+        FXMLLoader tabRegisterLoader = new FXMLLoader(getClass().getResource("../fxml/register.fxml"));
+        tabRegisterLoader.setRoot(outerLoader.getNamespace().get("registerTab"));
+        tabRegisterLoader.load();
 
         //fxml加载完成
 
@@ -59,7 +64,7 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         loginWorkerController2.setPanePosition("insertionPoint2");
         loginWorkerController2.setMachine(machine);
 
-        LoginAdminController loginAdminController = tab2Loader.getController();
+        LoginAdminController loginAdminController = tabAdminLoader.getController();
         loginAdminController.setOuterFXMLLoader(outerLoader);//这里为什么是outerloader
         loginAdminController.setPanePosition("adminTab");
         loginAdminController.setMachine(machine);
