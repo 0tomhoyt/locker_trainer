@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import javafx.util.Duration;
 import main.Main;
 import models.Lock;
@@ -38,7 +39,7 @@ public class WorkerUIController implements Initializable, Controller {
     private List<Label> labels = new ArrayList<>(50);
     private Timeline timer;
     private TimerStrategy timerStrategy;
-    private Worker worker;
+    protected Worker worker;
     private TrainingHistory trainingHistory;    //本次的记录
     private List<TrainingHistory> trainingHistories;    //所有的历史记录
     private List<TrainingHistory> showHistories;
@@ -322,7 +323,7 @@ public class WorkerUIController implements Initializable, Controller {
     }
 
     //Socket调用，数据库部分
-    private boolean getTrainingHistories() throws IOException, JSONException {
+    private boolean getTrainingHistories() throws JSONException {
 //        //Socket连接
 //        SocketClient client = new SocketClient("localhost",5001);
 //        client.connect();
@@ -356,38 +357,42 @@ public class WorkerUIController implements Initializable, Controller {
 
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getTrainingHistoriesJson()));
 
+        Popup popup = MainController.showLoadingPopup("获得训练历史中");
+
         try {
             JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 JSONArray jsonArray = jsonObject.getJSONArray("trainingList");
-            trainingHistories = new ArrayList<>(jsonArray.length());
-            showHistories = new ArrayList<>(jsonArray.length());
-            for(int i=0;i<jsonArray.length();i++) {
-                JSONObject trainHistoryJson = jsonArray.getJSONObject(i);
-                TrainingHistory history = new TrainingHistory(trainHistoryJson);
-                trainingHistories.add(history);
-                showHistories.add(history);
-            }
+                trainingHistories = new ArrayList<>(jsonArray.length());
+                showHistories = new ArrayList<>(jsonArray.length());
+                for(int i=0;i<jsonArray.length();i++) {
+                    JSONObject trainHistoryJson = jsonArray.getJSONObject(i);
+                    TrainingHistory history = new TrainingHistory(trainHistoryJson);
+                    trainingHistories.add(history);
+                    showHistories.add(history);
+                }
+                popup.hide();
                 return true;
             }
             else {
+                popup.hide();
                 MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
-            System.out.println("Socket receive timeout: " + e.getMessage());
-            MainController.popUpAlter("ERROR","",e.getMessage());
+            popup.hide();
+            MainController.popUpAlter("ERROR","","获取训练记录超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
-            System.out.println("ERROR:"+e.getMessage());
-            MainController.popUpAlter("ERROR","",e.getMessage());
+            popup.hide();
+            MainController.popUpAlter("ERROR","","获取训练记录失败");
             return false;
         }
     }
 
-    private boolean startTraining() throws IOException, JSONException {
+    private boolean startTraining() throws JSONException {
 //        //Socket连接
 //        SocketClient client = new SocketClient("localhost",5001);
 //        client.connect();
@@ -441,26 +446,30 @@ public class WorkerUIController implements Initializable, Controller {
 
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getStartTrainingJson(trainingHistory)));
 
+        Popup popup = MainController.showLoadingPopup("开始训练中");
+
         try {
             JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 long trainingID = jsonObject.getLong("TrainingID");
                 trainingHistory.setId(trainingID);
+                popup.hide();
                 return true;
             }
             else {
+                popup.hide();
                 MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
-            System.out.println("Socket receive timeout: " + e.getMessage());
-            MainController.popUpAlter("ERROR","",e.getMessage());
+            popup.hide();
+            MainController.popUpAlter("ERROR","","开始训练超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
-            System.out.println("ERROR:"+e.getMessage());
-            MainController.popUpAlter("ERROR","",e.getMessage());
+            popup.hide();
+            MainController.popUpAlter("ERROR","","开始训练失败");
             return false;
         }
     }
@@ -500,18 +509,16 @@ public class WorkerUIController implements Initializable, Controller {
             }
         } catch (TimeoutException e) {
             // 超时处理
-            System.out.println("Socket receive timeout: " + e.getMessage());
-            MainController.popUpAlter("ERROR","",e.getMessage());
+//            MainController.popUpAlter("ERROR","","更新训练超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
-            System.out.println("ERROR:"+e.getMessage());
-            MainController.popUpAlter("ERROR","",e.getMessage());
+//            MainController.popUpAlter("ERROR","","更新训练失败");
             return false;
         }
     }
 
-    private boolean endTraining() throws IOException, JSONException {
+    private boolean endTraining() throws JSONException {
 //        //Socket连接
 //        SocketClient client = new SocketClient("localhost",5001);
 //        client.connect();
@@ -535,24 +542,28 @@ public class WorkerUIController implements Initializable, Controller {
 
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getEndTrainingJson(trainingHistory)));
 
+        Popup popup = MainController.showLoadingPopup("结束任务中");
+
         try {
             JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+                popup.hide();
                 return true;
             }
             else {
+                popup.hide();
                 MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
-            System.out.println("Socket receive timeout: " + e.getMessage());
-            MainController.popUpAlter("ERROR","",e.getMessage());
+            popup.hide();
+            MainController.popUpAlter("ERROR","","结束训练超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
-            System.out.println("ERROR:"+e.getMessage());
-            MainController.popUpAlter("ERROR","",e.getMessage());
+            popup.hide();
+            MainController.popUpAlter("ERROR","","结束训练失败");
             return false;
         }
     }

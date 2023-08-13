@@ -46,6 +46,7 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         //fxml加载完成
 
         MainController mainController = outerLoader.getController();
+        MainController.primaryStage = primaryStage;
         mainController.setMachine(machine);
 
         LoginWorkerController loginWorkerController1 = innerLoader1.getController();
@@ -62,7 +63,6 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         loginAdminController.setOuterFXMLLoader(outerLoader);//这里为什么是outerloader
         loginAdminController.setPanePosition("adminTab");
         loginAdminController.setMachine(machine);
-
 
         // 页面出现
         Scene scene = new Scene(root);

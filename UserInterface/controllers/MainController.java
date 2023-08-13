@@ -8,9 +8,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.Main;
 import javafx.fxml.Initializable;
@@ -38,6 +41,7 @@ public class MainController implements Initializable, Controller {
     private Button joinMatchButton1;
     @FXML
     private Button joinMatchButton2;
+    public static Stage primaryStage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -90,6 +94,8 @@ public class MainController implements Initializable, Controller {
             return data;
         });
 
+        Popup popup = showLoadingPopup("开启机器中");
+
         try {
             String receivedMessage = future.get(5, TimeUnit.SECONDS); // 设置超时时间为5秒
             // 反转义java字符串
@@ -100,19 +106,24 @@ public class MainController implements Initializable, Controller {
             JSONObject jsonObject = new JSONObject(tokenInfoEsca);
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 // 启动机器成功
+                popup.hide();
                 return true;
             }
             else {
+                popup.hide();
                 // 启动机器失败
                 popUpAlter("ERROR","启动机器失败", Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
+            popup.hide();
             // 超时处理
-            System.out.println("Socket receive timeout: " + e.getMessage());
+            popUpAlter("ERROR","","启动机器超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
+            popup.hide();
             // 其他异常处理
+            popUpAlter("ERROR","","启动机器失败");
             System.out.println("ERROR:"+e.getMessage());
             return false;
         }
@@ -127,5 +138,26 @@ public class MainController implements Initializable, Controller {
 
         // 显示警告窗
         alert.showAndWait();
+    }
+
+    public static Popup showLoadingPopup(String message) {
+        // 创建 Popup
+        Popup loadingPopup = new Popup();
+
+        // 创建等待页面内容
+        VBox popupContent = new VBox();
+        popupContent.getChildren().addAll(new Label(message)); // 加载提示信息
+
+        // 设置等待页面样式
+        popupContent.setStyle("-fx-background-color: white; -fx-padding: 10px;");
+
+        // 将内容放置在 Popup 中
+        loadingPopup.getContent().add(popupContent);
+
+        // 设置 Popup 相对于主舞台的位置
+        loadingPopup.setAutoHide(false);
+        loadingPopup.show(primaryStage);
+
+        return loadingPopup;
     }
 }

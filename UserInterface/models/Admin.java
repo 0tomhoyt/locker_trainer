@@ -1,8 +1,14 @@
 package models;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class Admin extends Worker{
     /*继承，重写了
@@ -31,9 +37,37 @@ public class Admin extends Worker{
     }
 
     public String getWorkerList(){
-        return String.format("{\"event\": \"getWorkerStatus\", \"data\": { \"authToken\": \"%s\"}",
+        return String.format("{\"event\": \"getWorkerStatus\", \"data\": { \"authToken\": \"%s\"} }",
                 authToken
         );
+    }
+
+    public String getStartGameJson(List<TrainingHistory> trainingHistoryList){
+        JSONArray jsonArray = new JSONArray();
+        for (TrainingHistory t : trainingHistoryList) {
+            try {
+                jsonArray.put(new JSONObject()
+                        .put("userID", t.getWorker().getId())
+                        .put("difficulty", t.getDifficulty())
+                        .put("time", t.getTotalTime())
+                        .put("workstationID", t.getWorker().getWorkStationID())
+                );
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println(jsonArray);
+        return String.format("{\"event\": \"getWorkerStatus\", \"data\": { \"authToken\": \"%s\", \"trainings\": %s } }",
+            authToken,
+            jsonArray
+        );
+    }
+
+    public static void main(String[] args) {
+        List<TrainingHistory> trainingHistoryList = new ArrayList<>();
+        trainingHistoryList.add(new TrainingHistory(1,1,1,1,1,true,new Worker(1,1)));
+        Admin admin = new Admin("fx","123",1);
+        System.out.println(admin.getStartGameJson(trainingHistoryList));
     }
 
     //    public void setId(int id) {
