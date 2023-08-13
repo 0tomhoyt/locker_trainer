@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import models.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import util.Tools;
 
 import java.io.IOException;
 
@@ -20,7 +21,7 @@ public class LoginAdminController extends LoginWorkerController implements Initi
     @Override
     void login_btn_click(Event event) throws IOException, JSONException {
         String username = field_username.getText();
-        String password = field_password.getText();
+        String password = Tools.MD5hash(field_password.getText());
         int machineID = machine.getId();
 
         worker = new Admin(username,password,machineID);
@@ -28,7 +29,7 @@ public class LoginAdminController extends LoginWorkerController implements Initi
         System.out.println(worker.getLoginJson());
         login(worker);
 
-        System.out.println("admin button finish");
+//        System.out.println("admin button finish");
     }
 
     @Override

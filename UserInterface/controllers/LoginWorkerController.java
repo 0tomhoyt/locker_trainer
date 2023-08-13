@@ -55,7 +55,7 @@ public class LoginWorkerController implements Initializable, Controller {
     @FXML
     void login_btn_click(Event event) throws IOException, JSONException {
         String username = field_username.getText();
-        String password = field_password.getText();
+        String password = Tools.MD5hash(field_password.getText());
         int machineID = machine.getId();
         int workStationID = panePosition.equals("insertionPoint1") ? 2 * machineID - 1 : 2 * machineID;
 
