@@ -296,7 +296,7 @@ def main_server_event_router(event, data, main_server_client):
             print(f'getWorkerStatus: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'startMatch: 收到的data包不正确{data}', "code": 500})
-        return MatchController.start_match_controller(data['authToken'], data['trainings'])
+        return MatchController.start_match_controller(data['authToken'], data['trainings'],main_server_client)
 
 
 
