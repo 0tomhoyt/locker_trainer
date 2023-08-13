@@ -101,7 +101,7 @@ public class MainController implements Initializable, Controller {
             // 反转义java字符串
             String tokenInfoEsca = StringEscapeUtils.unescapeJava(receivedMessage);
             // 去除前后的双引号
-            tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() -1);
+//            tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() -1);
             // 转换为json对象
             JSONObject jsonObject = new JSONObject(tokenInfoEsca);
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){

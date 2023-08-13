@@ -51,3 +51,8 @@ def getWorkStationsStatusController(authToken):
     return json.dumps({"workstations": workstation_list, "message": "查询成功", "code": 200})
 
 
+def getConnectedMachine(authToken):
+
+    return 1
+
+

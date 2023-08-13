@@ -154,5 +154,10 @@ if __name__ == "__main__":
     data = {"authToken": "888666"} # 使用无效的管理员令牌
     start_client(event, data)
 
+    print("测试23：添加用户，正确")
+    event = 'addUser'
+    data = {"authToken": "888666",'userName':'new','password':'123456','role':1} # 使用无效的管理员令牌
+    start_client(event, data)
+
 
 # unittest.main()

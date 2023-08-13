@@ -20,7 +20,7 @@ public class Tools {
     public static JSONObject transferToJSONObject(String s) throws JSONException {
         String tokenInfoEsca = StringEscapeUtils.unescapeJava(s);
         // 去除前后的双引号
-        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
+//        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
         // 转换为json对象
         JSONObject jsonObject = new JSONObject(tokenInfoEsca);
         return jsonObject;

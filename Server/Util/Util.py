@@ -1,4 +1,4 @@
-import hashlib
+import hashlib,string,random
 from DatabaseConnection import ServerDB, DBconnect
 
 
@@ -24,6 +24,11 @@ def checkIfSelfIsMainServer():
     else:
         is_main = server_info[1]  # we expect 'isMainServer' is at the second position in the tuple
         return 1 if is_main == 1 else 0
+
+def generate_auth_token(length=30):
+    characters = string.ascii_letters + string.digits  # 包括大小写字母和数字
+    token = ''.join(random.choice(characters) for i in range(length))
+    return token
 
 
 if __name__ == "__main__":
