@@ -34,9 +34,11 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
+//1.更新每把锁的开锁时间，event在stoptraining的时候同时带上这个数据 如果锁的序列号是0，就不带 更新列表：侯宇腾
+//2.每把锁需要可以设置型号名称和序列号和难度，每次需要从服务器更新并且显示。 管理员界面可以单独单人训练  //志勇
+//3.管理员需要可以查看每个工人的训练历史和每个锁的开锁信息。//符讯
 public class MainController implements Initializable, Controller {
-    public List<Integer> locks;
+    public List<Lock> locks;//120 6行20列
     private Machine machine;
     @FXML
     private Button joinMatchButton1;
@@ -47,7 +49,7 @@ public class MainController implements Initializable, Controller {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Main.controllers.put(this.getClass().getSimpleName(),this);
-        locks = new ArrayList<>(Collections.nCopies(120, -1));
+//        locks = new ArrayList<>(Collections.nCopies(120, -1));
         // Create and start thread for sending COM interface messages
         Thread sendCOMThread = new Thread(() -> {
             while (true) {

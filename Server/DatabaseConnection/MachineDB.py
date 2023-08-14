@@ -1,4 +1,4 @@
-from DatabaseConnection.LockDB import execute_query
+from DatabaseConnection.DBconnect import execute_query
 
 
 # 添加机器

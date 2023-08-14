@@ -2,6 +2,14 @@ import json
 
 from Controller import MachineController, UserController, TrainingController, MatchController
 
+# 1.workUIcontroller 显示每把锁的信息
+# 2.workerUIcontroller可以更改每把锁的信息
+# 3.服务器存储每把锁的信息，可以被event调用
+# 4.training 获取单把锁的开启用时（MCU）
+# 5.training结束传递给服务器单把锁的开启信息
+# 6.服务器存储单把锁的开启信息，forien key是 trainingID
+# 7.管理员查看工人信息，点进去之后有训练历史
+# 8.训练历史点进去之后有时间filter，还要有单把锁的开锁信息
 
 # 分服务器提供的route
 def client_server_event_router(event, data):
@@ -69,7 +77,8 @@ def main_server_event_router(event, data, main_server_client):
     elif event == 'adminLogin':
         if "username" not in data or "password" not in data or "machineId" not in data:
             print(f'admin login: 收到的data包不正确{data}')
-            return json.dumps({"replyMessage": True, "message": f'machineStart: 收到的data包不正确{data}', "code": 500})
+            return json.dumps({"replyMessage": True,
+                               "message": f'machineStart: 收到的data包不正确{data}', "code": 500})
         return UserController.adminLogin(data['username'], data['password'], data['machineId'])
 
     # 根据提供的authToken获取对应用户的训练历史记录。
@@ -157,7 +166,8 @@ def main_server_event_router(event, data, main_server_client):
     # - "code": 整数，响应状态码。200表示成功，500表示错误。
     # - "TrainingID": 12316512
     elif event == 'startNewTraining':
-        if "authToken" not in data or "workstationID" not in data or "difficulty" not in data or "totalTime" not in data:
+        if "authToken" not in data or "workstationID" not in data \
+                or "difficulty" not in data or "totalTime" not in data:
             print(f'startNewTraining: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'startNewTraining: 收到的data包不正确{data}', "code": 500})
@@ -173,7 +183,8 @@ def main_server_event_router(event, data, main_server_client):
     # message: 字符串类型，描述了操作的结果，例如"更新训练成功"或具体的错误消息。
     # code: 整数类型，代表响应的状态代码。常见代码有200表示成功，500表示服务器内部错误。
     elif event == 'updateTraining':
-        if "authToken" not in data or "trainingID" not in data or "score" not in data or "unlockedNum" not in data or "isOn" not in data:
+        if "authToken" not in data or "trainingID" not in data \
+                or "score" not in data or "unlockedNum" not in data or "isOn" not in data:
             print(f'updateTraining: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'updateTraining: 收到的data包不正确{data}', "code": 500})
@@ -194,7 +205,8 @@ def main_server_event_router(event, data, main_server_client):
     # message: 字符串类型，描述了操作的结果，例如"结束训练成功"或具体的错误消息。
     # code: 整数类型，代表响应的状态代码。常见代码有200表示成功，500表示服务器内部错误。
     elif event == 'stopTraining':
-        if "authToken" not in data or "trainingID" not in data:
+        if "authToken" not in data or "trainingID" not in data or "score" not in data \
+                or "unlockedNum" not in data or "unlocks" not in data:
             print(f'stopTraining: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'stopTraining: 收到的data包不正确{data}', "code": 500})
