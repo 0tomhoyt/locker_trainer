@@ -2,14 +2,24 @@ import json
 
 from Controller import LockController,MachineController, UserController, TrainingController, MatchController
 
-# 1.workUIcontroller 显示每把锁的信息
-# 2.workerUIcontroller可以更改每把锁的信息
-# 3.服务器存储每把锁的信息，可以被event调用
-# 4.training 获取单把锁的开启用时（MCU）
-# 5.training结束传递给服务器单把锁的开启信息
-# 6.服务器存储单把锁的开启信息，forien key是 trainingID
-# 7.管理员查看工人信息，点进去之后有训练历史
-# 8.训练历史点进去之后有时间filter，还要有单把锁的开锁信息
+# machineStart: 启动指定的机器。
+# machineStop: 停止指定的机器。
+# workerLogin: 工人登录到机器和工作站。
+# workerLogout: 工人从机器和工作站登出。
+# adminLogin: 管理员登录到机器。
+# workerGetSelfTrainingHistory: 工人获取自己的训练历史记录。
+# getMatchTrainings: 获取指定比赛的训练信息。
+# startNewTraining: 开始一次新的训练，设置难度和总时间。
+# updateTraining: 更新训练信息，如分数、解锁数量等。
+# stopTraining: 停止训练，并提供解锁的锁信息。
+# getWorkerStatus: 获取工人的信息和状态。
+# getWorkStationStatus: 获取工作站的状态信息。
+# getConnectedMachine: 获取已连接的机器信息，包括工作站详情。
+# addUser: 添加新用户，可以是管理员或普通用户。
+# getLocks: 获取指定工作站的锁信息，只返回序列号不为0的锁。
+# updateLockInfo: 更新锁的信息，如名称、序列号、难度等。
+# getallLockInfo: 获取所有存在的锁的信息。
+# startMatch: 开始一场比赛，分配训练给各个客户端。
 
 # 分服务器提供的route
 def client_server_event_router(event, data):
@@ -311,7 +321,9 @@ def main_server_event_router(event, data, main_server_client):
                 {"replyMessage": True, "message": f'getLocks: 收到的data包不正确{data}', "code": 500})
         return LockController.getLocksController(data['authToken'],data['workstationId'])
 
-    #获取每把锁的名称，序列号，难度
+
+
+    #更新每把锁的名称，序列号，难度
     # data输入
     # authToken: 字符串类型，用于验证管理员身份。
     # lockId:int
@@ -329,6 +341,33 @@ def main_server_event_router(event, data, main_server_client):
             return json.dumps(
                 {"replyMessage": True, "message": f'updateLockInfo: 收到的data包不正确{data}', "code": 500})
         return LockController.updateLockInfo(data['authToken'],data['lockId'],data['lockName'],data['lockSerialNumber'],data['difficulty'])
+
+    #更新每把锁的名称，序列号，难度
+    # data输入
+    # authToken: 字符串类型，用于验证管理员身份。
+    # serialNum :锁的序列号
+    # 输出
+    # message: 字符串，表示查询状态。
+    # code: 整数，表示HTTP状态代码，如200表示成功。
+    # unlocklist = []
+    #     for unlock in unlocks:
+    #         unlock_json = {
+    #             "unlockId":unlock[0],
+    #             "unlockTime":unlock[1],
+    #             "unlockDuration":unlock[2],
+    #             "trainingId":unlock[3],
+    #             "lockId":unlock[4],
+    #             "lockSerialNum":unlock[5],
+    #             "lockName":unlock[6],
+    #             "difficulty":unlock[7],
+    #         }
+    elif event == "getUnlockInfoBySerialNum":
+        if "authToken" not in data or "serialNum" not in data:
+            print(f'getUnlockInfoBySerialNum: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'getUnlockInfoBySerialNum: 收到的data包不正确{data}', "code": 500})
+        return LockController.getUnlockInfoBySerialNum(data['authToken'],data['serialNum'])
+
 
 
 
