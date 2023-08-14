@@ -3,7 +3,7 @@ import mysql.connector  # python访问mysql数据库
 
 def databaseConnect():
     cnx = mysql.connector.connect(user='root',
-                                  password='hjqCYS1301',
+                                  password='1234',
                                   host='localhost',
                                   database='zy_database')
     return cnx
