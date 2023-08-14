@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="200.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HistoryCardController">
+<AnchorPane prefHeight="200.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HistoryCardController">
    <children>
-      <Label fx:id="score_label" layoutX="233.0" layoutY="60.0" text="分数" />
-      <Label fx:id="total_time_label" layoutX="30.0" layoutY="124.0" text="总用时" />
-      <Label fx:id="unlocked_label" layoutX="221.0" layoutY="124.0" text="未开锁数" />
-      <Label fx:id="difficulty_label" layoutX="36.0" layoutY="60.0" text="难度" />
+      <Label fx:id="time_label" layoutX="27.0" layoutY="40.0" text="时间" />
+      <Label fx:id="score_label" layoutX="30.0" layoutY="117.0" text="分数" />
+      <Label fx:id="total_time_label" layoutX="24.0" layoutY="92.0" text="总用时" />
+      <Label fx:id="unlocked_label" layoutX="18.0" layoutY="144.0" text="未开锁数" />
+      <Label fx:id="difficulty_label" layoutX="30.0" layoutY="66.0" text="难度" />
+      <ScrollPane layoutX="281.0" prefHeight="200.0" prefWidth="620.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="620.0">
+               <children>
+                  <VBox fx:id="vBox" prefHeight="200.0" prefWidth="620.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

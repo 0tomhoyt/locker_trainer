@@ -4,7 +4,6 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -38,7 +37,7 @@ import java.util.concurrent.TimeoutException;
 import static controllers.MainController.primaryStage;
 
 public class WorkerUIController implements Initializable, Controller {
-    private List<Lock> locks = new ArrayList<>(50);
+    private List<Lock> locks = new ArrayList<>(60);
     private List<Label> labels = new ArrayList<>(50);
     private Timeline timer;
     private TimerStrategy timerStrategy;
@@ -162,28 +161,12 @@ public class WorkerUIController implements Initializable, Controller {
                 vBox.getChildren().add(pane);
                 HistoryCardController historyCardController = fxmlLoader.getController();
                 TrainingHistory t = showHistories.get(i);
-                historyCardController.setInfo(t.getScore(), t.getTotalTime(), t.getUnlocked(), t.getDifficulty());
+                historyCardController.setTrainingHistory(t);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-    private String getLocksJSON() {
-        return String.format("{ \"event\": \"getLocks\", \"data\": { \"authToken\":\"%s\", \"workstationId\": \"%d\"} }",
-                worker.getAuthToken(),
-                worker.getWorkStationID()
-        );
-    }
-
-    //得到锁的数组
-    private JSONArray getLocksStatus() throws IOException, JSONException {
-        JSONObject jsonObject = Tools.transferToJSONObject(Tools.socketConnect(getLocksJSON()));
-        JSONArray jsonArray = jsonObject.getJSONArray("Locks");
-
-        return jsonArray;
-    }
-
 
     public void setWorker(Worker worker) throws JSONException, IOException {
         this.worker = worker;
@@ -193,8 +176,8 @@ public class WorkerUIController implements Initializable, Controller {
 
         //需要获得worker的workStationID之后才可以创建lock
         //模拟：通过URAT接收锁的状态
-        for (int i = 0; i < 50; i++) {
-            Lock lock = new Lock(i, LockStatus.ON, worker.getWorkStationID());
+        for(int i=0;i<60;i++){
+            Lock lock = new Lock(1,LockStatus.ON, worker.getWorkStationID());
             locks.add(lock);
 
 
@@ -218,9 +201,9 @@ public class WorkerUIController implements Initializable, Controller {
         updateLocks(jsonArray);
 
         //添加Label到gridPane
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 10; j++) {
-                gridPane.add(labels.get(i * 10 + j), i, j);
+        for(int i=0;i<6;i++){
+            for(int j=0;j<10;j++){
+                gridPane.add(labels.get(i * 10 + j) ,i ,j);
             }
         }
 
@@ -552,11 +535,12 @@ public class WorkerUIController implements Initializable, Controller {
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getUpdateTrainingJson(trainingHistory)));
 
         try {
-            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5, TimeUnit.SECONDS));
-            if (jsonObject.has("code") && jsonObject.getInt("code") == 200) {
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
+            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 return true;
-            } else {
-                MainController.popUpAlter("ERROR", "", Tools.unicodeToChinese(jsonObject.getString("message")));
+            }
+            else {
+                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
@@ -597,25 +581,41 @@ public class WorkerUIController implements Initializable, Controller {
         Popup popup = MainController.showLoadingPopup("结束任务中");
 
         try {
-            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5, TimeUnit.SECONDS));
-            if (jsonObject.has("code") && jsonObject.getInt("code") == 200) {
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
+            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 popup.hide();
                 return true;
-            } else {
+            }
+            else {
                 popup.hide();
-                MainController.popUpAlter("ERROR", "", Tools.unicodeToChinese(jsonObject.getString("message")));
+                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
             popup.hide();
-            MainController.popUpAlter("ERROR", "", "结束训练超时");
+            MainController.popUpAlter("ERROR","","结束训练超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
             popup.hide();
-            MainController.popUpAlter("ERROR", "", "结束训练失败");
+            MainController.popUpAlter("ERROR","","结束训练失败");
             return false;
         }
+    }
+
+    private String getLocksJSON() {
+        return String.format("{ \"event\": \"getLocks\", \"data\": { \"authToken\":\"%s\", \"workstationId\": \"%d\"} }",
+                worker.getAuthToken(),
+                worker.getWorkStationID()
+        );
+    }
+
+    //得到锁的数组
+    private JSONArray getLocksStatus() throws IOException, JSONException {
+        JSONObject jsonObject = Tools.transferToJSONObject(Tools.socketConnect(getLocksJSON()));
+        JSONArray jsonArray = jsonObject.getJSONArray("Locks");
+
+        return jsonArray;
     }
 }

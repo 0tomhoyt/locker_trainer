@@ -43,14 +43,6 @@ public class AdminStartGameController implements Initializable,Controller {
     @FXML
     private Spinner sec_spinner;
     @FXML
-    private ChoiceBox<String> worker_choiceBox;
-    @FXML
-    private Button add_btn;
-    @FXML
-    private TextArea display_area;
-    @FXML
-    private Button start_game_btn;
-    @FXML
     private VBox connected_machine_vbox;
 
     @Override
@@ -97,17 +89,6 @@ public class AdminStartGameController implements Initializable,Controller {
         }
     }
 
-    private void setupChoiceBox(){
-        //使用之前获得的员工信息初始化ChoiceBox
-        ObservableList<String> options = FXCollections.observableArrayList();
-        for(Worker worker : workers){
-            options.add(worker.getId()+":"+worker.getUsername());
-        }
-
-        worker_choiceBox.setItems(options);
-        worker_choiceBox.setValue(workers.get(0).getId()+":"+workers.get(0).getUsername());
-    }
-
     private void setupVbox() {
         for(int i=0;i<machines.size();i++){
             try{
@@ -131,29 +112,9 @@ public class AdminStartGameController implements Initializable,Controller {
 
     public void setWorkers(List<Worker> workers){
         this.workers.addAll(workers);
-        setupChoiceBox();
 
         getConnectedMachines();
         setupVbox();
-    }
-
-    @FXML
-    void add_btn_click(){
-        //根据员工信息来new Worker
-        String user = worker_choiceBox.getValue();
-        int colonIndex = user.indexOf(":");
-        int userID = Integer.parseInt(user.substring(0, colonIndex));
-
-        Worker worker = new Worker(-1,-1);
-        for(int i=0;i<workers.size();i++){
-            if(workers.get(i).getId() == userID){
-                worker = workers.get(i);
-            }
-        }
-        TrainingHistory trainingHistory = new TrainingHistory(worker);
-        trainingHistoryList.add(trainingHistory);
-
-        display_area.appendText(worker_choiceBox.getValue()+"\n");
     }
 
     @FXML
@@ -220,7 +181,7 @@ public class AdminStartGameController implements Initializable,Controller {
         Popup popup = MainController.showLoadingPopup("获取连接机器中");
 
         try {
-            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5, TimeUnit.SECONDS));
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(10, TimeUnit.SECONDS));
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 popup.hide();
                 JSONArray jsonArray_machine = jsonObject.getJSONArray("machines");

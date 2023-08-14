@@ -72,4 +72,11 @@ public class Lock {
                 difficulty
         );
     }
+
+    public String getHistoryJson(String authToken){
+        return String.format("{ \"event\": \"getUnlockInfoBySerialNum\", \"data\": { \"authToken\": \"%s\", \"serialNum\": %d} }",
+                authToken,
+                serialNumber
+        );
+    }
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="100.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LockCardSerialNumController">
+   <children>
+      <Label fx:id="unlockTime_label" layoutX="82.0" layoutY="14.0" text="解锁时间" />
+      <Label fx:id="unlockDuration_label" layoutX="82.0" layoutY="70.0" text="解锁用时" />
+      <Label fx:id="lockSerialNum_label" layoutX="432.0" layoutY="14.0" text="序列号" />
+      <Label fx:id="difficulty_label" layoutX="727.0" layoutY="14.0" text="难度" />
+      <Label fx:id="lockName_label" layoutX="438.0" layoutY="70.0" text="名字" />
+   </children>
+</AnchorPane>

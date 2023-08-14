@@ -1,3 +1,5 @@
+from datetime import date
+
 from DatabaseConnection import DBconnect, LockDB, UserDB,Lock_unlockDB
 import json
 
@@ -58,7 +60,7 @@ def getUnlockInfoBySerialNum(authToken, serialNumber):
     for unlock in unlocks:
         unlock_json = {
             "unlockId":unlock[0],
-            "unlockTime":unlock[1],
+            "unlockTime":date_to_string(unlock[1]),
             "unlockDuration":unlock[2],
             "trainingId":unlock[3],
             "lockId":unlock[4],
@@ -69,3 +71,9 @@ def getUnlockInfoBySerialNum(authToken, serialNumber):
         unlocklist.append(unlock_json)
 
     return json.dumps({"unlocks": unlocklist, "message": "查询成功", "code": 200})
+
+def date_to_string(date_obj):
+    if isinstance(date_obj, date):
+        return date_obj.isoformat()
+    else:
+        raise TypeError("Expected a datetime.date object")

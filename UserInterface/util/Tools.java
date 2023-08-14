@@ -22,6 +22,7 @@ public class Tools {
         // 去除前后的双引号
 //        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
         // 转换为json对象
+        System.out.println(tokenInfoEsca);
         JSONObject jsonObject = new JSONObject(tokenInfoEsca);
         return jsonObject;
     }
@@ -67,6 +68,4 @@ public class Tools {
         }
         return null;
     }
-
-
 }

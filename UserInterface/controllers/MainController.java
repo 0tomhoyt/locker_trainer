@@ -1,29 +1,42 @@
 package controllers;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import main.Main;
+import javafx.fxml.Initializable;
 import models.Lock;
 import models.LockStatus;
 import models.Machine;
+import org.apache.commons.text.StringEscapeUtils;
 
 import models.Worker;
 import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
+import socketClient.SocketClient2;
 import util.Tools;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.*;
-
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 //1.更新每把锁的开锁时间，event在stoptraining的时候同时带上这个数据 如果锁的序列号是0，就不带 更新列表：侯宇腾
 //2.每把锁需要可以设置型号名称和序列号和难度，每次需要从服务器更新并且显示。 管理员界面可以单独单人训练  //志勇
 //3.管理员需要可以查看每个工人的训练历史和每个锁的开锁信息。//符讯
@@ -56,10 +69,8 @@ public class MainController implements Initializable, Controller {
             while (true) {
                 try {
                     Thread.sleep(1000); // 等待1000毫秒，即1秒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("1");
+                } catch (InterruptedException e) {e.printStackTrace();}
+//                System.out.println("1");
             }
         });
         sendCOMThread.start();
@@ -69,10 +80,8 @@ public class MainController implements Initializable, Controller {
             while (true) {
                 try {
                     Thread.sleep(1000); // 等待1000毫秒，即1秒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("2");
+                } catch (InterruptedException e) {e.printStackTrace();}
+//                System.out.println("2");
             }
         });
         receiveCOMThread.start();
@@ -82,10 +91,8 @@ public class MainController implements Initializable, Controller {
             while (true) {
                 try {
                     Thread.sleep(1000); // 等待1000毫秒，即1秒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("3");
+                } catch (InterruptedException e) {e.printStackTrace();}
+//                System.out.println("3");
             }
         });
         receiveSocketThread.start();
