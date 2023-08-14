@@ -150,7 +150,7 @@ def deleteUser(cnx, UserID):
         return 1
 
 def getAllWorker(cnx):
-    query = "SELECT * FROM users WHERE Role = 2"
+    query = "SELECT * FROM users"
     result = execute_query(cnx, query)
     result = result.fetchall()
     if type(result) == str:  # 捕获错误，返回错误信息

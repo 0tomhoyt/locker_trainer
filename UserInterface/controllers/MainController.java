@@ -48,7 +48,37 @@ public class MainController implements Initializable, Controller {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Main.controllers.put(this.getClass().getSimpleName(),this);
         locks = new ArrayList<>(Collections.nCopies(120, -1));
-        System.out.println(locks);
+        // Create and start thread for sending COM interface messages
+        Thread sendCOMThread = new Thread(() -> {
+            try {
+                Thread.sleep(1000); // 等待1000毫秒，即1秒
+            } catch (InterruptedException e) {e.printStackTrace();}
+
+            System.out.println("1");
+        });
+        sendCOMThread.start();
+
+        // Create and start thread for receiving COM interface messages
+        Thread receiveCOMThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000); // 等待1000毫秒，即1秒
+                } catch (InterruptedException e) {e.printStackTrace();}
+                System.out.println("2");
+            }
+        });
+        receiveCOMThread.start();
+
+        // Create and start thread for receiving socket messages
+        Thread receiveSocketThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000); // 等待1000毫秒，即1秒
+                } catch (InterruptedException e) {e.printStackTrace();}
+                System.out.println("3");
+            }
+        });
+        receiveSocketThread.start();
     }
 
     public void setJoinMatchButtonsVisible(int buttonNum, boolean visible) {
