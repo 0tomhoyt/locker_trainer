@@ -61,4 +61,15 @@ public class Lock {
     public void setDifficulty(int difficulty) {
         this.difficulty = difficulty;
     }
+
+    //"lockId": 5, "lockName": "2号锁", "lockSerialNumber": 8988,"difficulty":2}
+    public String updateJSON(Worker worker) {
+        return String.format("{ \"event\": \"updateLockInfo\", \"data\": { \"authToken\":\"%s\", \"lockId\" : \"%d\",\"lockName\":\"%s\",\"lockSerialNumber\":\"%d\",\"difficulty\":\"%d\"} }",
+                worker.getAuthToken(),
+                id,
+                lockName,
+                serialNumber,
+                difficulty
+        );
+    }
 }

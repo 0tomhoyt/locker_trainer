@@ -35,6 +35,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static controllers.MainController.primaryStage;
+
 public class WorkerUIController implements Initializable, Controller {
     private List<Lock> locks = new ArrayList<>(50);
     private List<Label> labels = new ArrayList<>(50);
@@ -101,7 +103,7 @@ public class WorkerUIController implements Initializable, Controller {
         all_btn.setSelected(true);
     }
 
-    private void setupTimeSpinner(){
+    private void setupTimeSpinner() {
         sec_spinner.setVisible(false);
         sec_spinner.setEditable(true);
         min_spinner.setVisible(false);
@@ -116,28 +118,28 @@ public class WorkerUIController implements Initializable, Controller {
 
         //设置ChangeListener
         sec_spinner.valueProperty().addListener(((observableValue, oldValue, newValue) -> {
-            trainingHistory.setSeconds( (Integer) newValue );
-            trainingHistory.setTotalTime( (Integer) min_spinner.getValue() , (Integer) newValue );
+            trainingHistory.setSeconds((Integer) newValue);
+            trainingHistory.setTotalTime((Integer) min_spinner.getValue(), (Integer) newValue);
         }));
 
         min_spinner.valueProperty().addListener(((observableValue, oldValue, newValue) -> {
-            trainingHistory.setMinutes( (Integer) newValue );
-            trainingHistory.setTotalTime( (Integer) newValue , (Integer) sec_spinner.getValue() );
+            trainingHistory.setMinutes((Integer) newValue);
+            trainingHistory.setTotalTime((Integer) newValue, (Integer) sec_spinner.getValue());
         }));
     }
 
     private void setupTimer() {
         timerStrategy = new VariableTimeStrategy(trainingHistory);
-        timer = new Timeline(new KeyFrame(Duration.seconds(1),actionEvent -> {
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), actionEvent -> {
             try {
                 timerStrategy.doWork();
             } catch (JSONException | IOException e) {
                 throw new RuntimeException(e);
             }
-            if(trainingHistory.isOn()){
-                difficulty_label.setText("难度："+trainingHistory.getDifficulty());
-                score_label.setText("分值："+trainingHistory.getScore());
-                time_label.setText(trainingHistory.getTime()+"s");
+            if (trainingHistory.isOn()) {
+                difficulty_label.setText("难度：" + trainingHistory.getDifficulty());
+                score_label.setText("分值：" + trainingHistory.getScore());
+                time_label.setText(trainingHistory.getTime() + "s");
 
                 try {
                     updateTraining();
@@ -154,60 +156,71 @@ public class WorkerUIController implements Initializable, Controller {
     private void setupTrainingHistoryUI() {
         vBox.getChildren().clear();
         try {
-            for (int i=0;i<showHistories.size();i++){
+            for (int i = 0; i < showHistories.size(); i++) {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/history_card.fxml"));
                 Pane pane = fxmlLoader.load();
                 vBox.getChildren().add(pane);
                 HistoryCardController historyCardController = fxmlLoader.getController();
                 TrainingHistory t = showHistories.get(i);
-                historyCardController.setInfo(t.getScore(),t.getTotalTime(),t.getUnlocked(),t.getDifficulty());
+                historyCardController.setInfo(t.getScore(), t.getTotalTime(), t.getUnlocked(), t.getDifficulty());
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String getLocksJSON(){
+    private String getLocksJSON() {
         return String.format("{ \"event\": \"getLocks\", \"data\": { \"authToken\":\"%s\", \"workstationId\": \"%d\"} }",
                 worker.getAuthToken(),
                 worker.getWorkStationID()
         );
     }
+
+    //得到锁的数组
     private JSONArray getLocksStatus() throws IOException, JSONException {
         JSONObject jsonObject = Tools.transferToJSONObject(Tools.socketConnect(getLocksJSON()));
-        JSONArray jsonArray= jsonObject.getJSONArray("Locks");
+        JSONArray jsonArray = jsonObject.getJSONArray("Locks");
 
         return jsonArray;
     }
 
 
-
     public void setWorker(Worker worker) throws JSONException, IOException {
         this.worker = worker;
-
+        //拿到锁的数据
         JSONArray jsonArray = getLocksStatus();
-        System.out.println(jsonArray);
-        for(int i = 0; i < jsonArray.length(); i++){
+//        System.out.println(jsonArray);
 
-
-        }
-        jsonArray.getJSONObject(0);
         //需要获得worker的workStationID之后才可以创建lock
         //模拟：通过URAT接收锁的状态
-        for(int i=0;i<50;i++){
-            Lock lock = new Lock(i,LockStatus.ON, worker.getWorkStationID());
+        for (int i = 0; i < 50; i++) {
+            Lock lock = new Lock(i, LockStatus.ON, worker.getWorkStationID());
             locks.add(lock);
-            labels.add(new Label(lock.getStatus().toString()));
-            labels.get(i).setOnMouseClicked(e ->{
 
-                System.out.println("mouseClicked");
+
+            labels.add(new Label(lock.getStatus().toString()));
+            //添加点击事件，方便测试
+            labels.get(i).setOnMouseClicked(e -> {
+//                点击时弹出窗口
+                Popup lockDetail = MainController.lockDetail(lock, worker);//有个问题就是，一直点的话内存占用会越来越高XD，因为一直在新建，哪怕是点同一个，但搞了半天暂时只能想到这个逻辑了
+//                lockDetail.hide();//默认是弹出的
+                lockDetail.setAutoHide(true);//点击其他地方会消失
+
+//                if (lockDetail.isShowing())
+//                    lockDetail.hide();
+//                else
+//                    lockDetail.show(primaryStage);
+
+                System.out.println(lock.getLockName());
             });
         }
+        //更新锁的状态
+        updateLocks(jsonArray);
 
         //添加Label到gridPane
-        for(int i=0;i<5;i++){
-            for(int j=0;j<10;j++){
-                gridPane.add(labels.get(i * 10 + j) ,i ,j);
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 10; j++) {
+                gridPane.add(labels.get(i * 10 + j), i, j);
             }
         }
 
@@ -226,21 +239,37 @@ public class WorkerUIController implements Initializable, Controller {
         setupTrainingHistoryUI();
     }
 
+
+    private void updateLocks(JSONArray jsonArray) throws JSONException {
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            int l = jsonObject.getInt("lockId");
+            int serialNum = jsonObject.getInt("lockSerialNumber");
+            String lockName = jsonObject.getString("lockName");
+//            System.out.println(jsonArray.getJSONObject(i) +" "+ i);
+//            labels.get(l).setOnMouseClicked(e ->{
+//                System.out.println("special one");//可以拿到，但是是竖着来的，怪
+//            });
+            locks.get(l).setSerialNumber(serialNum);
+            locks.get(l).setLockName(lockName);
+        }
+    }
+
     //fxml控件的Listener
     @FXML
-    void all_btn_click(){
+    void all_btn_click() {
         showHistories.clear();
-        for(TrainingHistory history: trainingHistories){
+        for (TrainingHistory history : trainingHistories) {
             showHistories.add(history);
         }
         setupTrainingHistoryUI();
     }
 
     @FXML
-    void train_btn_click(){
+    void train_btn_click() {
         showHistories.clear();
-        for(TrainingHistory history: trainingHistories){
-            if (!history.isMatch()){
+        for (TrainingHistory history : trainingHistories) {
+            if (!history.isMatch()) {
                 showHistories.add(history);
             }
         }
@@ -248,10 +277,10 @@ public class WorkerUIController implements Initializable, Controller {
     }
 
     @FXML
-    void game_btn_click(){
+    void game_btn_click() {
         showHistories.clear();
-        for(TrainingHistory history: trainingHistories){
-            if (history.isMatch()){
+        for (TrainingHistory history : trainingHistories) {
+            if (history.isMatch()) {
                 showHistories.add(history);
                 System.out.println(showHistories);
             }
@@ -260,18 +289,18 @@ public class WorkerUIController implements Initializable, Controller {
     }
 
     @FXML
-    void const_time_btn_click(){
+    void const_time_btn_click() {
         //设置trainingHistory的时间
-        trainingHistory.setSeconds( (Integer) sec_spinner.getValue() );
-        trainingHistory.setMinutes( (Integer) min_spinner.getValue() );
-        trainingHistory.setTotalTime( (Integer) min_spinner.getValue() , (Integer) sec_spinner.getValue() );
+        trainingHistory.setSeconds((Integer) sec_spinner.getValue());
+        trainingHistory.setMinutes((Integer) min_spinner.getValue());
+        trainingHistory.setTotalTime((Integer) min_spinner.getValue(), (Integer) sec_spinner.getValue());
         sec_spinner.setVisible(true);
         min_spinner.setVisible(true);
         timerStrategy = new ConstantTimeStrategy(trainingHistory, this);
     }
 
     @FXML
-    void var_time_btn_click(){
+    void var_time_btn_click() {
         trainingHistory.setSeconds(0);
         trainingHistory.setMinutes(0);
         sec_spinner.setVisible(false);
@@ -283,10 +312,10 @@ public class WorkerUIController implements Initializable, Controller {
     void start_btn_click(ActionEvent event) throws IOException, JSONException {
         updateTrainingHistory();
 
-        if( !(trainingHistory.getTotalTime() == 0 && timerStrategy instanceof ConstantTimeStrategy) ){
-            time_label.setText(trainingHistory.getTime()+"s");
-            score_label.setText("分值："+trainingHistory.getScore());
-            difficulty_label.setText("难度："+trainingHistory.getDifficulty());
+        if (!(trainingHistory.getTotalTime() == 0 && timerStrategy instanceof ConstantTimeStrategy)) {
+            time_label.setText(trainingHistory.getTime() + "s");
+            score_label.setText("分值：" + trainingHistory.getScore());
+            difficulty_label.setText("难度：" + trainingHistory.getDifficulty());
 
             timer.play();
             updateTrainingHistory();
@@ -298,8 +327,7 @@ public class WorkerUIController implements Initializable, Controller {
             end_btn.setDisable(false);
 
             startTraining();
-        }
-        else {
+        } else {
             System.out.println("训练时间不可以等于0");
         }
     }
@@ -329,7 +357,7 @@ public class WorkerUIController implements Initializable, Controller {
         endTraining();
     }
 
-    private void updateTrainingHistory(){
+    private void updateTrainingHistory() {
         int score = (int) locks.stream()
                 .filter(lock -> lock.getStatus() == LockStatus.ON)
                 .count();
@@ -387,12 +415,12 @@ public class WorkerUIController implements Initializable, Controller {
         Popup popup = MainController.showLoadingPopup("获得训练历史中");
 
         try {
-            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
-            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5, TimeUnit.SECONDS));
+            if (jsonObject.has("code") && jsonObject.getInt("code") == 200) {
                 JSONArray jsonArray = jsonObject.getJSONArray("trainingList");
                 trainingHistories = new ArrayList<>(jsonArray.length());
                 showHistories = new ArrayList<>(jsonArray.length());
-                for(int i=0;i<jsonArray.length();i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject trainHistoryJson = jsonArray.getJSONObject(i);
                     TrainingHistory history = new TrainingHistory(trainHistoryJson);
                     trainingHistories.add(history);
@@ -400,21 +428,20 @@ public class WorkerUIController implements Initializable, Controller {
                 }
                 popup.hide();
                 return true;
-            }
-            else {
+            } else {
                 popup.hide();
-                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
+                MainController.popUpAlter("ERROR", "", Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
             popup.hide();
-            MainController.popUpAlter("ERROR","","获取训练记录超时");
+            MainController.popUpAlter("ERROR", "", "获取训练记录超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
             popup.hide();
-            MainController.popUpAlter("ERROR","","获取训练记录失败");
+            MainController.popUpAlter("ERROR", "", "获取训练记录失败");
             return false;
         }
     }
@@ -476,27 +503,26 @@ public class WorkerUIController implements Initializable, Controller {
         Popup popup = MainController.showLoadingPopup("开始训练中");
 
         try {
-            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
-            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5, TimeUnit.SECONDS));
+            if (jsonObject.has("code") && jsonObject.getInt("code") == 200) {
                 long trainingID = jsonObject.getLong("TrainingID");
                 trainingHistory.setId(trainingID);
                 popup.hide();
                 return true;
-            }
-            else {
+            } else {
                 popup.hide();
-                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
+                MainController.popUpAlter("ERROR", "", Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
             popup.hide();
-            MainController.popUpAlter("ERROR","","开始训练超时");
+            MainController.popUpAlter("ERROR", "", "开始训练超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
             popup.hide();
-            MainController.popUpAlter("ERROR","","开始训练失败");
+            MainController.popUpAlter("ERROR", "", "开始训练失败");
             return false;
         }
     }
@@ -526,12 +552,11 @@ public class WorkerUIController implements Initializable, Controller {
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getUpdateTrainingJson(trainingHistory)));
 
         try {
-            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
-            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5, TimeUnit.SECONDS));
+            if (jsonObject.has("code") && jsonObject.getInt("code") == 200) {
                 return true;
-            }
-            else {
-                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
+            } else {
+                MainController.popUpAlter("ERROR", "", Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
@@ -572,25 +597,24 @@ public class WorkerUIController implements Initializable, Controller {
         Popup popup = MainController.showLoadingPopup("结束任务中");
 
         try {
-            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
-            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5, TimeUnit.SECONDS));
+            if (jsonObject.has("code") && jsonObject.getInt("code") == 200) {
                 popup.hide();
                 return true;
-            }
-            else {
+            } else {
                 popup.hide();
-                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
+                MainController.popUpAlter("ERROR", "", Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
             popup.hide();
-            MainController.popUpAlter("ERROR","","结束训练超时");
+            MainController.popUpAlter("ERROR", "", "结束训练超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
             popup.hide();
-            MainController.popUpAlter("ERROR","","结束训练失败");
+            MainController.popUpAlter("ERROR", "", "结束训练失败");
             return false;
         }
     }
