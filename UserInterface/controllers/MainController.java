@@ -18,6 +18,7 @@ import javafx.util.Duration;
 import main.Main;
 import javafx.fxml.Initializable;
 import models.Lock;
+import models.LockStatus;
 import models.Machine;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -49,6 +50,17 @@ public class MainController implements Initializable, Controller {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Main.controllers.put(this.getClass().getSimpleName(),this);
+        locks = new ArrayList<>();
+        for (int i = 0; i < 60; i++) {
+            // You can replace the arguments with the appropriate values for your LockStatus and workStation
+            Lock lock = new Lock(i, LockStatus.ON,1);
+            locks.add(lock);
+        }
+        for (int i = 0; i < 60; i++) {
+            // You can replace the arguments with the appropriate values for your LockStatus and workStation
+            Lock lock = new Lock(i+60, LockStatus.ON,2);
+            locks.add(lock);
+        }
 //        locks = new ArrayList<>(Collections.nCopies(120, -1));
         // Create and start thread for sending COM interface messages
         Thread sendCOMThread = new Thread(() -> {
