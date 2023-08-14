@@ -2,9 +2,9 @@ import mysql.connector  # python访问mysql数据库
 
 
 def databaseConnect():
-    cnx = mysql.connector.connect(user='root',
-                                  password='1234',
-                                  host='localhost',
+    cnx = mysql.connector.connect(user='hoyt',
+                                  password='hjqCYS1301',
+                                  host='47.113.207.215',
                                   database='zy_database')
     return cnx
 

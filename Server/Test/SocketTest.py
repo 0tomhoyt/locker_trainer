@@ -129,7 +129,8 @@ if __name__ == "__main__":
     # start_client(event, data)
     # print("测试19：结束训练,正确测试")
     # event = 'stopTraining'
-    # data = {"authToken": 123456,"trainingID":22}
+    # data = {"authToken": 123456, "trainingID": 169198383764, "score": 55, "unlockedNum": 22,
+    #         "unlocks": [{"duration": 2, "lockId": 0}]}
     # start_client(event, data)
     # print("测试19：结束训练,错误测试")
     # event = 'stopTraining'
@@ -159,16 +160,28 @@ if __name__ == "__main__":
     # data = {"authToken": "888666",'userName':'new','password':'123456','role':1} # 使用无效的管理员令牌
     # start_client(event, data)
 
-    print("测试24：获取连接状态，正确")
-    event = 'getConnectedMachine'
-    data = {"authToken": "888666"}
-    start_client(event, data)
+    # print("测试24：获取连接状态，正确")
+    # event = 'getConnectedMachine'
+    # data = {"authToken": "888666"}
+    # start_client(event, data)
 
     # print("测试25：获取连接状态，正确")
     # event = 'getConnectedMachine'
     # data = {"authToken": "888666"} # 使用无效的管理员令牌
     # start_client(event, data)
 
+    print("测试26：更新锁信息，正确")
+    event = 'updateLockInfo'
+    data = {"authToken": "888666", "lockId": 5, "lockName": "2号锁", "lockSerialNumber": 8988,"difficulty":2}  # 使用无效的管理员令牌
+    start_client(event, data)
 
+    print("测试27：获取锁状态，正确")
+    event = 'getLocks'
+    data = {"authToken": "888666","workstationId":1}  # 使用无效的管理员令牌
+    start_client(event, data)
 
+    print("测试28：获取锁状态，正确")
+    event = 'getLocks'
+    data = {"authToken": "888666","workstationId":2}  # 使用无效的管理员令牌
+    start_client(event, data)
 # unittest.main()

@@ -14,3 +14,10 @@ def createLockUnlock(cnx, unlockDuration, trainingId, lockId, lockSerialNum, loc
         return 1
 
 
+def getAllunlock(cnx, trainingId):
+    query = f"SELECT * FROM locks_unlock WHERE trainingId = {trainingId}"
+    result = DBconnect.execute_query(cnx, query)
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 返回查询结果
+        return result.fetchall()

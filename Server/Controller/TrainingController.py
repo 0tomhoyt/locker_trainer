@@ -19,10 +19,18 @@ def workerGetSelfTrainingHistory(authToken):
     # 如果没有训练记录，则返回错误
     if not training_records:
         return json.dumps({"message": "没有找到对应的训练记录", "code": 500})
-
     # 将训练记录整理成字典格式，并添加到列表中
     training_list = []
     for record in training_records:
+        unlocks = Lock_unlockDB.getAllunlock(cnx, record[0])
+        unlock_list = []
+        for unlock in unlocks:
+            unlock_list.append({
+                "lockId": unlock[4],
+                "lockSerialNumber": unlock[5],
+                "lockName": unlock[6],
+                "difficulty": unlock[7]
+            })
         training_dict = {
             "TrainingID": record[0],
             "IsMatch": record[1],
@@ -35,6 +43,7 @@ def workerGetSelfTrainingHistory(authToken):
             "TrainingType": record[8],
             "Difficulty": record[9],
             "IsOn": record[10],
+            "unlockList": unlock_list
         }
         training_list.append(training_dict)
 

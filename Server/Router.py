@@ -1,6 +1,6 @@
 import json
 
-from Controller import MachineController, UserController, TrainingController, MatchController
+from Controller import LockController,MachineController, UserController, TrainingController, MatchController
 
 # 1.workUIcontroller 显示每把锁的信息
 # 2.workerUIcontroller可以更改每把锁的信息
@@ -102,6 +102,12 @@ def main_server_event_router(event, data, main_server_client):
     # - 	TrainingType (int): 训练类型。
     # - 	Difficulty (int): 难度。
     # - 	IsOn (tinyint): 是否开启。
+    # -     unlockList: []
+    # -          unlockjson{
+    #             lockId:int,
+    #             lockSerialNumber:int,
+    #             lockName:string,
+    #             difficulty:int}
 
     # 示例输出:
     # {
@@ -288,6 +294,41 @@ def main_server_event_router(event, data, main_server_client):
             return json.dumps(
                 {"replyMessage": True, "message": f'addUser: 收到的data包不正确{data}', "code": 500})
         return UserController.addUser(data['authToken'], data['userName'], data['password'], data['role'])
+
+    #获取每把锁的名称，序列号，难度
+    # data输入
+    # authToken: 字符串类型，用于验证管理员身份。
+    # workstationId:int
+    # 输出
+    # message: 字符串，表示查询状态。
+    # code: 整数，表示HTTP状态代码，如200表示成功。
+    # Locks:[] 注意只返回serialnumber不为0的
+    # {“lockName”：string， ”lockSerialNumber“：int，”difficulty“：int}
+    elif event == "getLocks":
+        if "authToken" not in data or "workstationId" not in data:
+            print(f'getLocks: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'getLocks: 收到的data包不正确{data}', "code": 500})
+        return LockController.getLocksController(data['authToken'],data['workstationId'])
+
+    #获取每把锁的名称，序列号，难度
+    # data输入
+    # authToken: 字符串类型，用于验证管理员身份。
+    # lockId:int
+    # “lockName”：string，
+    # ”lockSerialNumber“：int，
+    # ”difficulty“：int
+    # 输出
+    # message: 字符串，表示查询状态。
+    # code: 整数，表示HTTP状态代码，如200表示成功。
+    elif event == "updateLockInfo":
+        if "authToken" not in data or "lockId" not in data or "lockName" not in data or \
+                "lockSerialNumber" not in data\
+                or "difficulty" not in data:
+            print(f'updateLockInfo: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'updateLockInfo: 收到的data包不正确{data}', "code": 500})
+        return LockController.updateLockInfo(data['authToken'],data['lockId'],data['lockName'],data['lockSerialNumber'],data['difficulty'])
 
 
 
