@@ -2,24 +2,60 @@ import json
 
 from Controller import LockController,MachineController, UserController, TrainingController, MatchController
 
-# machineStart: 启动指定的机器。
-# machineStop: 停止指定的机器。
-# workerLogin: 工人登录到机器和工作站。
-# workerLogout: 工人从机器和工作站登出。
-# adminLogin: 管理员登录到机器。
-# workerGetSelfTrainingHistory: 工人获取自己的训练历史记录。
-# getMatchTrainings: 获取指定比赛的训练信息。
-# startNewTraining: 开始一次新的训练，设置难度和总时间。
-# updateTraining: 更新训练信息，如分数、解锁数量等。
-# stopTraining: 停止训练，并提供解锁的锁信息。
-# getWorkerStatus: 获取工人的信息和状态。
-# getWorkStationStatus: 获取工作站的状态信息。
-# getConnectedMachine: 获取已连接的机器信息，包括工作站详情。
-# addUser: 添加新用户，可以是管理员或普通用户。
-# getLocks: 获取指定工作站的锁信息，只返回序列号不为0的锁。
-# updateLockInfo: 更新锁的信息，如名称、序列号、难度等。
-# getallLockInfo: 获取所有存在的锁的信息。
-# startMatch: 开始一场比赛，分配训练给各个客户端。
+# 1. machineStart：启动指定的机器。
+# 输入：machineId（机器ID）。
+# 输出：machinestatus（机器状态，True表示启动成功）、code（状态码，200表示成功，500表示错误）。
+# 2. machineStop：停止指定的机器。
+# 输入：machineId（机器ID）。
+# 输出：同上。
+# 3. workerLogin：工人登录到机器和工作站。
+# 输入：username、password、machineId、workstationId。
+# 输出：包括loginSuccess、code、authToken、machineId、workstationId、userName、headerURL、worklength、message等字段。
+# 4. workerLogout：工人从机器和工作站登出。
+# 输入：machineId、workstationId。
+# 输出：replyMessage、message、code。
+# 5. adminLogin：管理员登录到机器。
+# 输入：username、password、machineId。
+# 输出：包括loginSuccess、code、authToken、machineId、userName、headerURL、worklength、message等字段。
+# 6. workerGetSelfTrainingHistory：工人获取自己的训练历史记录。
+# 输入：authToken。
+# 输出：message、code、trainingList（包括训练的详细记录）。
+# 7. getMatchTrainings：获取指定比赛的训练信息。
+# 输入：authToken、matchID。
+# 输出：同上。
+# 8. startNewTraining：开始一次新的训练，设置难度和总时间。
+# 输入：authToken、workstationID、difficulty、totalTime。
+# 输出：message、code、TrainingID。
+# 9. updateTraining：更新训练信息，如分数、解锁数量等。
+# 输入：authToken、trainingID、score、unlockedNum、isOn。
+# 输出：message、code。
+# 10. stopTraining：停止训练，并提供解锁的锁信息。
+# 输入：authToken、trainingID、score、unlockedNum、unlocks（解锁列表）。
+# 输出：message、code。
+# 11. getWorkerStatus：获取工人的信息和状态。
+# 输入：authToken。
+# 输出：包括工人信息的workers列表、message、code等。
+# 12. getWorkStationStatus：获取工作站的状态信息。
+# 输入：authToken。
+# 输出：包括工作站信息的workstations列表、message、code等。
+# 13. getConnectedMachine：获取已连接的机器信息，包括工作站详情。
+# 输入：authToken。
+# 输出：包括机器信息的machines列表、message、code等。
+# 14. addUser：添加新用户，可以是管理员或普通用户。
+# 输入：authToken、userName、password、role。
+# 输出：message、code。
+# 15. getLocks：获取指定工作站的锁信息，只返回序列号不为0的锁。
+# 输入：authToken、workstationId。
+# 输出：message、code、Locks列表。
+# 16. updateLockInfo：更新锁的信息，如名称、序列号、难度等。
+# 输入：authToken、lockId、lockName、lockSerialNumber、difficulty。
+# 输出：message、code。
+# 17. getUnlockInfoBySerialNum：获取所有存在的锁的信息。
+# 输入：authToken、serialNum。
+# 输出：message、code、unlocklist。
+# 18. startMatch：开始一场比赛，分配训练给各个客户端。
+# 输入：authToken、trainings（比赛包含的所有训练信息）。
+# 输出：message、code。
 
 # 分服务器提供的route
 def client_server_event_router(event, data):
