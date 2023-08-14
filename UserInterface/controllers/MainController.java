@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.Main;
 import javafx.fxml.Initializable;
+import models.Lock;
 import models.Machine;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -28,14 +29,14 @@ import util.Tools;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MainController implements Initializable, Controller {
+    public List<Integer> locks;
     private Machine machine;
     @FXML
     private Button joinMatchButton1;
@@ -46,6 +47,39 @@ public class MainController implements Initializable, Controller {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Main.controllers.put(this.getClass().getSimpleName(),this);
+        locks = new ArrayList<>(Collections.nCopies(120, -1));
+        // Create and start thread for sending COM interface messages
+        Thread sendCOMThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000); // 等待1000毫秒，即1秒
+                } catch (InterruptedException e) {e.printStackTrace();}
+                System.out.println("1");
+            }
+        });
+        sendCOMThread.start();
+
+        // Create and start thread for receiving COM interface messages
+        Thread receiveCOMThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000); // 等待1000毫秒，即1秒
+                } catch (InterruptedException e) {e.printStackTrace();}
+                System.out.println("2");
+            }
+        });
+        receiveCOMThread.start();
+
+        // Create and start thread for receiving socket messages
+        Thread receiveSocketThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000); // 等待1000毫秒，即1秒
+                } catch (InterruptedException e) {e.printStackTrace();}
+                System.out.println("3");
+            }
+        });
+        receiveSocketThread.start();
     }
 
     public void setJoinMatchButtonsVisible(int buttonNum, boolean visible) {
@@ -75,16 +109,6 @@ public class MainController implements Initializable, Controller {
     }
 
     private boolean start() throws JSONException {
-//        //监听match的socket
-//        SocketClient2 socketClient2 = new SocketClient2(this, "localhost", 50001);
-//        new Thread(() -> {
-//            try {
-//                socketClient2.listen();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-
         Future<String> future = Main.executorService.submit(() -> {
             SocketClient client = new SocketClient("localhost", 5001);
             client.connect();

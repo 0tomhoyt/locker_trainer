@@ -159,15 +159,15 @@ if __name__ == "__main__":
     # data = {"authToken": "888666",'userName':'new','password':'123456','role':1} # 使用无效的管理员令牌
     # start_client(event, data)
 
-    # print("测试24：获取连接状态，正确")
+    print("测试24：获取连接状态，正确")
+    event = 'getConnectedMachine'
+    data = {"authToken": "888666"}
+    start_client(event, data)
+
+    # print("测试25：获取连接状态，正确")
     # event = 'getConnectedMachine'
     # data = {"authToken": "888666"} # 使用无效的管理员令牌
     # start_client(event, data)
-
-    print("测试25：获取连接状态，正确")
-    event = 'getConnectedMachine'
-    data = {"authToken": "888666"} # 使用无效的管理员令牌
-    start_client(event, data)
 
 
 

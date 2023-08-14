@@ -72,7 +72,9 @@ def getConnectedMachine(authToken, main_server_client):
             localip, localport = server[3].split(":")
             print(localip,localport,client_ip,client_port)
             if (client_ip == dbip and client_port == dbport) or (
-                    server[4] == 1):
+                    server[4] == 1
+                    # and client_ip == localip and client_port == localport
+            ):
                 workstations = WorkStationDB.findWorkstationByMachineID(cnx, server[0])
                 workstation_list = []
                 for workstation in workstations:

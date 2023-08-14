@@ -47,5 +47,7 @@ public class LoginAdminController extends LoginWorkerController implements Initi
         }
     }
 
-
+    public static void main(String[] args) {
+        System.out.println(Tools.MD5hash("123456"));
+    }
 }
