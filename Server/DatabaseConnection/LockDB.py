@@ -41,7 +41,7 @@ def deleteLock(cnx, LockID):
 # 更新锁状态
 def updateLockStatus(cnx, LockID, LockStatus):
     # 更新数据，LockID和LockStatus为整数类型
-    query = f"UPDATE locks SET LockStatus = {LockStatus} WHERE LockID = {LockID}"
+    query = f"UPDATE locks SET LockStatus = '{LockStatus}' WHERE LockID = {LockID}"
     result = DBconnect.execute_query(cnx, query)
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
@@ -51,14 +51,16 @@ def updateLockStatus(cnx, LockID, LockStatus):
 
 
 def updateLockInfo(cnx, LockID, LockName, LockSerialNum, Difficulty):
+    print(LockID, LockName, LockSerialNum, Difficulty)
     # 更新数据，LockID和LockStatus为整数类型
-    query = f"UPDATE locks SET LockName = {LockName},LockSerialNum={LockSerialNum},Difficulty={Difficulty} WHERE LockID = {LockID}"
+    query = f"UPDATE locks SET LockName = '{LockName}', LockSerialNum='{LockSerialNum}', Difficulty='{Difficulty}' WHERE LockID = {LockID}"
     result = DBconnect.execute_query(cnx, query)
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
         cnx.commit()
         return 1
+
 
 
 # 获取指定工作站的所有锁
@@ -77,9 +79,10 @@ def main():
     except Exception as e:
         print("连接数据库失败：", e)
         return json.dumps({"message": f"连接数据库失败:{e}"})
-    for i in range(60):
-        print(createLock(cnx,i,-1,1))
-        createLock(cnx,i+60,-1,2)
+    # for i in range(60):
+    #     print(createLock(cnx,i,-1,1))
+    #     createLock(cnx,i+60,-1,2)
+    print(updateLockInfo(cnx,3,"aaa",12,2))
     return 0
 
 if __name__ == "__main__":

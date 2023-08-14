@@ -303,7 +303,7 @@ def main_server_event_router(event, data, main_server_client):
     # message: 字符串，表示查询状态。
     # code: 整数，表示HTTP状态代码，如200表示成功。
     # Locks:[] 注意只返回serialnumber不为0的
-    # {“lockName”：string， ”lockSerialNumber“：int，”difficulty“：int}
+    # {"lockId":int , “lockName”：string， ”lockSerialNumber“：int，”difficulty“：int}
     elif event == "getLocks":
         if "authToken" not in data or "workstationId" not in data:
             print(f'getLocks: 收到的data包不正确{data}')

@@ -14,13 +14,15 @@ def getLocksController(authToken, workstationId):
     Locks = LockDB.getAllLocksForWorkstation(cnx, workstationId)
     lock_list = []
     for lock in Locks:
-        if lock[4] != 0:
-            lock_json = {
-                "lockName": lock[3],
-                "lockSerialNumber": lock[4],
-                "difficulty": lock[5]
-            }
-            lock_list.append(lock_json)
+        if lock[4] == 0:
+            continue
+        lock_json = {
+            "lockId":lock[0],
+            "lockName": lock[3],
+            "lockSerialNumber": lock[4],
+            "difficulty": lock[5]
+        }
+        lock_list.append(lock_json)
 
     return json.dumps({"Locks": lock_list, "message": "查询成功", "code": 200})
 
@@ -39,4 +41,4 @@ def updateLockInfo(authToken, lockId, lockName, lockSerialNumber, difficulty):
         print(f"更新锁内容数据库连接错误，{result}")
         return json.dumps({"message": f"更新锁内容数据库连接错误，{result}"})
 
-    return 1
+    return json.dumps({ "message": "查询成功", "code": 200})
