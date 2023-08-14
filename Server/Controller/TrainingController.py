@@ -1,5 +1,5 @@
 import json
-from DatabaseConnection import TrainingDB, DBconnect, UserDB
+from DatabaseConnection import TrainingDB, DBconnect, UserDB, Lock_unlockDB, LockDB
 
 
 def workerGetSelfTrainingHistory(authToken):
@@ -40,9 +40,10 @@ def workerGetSelfTrainingHistory(authToken):
 
     return json.dumps({"message": "获取训练列表成功", "code": 200, "trainingList": training_list})
 
-def getMatchTrainings(authToken,matchID):
 
+def getMatchTrainings(authToken, matchID):
     return 0
+
 
 def addTrainingRecord(authToken, workstationId, difficulty, totalTime):
     try:
@@ -101,16 +102,17 @@ def updateTrainingController(authToken, trainingID, score, unlockedNum, IsOn):
         return json.dumps({"message": f"更新解锁数量失败:{update_result_unlockedNum}", "code": 500})
 
     # 更新训练记录的状态
-    if IsOn ==1:
-        update_result_IsOn = TrainingDB.setTrainingOn(cnx,trainingID)
+    if IsOn == 1:
+        update_result_IsOn = TrainingDB.setTrainingOn(cnx, trainingID)
     else:
-        update_result_IsOn = TrainingDB.setTrainingOff(cnx,trainingID)
+        update_result_IsOn = TrainingDB.setTrainingOff(cnx, trainingID)
     if type(update_result_IsOn) == str:
         return json.dumps({"message": f"更新状态失败:{update_result_IsOn}", "code": 500})
 
     return json.dumps({"message": "更新训练成功", "code": 200})
 
-def stopTrainingController(authToken, trainingID):
+
+def stopTrainingController(authToken, trainingID, score, unlockedNum, unlocks):
     try:
         cnx = DBconnect.databaseConnect()
     except Exception as e:
@@ -125,13 +127,24 @@ def stopTrainingController(authToken, trainingID):
             return json.dumps({"message": "找不到对应的trainingID", "code": 500})
     except Exception as e:
         return json.dumps({"message": f"{e}", "code": 500})
-    update_result_IsOn = TrainingDB.setTrainingOff(cnx,trainingID)
+
+    # 更新训练记录的得分
+    update_result_score = TrainingDB.updateTrainingScore(cnx, trainingID, score)
+    if type(update_result_score) == str:
+        return json.dumps({"message": f"更新得分失败:{update_result_score}", "code": 500})
+    # 更新训练记录的解锁数量
+    update_result_unlockedNum = TrainingDB.updateTrainingUnlockedNum(cnx, trainingID, unlockedNum)
+    if type(update_result_unlockedNum) == str:
+        return json.dumps({"message": f"更新解锁数量失败:{update_result_unlockedNum}", "code": 500})
+    # 更新结束训练
+    update_result_IsOn = TrainingDB.setTrainingOff(cnx, trainingID)
     if type(update_result_IsOn) == str:
         return json.dumps({"message": f"更新状态失败:{update_result_IsOn}", "code": 500})
 
+    for unlock in unlocks:
+        Lock = LockDB.getLock(cnx, unlock["lockId"])
+        if Lock[4] == 0:
+            continue
+        Lock_unlockDB.createLockUnlock(cnx, unlock["duration"], trainingID, unlock["lockId"], Lock[4], Lock[3], Lock[5])
+
     return json.dumps({"message": "结束训练成功", "code": 200})
-
-
-
-
-

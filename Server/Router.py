@@ -183,6 +183,13 @@ def main_server_event_router(event, data, main_server_client):
     # 输入
     # authToken: 字符串类型，用于验证用户并从中提取用户ID。
     # trainingID: 整数类型，标识要更新的训练记录的ID。
+    # score: 整数类型，表示要更新的训练记录的得分。
+    # unlockedNum: 整数类型，表示要更新的训练记录的解锁数量。
+    # unlocks: list of json
+    # 		unlockjson:{
+    # 		duration:int 时间
+    # 		lockId:int
+    # 		}
     # 输出
     # message: 字符串类型，描述了操作的结果，例如"结束训练成功"或具体的错误消息。
     # code: 整数类型，代表响应的状态代码。常见代码有200表示成功，500表示服务器内部错误。
@@ -191,7 +198,8 @@ def main_server_event_router(event, data, main_server_client):
             print(f'stopTraining: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'stopTraining: 收到的data包不正确{data}', "code": 500})
-        return TrainingController.stopTrainingController(data["authToken"], data["trainingID"])
+        return TrainingController.stopTrainingController(data["authToken"], data["trainingID"], data["score"],
+                                                         data["unlockedNum"], data["unlocks"])
 
     # 输入
     # authToken: 字符串类型，用于验证管理员身份。

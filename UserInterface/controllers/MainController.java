@@ -50,11 +50,12 @@ public class MainController implements Initializable, Controller {
         locks = new ArrayList<>(Collections.nCopies(120, -1));
         // Create and start thread for sending COM interface messages
         Thread sendCOMThread = new Thread(() -> {
-            try {
-                Thread.sleep(1000); // 等待1000毫秒，即1秒
-            } catch (InterruptedException e) {e.printStackTrace();}
-
-            System.out.println("1");
+            while (true) {
+                try {
+                    Thread.sleep(1000); // 等待1000毫秒，即1秒
+                } catch (InterruptedException e) {e.printStackTrace();}
+                System.out.println("1");
+            }
         });
         sendCOMThread.start();
 
@@ -108,16 +109,6 @@ public class MainController implements Initializable, Controller {
     }
 
     private boolean start() throws JSONException {
-//        //监听match的socket
-//        SocketClient2 socketClient2 = new SocketClient2(this, "localhost", 50001);
-//        new Thread(() -> {
-//            try {
-//                socketClient2.listen();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-
         Future<String> future = Main.executorService.submit(() -> {
             SocketClient client = new SocketClient("localhost", 5001);
             client.connect();
