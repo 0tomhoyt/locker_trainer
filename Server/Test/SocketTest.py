@@ -92,10 +92,10 @@ if __name__ == "__main__":
     # data = {"machineId": 2,
     #         "workstationId": 1}
     # start_client(event, data)
-    # print("测试11：查看训练历史")
-    # event = 'workerGetSelfTrainingHistory'
-    # data = {"authToken": 123456}
-    # start_client(event, data)
+    print("测试11：查看训练历史")
+    event = 'workerGetSelfTrainingHistory'
+    data = {"authToken": 123456}
+    start_client(event, data)
     #
     # print("测试12：查看训练历史,输入错误的token")
     # event = 'workerGetSelfTrainingHistory'
