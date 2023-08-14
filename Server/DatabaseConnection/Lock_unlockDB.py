@@ -21,3 +21,11 @@ def getAllunlock(cnx, trainingId):
         return result
     else:  # 返回查询结果
         return result.fetchall()
+
+def getUnlockBySerialNumber(cnx, serialNumber):
+    query = f"SELECT * FROM locks_unlock WHERE lockSerialNum = {serialNumber}"
+    result = DBconnect.execute_query(cnx, query)
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 返回查询结果
+        return result.fetchall()
