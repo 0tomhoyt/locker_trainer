@@ -4,6 +4,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -166,15 +167,41 @@ public class WorkerUIController implements Initializable, Controller {
         }
     }
 
+    private String getLocksJSON(){
+        return String.format("{ \"event\": \"getLocks\", \"data\": { \"authToken\":\"%s\", \"workstationId\": \"%d\"} }",
+                worker.getAuthToken(),
+                worker.getWorkStationID()
+        );
+    }
+    private JSONArray getLocksStatus() throws IOException, JSONException {
+        JSONObject jsonObject = Tools.transferToJSONObject(Tools.socketConnect(getLocksJSON()));
+        JSONArray jsonArray= jsonObject.getJSONArray("Locks");
+
+        return jsonArray;
+    }
+
+
+
     public void setWorker(Worker worker) throws JSONException, IOException {
         this.worker = worker;
 
+        JSONArray jsonArray = getLocksStatus();
+        System.out.println(jsonArray);
+        for(int i = 0; i < jsonArray.length(); i++){
+
+
+        }
+        jsonArray.getJSONObject(0);
         //需要获得worker的workStationID之后才可以创建lock
         //模拟：通过URAT接收锁的状态
         for(int i=0;i<50;i++){
-            Lock lock = new Lock(1,LockStatus.ON, worker.getWorkStationID());
+            Lock lock = new Lock(i,LockStatus.ON, worker.getWorkStationID());
             locks.add(lock);
             labels.add(new Label(lock.getStatus().toString()));
+            labels.get(i).setOnMouseClicked(e ->{
+
+                System.out.println("mouseClicked");
+            });
         }
 
         //添加Label到gridPane
