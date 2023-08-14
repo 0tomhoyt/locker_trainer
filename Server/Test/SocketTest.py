@@ -184,4 +184,9 @@ if __name__ == "__main__":
     event = 'getLocks'
     data = {"authToken": "888666","workstationId":2}  # 使用无效的管理员令牌
     start_client(event, data)
+
+    print("测试29：获取serial锁")
+    event = 'getUnlockInfoBySerialNum'
+    data = {"authToken": "456789","serialNum": 555}
+    start_client(event, data)
 # unittest.main()

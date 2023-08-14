@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class WorkerUIController implements Initializable, Controller {
-    private List<Lock> locks = new ArrayList<>(50);
+    private List<Lock> locks = new ArrayList<>(60);
     private List<Label> labels = new ArrayList<>(50);
     private Timeline timer;
     private TimerStrategy timerStrategy;
@@ -159,26 +159,26 @@ public class WorkerUIController implements Initializable, Controller {
                 vBox.getChildren().add(pane);
                 HistoryCardController historyCardController = fxmlLoader.getController();
                 TrainingHistory t = showHistories.get(i);
-                historyCardController.setInfo(t.getScore(),t.getTotalTime(),t.getUnlocked(),t.getDifficulty());
+                historyCardController.setTrainingHistory(t);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void setWorker(Worker worker) throws JSONException, IOException {
+    public void setWorker(Worker worker) throws JSONException {
         this.worker = worker;
 
         //需要获得worker的workStationID之后才可以创建lock
         //模拟：通过URAT接收锁的状态
-        for(int i=0;i<50;i++){
+        for(int i=0;i<60;i++){
             Lock lock = new Lock(1,LockStatus.ON, worker.getWorkStationID());
             locks.add(lock);
             labels.add(new Label(lock.getStatus().toString()));
         }
 
         //添加Label到gridPane
-        for(int i=0;i<5;i++){
+        for(int i=0;i<6;i++){
             for(int j=0;j<10;j++){
                 gridPane.add(labels.get(i * 10 + j) ,i ,j);
             }
@@ -319,42 +319,10 @@ public class WorkerUIController implements Initializable, Controller {
         trainingHistory.setOn(isOn);
         trainingHistory.setTotalTime(totalTime);
         trainingHistory.setDifficulty(timerStrategy.getDifficulty());
-        System.out.println(trainingHistory.getTotalTime());
     }
 
     //Socket调用，数据库部分
     private boolean getTrainingHistories() throws JSONException {
-//        //Socket连接
-//        SocketClient client = new SocketClient("localhost",5001);
-//        client.connect();
-//
-//        String jsonString = worker.getTrainingHistoriesJson();
-//        client.send(jsonString);
-//        String data = client.receive();
-//        client.close();
-//
-//        // 反转义java字符串
-//        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
-//        // 去除前后的双引号
-//        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
-//        // 转换为json对象
-//        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
-//
-//        if(jsonObject.getInt("code") == 200){
-//            JSONArray jsonArray = jsonObject.getJSONArray("trainingList");
-//            trainingHistories = new ArrayList<>(jsonArray.length());
-//            showHistories = new ArrayList<>(jsonArray.length());
-//            for(int i=0;i<jsonArray.length();i++){
-//                JSONObject trainHistoryJson = jsonArray.getJSONObject(i);
-//                TrainingHistory history = new TrainingHistory(trainHistoryJson);
-//                trainingHistories.add(history);
-//                showHistories.add(history);
-//            }
-//            return true;
-//        }
-//        else
-//            return false;
-
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getTrainingHistoriesJson()));
 
         Popup popup = MainController.showLoadingPopup("获得训练历史中");
@@ -393,57 +361,6 @@ public class WorkerUIController implements Initializable, Controller {
     }
 
     private boolean startTraining() throws JSONException {
-//        //Socket连接
-//        SocketClient client = new SocketClient("localhost",5001);
-//        client.connect();
-//
-//        String jsonString = worker.getStartTrainingJson(trainingHistory);
-//        System.out.println(jsonString);
-//        client.send(jsonString);
-//        String data = client.receive();
-//        System.out.println(data);
-//        client.close();
-//
-//        // 反转义java字符串
-//        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
-//        // 去除前后的双引号
-//        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
-//        // 转换为json对象
-//        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
-//
-//        int code = jsonObject.getInt("code");
-//        long trainingID = jsonObject.getLong("TrainingID");
-//
-//        if(code == 200){
-//            trainingHistory.setId(trainingID);
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
-
-        //        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect());
-//
-//        try {
-//            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
-//            if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
-//                return true;
-//            }
-//            else {
-//                return false;
-//            }
-//        } catch (TimeoutException e) {
-//            // 超时处理
-//            System.out.println("Socket receive timeout: " + e.getMessage());
-//            MainController.popUpAlter("ERROR","",e.getMessage());
-//            return false;
-//        } catch (InterruptedException | ExecutionException e) {
-//            // 其他异常处理
-//            System.out.println("ERROR:"+e.getMessage());
-//            MainController.popUpAlter("ERROR","",e.getMessage());
-//            return false;
-//        }
-
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getStartTrainingJson(trainingHistory)));
 
         Popup popup = MainController.showLoadingPopup("开始训练中");
@@ -475,27 +392,6 @@ public class WorkerUIController implements Initializable, Controller {
     }
 
     private boolean updateTraining() throws IOException, JSONException {
-//        //Socket连接
-//        SocketClient client = new SocketClient("localhost",5001);
-//        client.connect();
-//
-//        String jsonString = worker.getUpdateTrainingJson(trainingHistory);
-//        System.out.println(jsonString);
-//        client.send(jsonString);
-//        String data = client.receive();
-//        System.out.println(data);
-//        client.close();
-//
-//        // 反转义java字符串
-//        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
-//        // 去除前后的双引号
-//        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
-//        // 转换为json对象
-//        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
-//
-//        int code = jsonObject.getInt("code");
-//        return code == 200;
-
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getUpdateTrainingJson(trainingHistory)));
 
         try {
@@ -519,27 +415,6 @@ public class WorkerUIController implements Initializable, Controller {
     }
 
     private boolean endTraining() throws JSONException {
-//        //Socket连接
-//        SocketClient client = new SocketClient("localhost",5001);
-//        client.connect();
-//
-//        String jsonString = worker.getEndTrainingJson(trainingHistory);
-//        System.out.println(jsonString);
-//        client.send(jsonString);
-//        String data = client.receive();
-//        System.out.println(data);
-//        client.close();
-//
-//        // 反转义java字符串
-//        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
-//        // 去除前后的双引号
-//        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
-//        // 转换为json对象
-//        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
-//
-//        int code = jsonObject.getInt("code");
-//        return code == 200;
-
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getEndTrainingJson(trainingHistory)));
 
         Popup popup = MainController.showLoadingPopup("结束任务中");

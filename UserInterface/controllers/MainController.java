@@ -68,7 +68,7 @@ public class MainController implements Initializable, Controller {
                 try {
                     Thread.sleep(1000); // 等待1000毫秒，即1秒
                 } catch (InterruptedException e) {e.printStackTrace();}
-                System.out.println("1");
+//                System.out.println("1");
             }
         });
         sendCOMThread.start();
@@ -79,7 +79,7 @@ public class MainController implements Initializable, Controller {
                 try {
                     Thread.sleep(1000); // 等待1000毫秒，即1秒
                 } catch (InterruptedException e) {e.printStackTrace();}
-                System.out.println("2");
+//                System.out.println("2");
             }
         });
         receiveCOMThread.start();
@@ -90,7 +90,7 @@ public class MainController implements Initializable, Controller {
                 try {
                     Thread.sleep(1000); // 等待1000毫秒，即1秒
                 } catch (InterruptedException e) {e.printStackTrace();}
-                System.out.println("3");
+//                System.out.println("3");
             }
         });
         receiveSocketThread.start();
