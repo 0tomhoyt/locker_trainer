@@ -44,9 +44,9 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         tabAdminLoader.load();
 
         //加载管理员标签的登录页面
-        FXMLLoader tabRegisterLoader = new FXMLLoader(getClass().getResource("../fxml/register.fxml"));
-        tabRegisterLoader.setRoot(outerLoader.getNamespace().get("registerTab"));
-        tabRegisterLoader.load();
+//        FXMLLoader tabRegisterLoader = new FXMLLoader(getClass().getResource("../fxml/register.fxml"));
+//        tabRegisterLoader.setRoot(outerLoader.getNamespace().get("registerTab"));
+//        tabRegisterLoader.load();
 
         //fxml加载完成
 

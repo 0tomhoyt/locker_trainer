@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.Main;
 import javafx.fxml.Initializable;
+import models.Lock;
 import models.Machine;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -28,14 +29,14 @@ import util.Tools;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MainController implements Initializable, Controller {
+    public List<Integer> locks;
     private Machine machine;
     @FXML
     private Button joinMatchButton1;
@@ -46,6 +47,8 @@ public class MainController implements Initializable, Controller {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Main.controllers.put(this.getClass().getSimpleName(),this);
+        locks = new ArrayList<>(Collections.nCopies(120, -1));
+        System.out.println(locks);
     }
 
     public void setJoinMatchButtonsVisible(int buttonNum, boolean visible) {
