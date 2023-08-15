@@ -4,6 +4,7 @@ public class Lock {
     private int id;
     private LockStatus status;
     private int workStation;
+    private int time = 0;//0.1秒为单位
     private String lockName = "未知"; // Default value
     private int serialNumber = 0; // Default value
     private int difficulty = 0; // Default value[
@@ -60,6 +61,14 @@ public class Lock {
 
     public void setDifficulty(int difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int Time) {
+        this.time = Time;
     }
 
     //"lockId": 5, "lockName": "2号锁", "lockSerialNumber": 8988,"difficulty":2}
