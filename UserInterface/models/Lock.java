@@ -6,7 +6,7 @@ public class Lock {
     private int workStation;
     private String lockName = "未知"; // Default value
     private int serialNumber = 0; // Default value
-    private int difficulty = 0; // Default value
+    private int difficulty = 0; // Default value[
 
     public Lock(int id, LockStatus status, int workStation) {
         this.id = id;

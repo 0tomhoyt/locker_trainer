@@ -177,7 +177,7 @@ public class WorkerUIController implements Initializable, Controller {
         //需要获得worker的workStationID之后才可以创建lock
         //模拟：通过URAT接收锁的状态
         for(int i=0;i<60;i++){
-            Lock lock = new Lock(1,LockStatus.ON, worker.getWorkStationID());
+            Lock lock = new Lock(i,LockStatus.ON, worker.getWorkStationID());
             locks.add(lock);
 
 

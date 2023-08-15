@@ -24,6 +24,7 @@ import models.Machine;
 import org.apache.commons.text.StringEscapeUtils;
 
 import models.Worker;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
@@ -195,6 +196,10 @@ public class MainController implements Initializable, Controller {
 
         return loadingPopup;
     }
+
+    /******************************
+    锁的部分
+    ********************************/
 
     //点击锁的函数
     public static Popup lockDetail(Lock lock, Worker worker) {
