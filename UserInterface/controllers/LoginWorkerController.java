@@ -115,7 +115,7 @@ public class LoginWorkerController implements Initializable, Controller {
     protected void afterLogin() throws IOException, JSONException {
         try {
             anchorPane.getChildren().clear();
-            FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/worker_UI.fxml"));
+            FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("/fxml/worker_UI.fxml"));
             innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
             innerLoader.load();
 

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jSerialComm-2.10.3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/production/UserInterface/lib/jSerialComm-2.10.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

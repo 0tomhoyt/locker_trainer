@@ -31,7 +31,7 @@ public class AdminWorkerInfoController implements Initializable, Controller {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        MainController.addController(this);
+//        MainController.addController(this);
     }
 
     public void setAdmin(Admin admin){
@@ -82,7 +82,7 @@ public class AdminWorkerInfoController implements Initializable, Controller {
     private void setupPage(){
         for (Worker worker : workers) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/work_card.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/work_card.fxml"));
                 Pane pane = loader.load();
                 vBox.getChildren().add(pane);
 

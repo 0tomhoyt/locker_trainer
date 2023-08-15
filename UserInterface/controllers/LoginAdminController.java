@@ -36,12 +36,14 @@ public class LoginAdminController extends LoginWorkerController implements Initi
     protected void afterLogin() {
         try {
             anchorPane.getChildren().clear();
-            FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/admin_UI.fxml"));
+            FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("/fxml/admin_UI.fxml"));
             innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
             innerLoader.load();
 
             AdminUIController adminUIController = innerLoader.getController();
             adminUIController.setWorker(worker);//这里还需要写写，UI相关
+
+            MainController.deleteController(this);
         } catch (Exception e) {
             e.printStackTrace();
         }

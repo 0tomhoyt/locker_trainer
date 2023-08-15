@@ -63,7 +63,7 @@ public class HistoryCardController implements Initializable, Controller {
                     .values());
             for(int i=0;i<locks.size();i++){
                 try{
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/lock_card.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/lock_card.fxml"));
                     Pane pane = loader.load();
                     vBox.getChildren().add(pane);
 

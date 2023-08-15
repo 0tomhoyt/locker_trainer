@@ -27,24 +27,24 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         machine = new Machine(true);
         machine.setId(1);
 
-        FXMLLoader outerLoader = new FXMLLoader(getClass().getResource("../fxml/main.fxml"));
+        FXMLLoader outerLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = outerLoader.load();
 
-        FXMLLoader innerLoader1 = new FXMLLoader(getClass().getResource("../fxml/login_worker.fxml"));
+        FXMLLoader innerLoader1 = new FXMLLoader(getClass().getResource("/fxml/login_worker.fxml"));
         innerLoader1.setRoot(outerLoader.getNamespace().get("insertionPoint1"));
         innerLoader1.load();
 
-        FXMLLoader innerLoader2 = new FXMLLoader(getClass().getResource("../fxml/login_worker.fxml"));
+        FXMLLoader innerLoader2 = new FXMLLoader(getClass().getResource("/fxml/login_worker.fxml"));
         innerLoader2.setRoot(outerLoader.getNamespace().get("insertionPoint2"));
         innerLoader2.load();
 
         //加载管理员标签的登录页面
-        FXMLLoader tabAdminLoader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
+        FXMLLoader tabAdminLoader = new FXMLLoader(getClass().getResource("/fxml/login_admin.fxml"));
         tabAdminLoader.setRoot(outerLoader.getNamespace().get("adminTab"));
         tabAdminLoader.load();
 
         //加载管理员标签的登录页面
-        FXMLLoader tabRegisterLoader = new FXMLLoader(getClass().getResource("../fxml/register.fxml"));
+        FXMLLoader tabRegisterLoader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
         tabRegisterLoader.setRoot(outerLoader.getNamespace().get("registerTab"));
         tabRegisterLoader.load();
 
@@ -52,6 +52,7 @@ public class Main extends Application {//继承抽象类，重写抽象函数
 
         MainController mainController = outerLoader.getController();
         MainController.primaryStage = primaryStage;
+        mainController.setOuterLoader(outerLoader);
         mainController.setMachine(machine);
 
         LoginWorkerController loginWorkerController1 = innerLoader1.getController();
