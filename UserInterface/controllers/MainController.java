@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 //3.管理员需要可以查看每个工人的训练历史和每个锁的开锁信息。//符讯
 public class MainController implements Initializable, Controller {
     public List<Lock> locks;//120 6行20列
+    public static List<Lock> finalLocks;
     private Machine machine;
     private FXMLLoader outerLoader;
     @FXML
@@ -57,13 +58,16 @@ public class MainController implements Initializable, Controller {
             Lock lock = new Lock(i + 60, LockStatus.ON, 2);
             locks.add(lock);
         }
+        finalLocks = locks;
 //        locks = new ArrayList<>(Collections.nCopies(120, -1));
         // Create and start thread for sending COM interface messages
         Thread sendCOMThread = new Thread(() -> {
             while (true) {
                 try {
                     Thread.sleep(1000); // 等待1000毫秒，即1秒
-                } catch (InterruptedException e) {e.printStackTrace();}
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 //                System.out.println("1");
             }
         });
@@ -74,7 +78,9 @@ public class MainController implements Initializable, Controller {
             while (true) {
                 try {
                     Thread.sleep(1000); // 等待1000毫秒，即1秒
-                } catch (InterruptedException e) {e.printStackTrace();}
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 //                System.out.println("2");
             }
         });
@@ -85,7 +91,9 @@ public class MainController implements Initializable, Controller {
             while (true) {
                 try {
                     Thread.sleep(1000); // 等待1000毫秒，即1秒
-                } catch (InterruptedException e) {e.printStackTrace();}
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 //                System.out.println("3");
             }
         });
@@ -113,13 +121,13 @@ public class MainController implements Initializable, Controller {
         }
     }
 
-    public static void deleteController(Object controller){
+    public static void deleteController(Object controller) {
         Main.controllers = Main.controllers.entrySet().stream()
                 .filter(entry -> !entry.getValue().equals(controller))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public void setOuterLoader(FXMLLoader outerLoader){
+    public void setOuterLoader(FXMLLoader outerLoader) {
         this.outerLoader = outerLoader;
     }
 
@@ -201,8 +209,8 @@ public class MainController implements Initializable, Controller {
     }
 
     /******************************
-    锁的部分
-    ********************************/
+     锁的部分
+     ********************************/
 
     //点击锁的函数
     public static Popup lockDetail(Lock lock, Worker worker) {
@@ -268,9 +276,9 @@ public class MainController implements Initializable, Controller {
         Tools.socketConnect(lock.updateJSON(worker));
     }
 
-    public void logout(){
+    public void logout() {
         adminTab.getChildren().clear();
-        try{
+        try {
 //            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
 //            Pane pane = loader.load();
 //            adminTab.getChildren().add(pane);
@@ -282,9 +290,14 @@ public class MainController implements Initializable, Controller {
             controller.setMachine(machine);
             controller.setOuterFXMLLoader(outerLoader);
             controller.setPanePosition("adminTab");
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+//    public static void setLocks(List<Lock> locksOut){
+//        locksOut = this.locks;
+//
+//
+//    }
 }

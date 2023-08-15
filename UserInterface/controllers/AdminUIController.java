@@ -9,6 +9,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import main.Main;
 import models.*;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,8 +31,24 @@ public class AdminUIController extends WorkerUIController implements Initializab
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         MainController.addController(this);
+
     }
 
+    private void setStart_training_page(){
+        start_training_page.getChildren().clear();
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_start_training.fxml"));
+            Pane pane = loader.load();
+            start_training_page.getChildren().add(pane);
+
+            AdminStartTrainingController controller = loader.getController();
+            controller.setAdmin((Admin) worker);
+        }
+        catch (IOException | JSONException e){
+            e.printStackTrace();
+        }
+
+    }
     @Override
     public void setWorker(Worker worker) {
         this.worker = worker;
@@ -39,6 +56,8 @@ public class AdminUIController extends WorkerUIController implements Initializab
         setupWorkerInfo();
 
         setupCheckLockHistory();
+
+        setStart_training_page();
 
 //        setupStartGamePage();
     }
@@ -48,6 +67,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_worker_info.fxml"));
             Pane pane = loader.load();
+
             vBox_worker_info.getChildren().add(pane);
 
             AdminWorkerInfoController controller = loader.getController();
