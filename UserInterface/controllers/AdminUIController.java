@@ -59,6 +59,8 @@ public class AdminUIController extends WorkerUIController implements Initializab
 
         setStart_training_page();
 
+
+
 //        setupStartGamePage();
     }
 
