@@ -52,6 +52,7 @@ public class Main extends Application {//继承抽象类，重写抽象函数
 
         MainController mainController = outerLoader.getController();
         MainController.primaryStage = primaryStage;
+        mainController.setOuterLoader(outerLoader);
         mainController.setMachine(machine);
 
         LoginWorkerController loginWorkerController1 = innerLoader1.getController();

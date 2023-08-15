@@ -1,16 +1,15 @@
 package controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import main.Main;
-import models.Admin;
-import models.Lock;
-import models.TrainingHistory;
-import models.Worker;
+import models.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,21 +27,13 @@ import java.util.concurrent.TimeoutException;
 
 public class AdminUIController extends WorkerUIController implements Initializable, Controller {
     @FXML
-    private AnchorPane game_history_page;
-
-    @FXML
-    private AnchorPane machine_info_page;
-
-    @FXML
-    private AnchorPane machines_worker_page;
-
-    @FXML
-    private AnchorPane start_game_page;
-
-    @FXML
-    private AnchorPane worker_info_page;
+    private AnchorPane start_training_page;
     @FXML
     private VBox vBox_worker_info;
+    @FXML
+    private AnchorPane check_lock_history_page;
+    @FXML
+    private AnchorPane start_game_page;
     public List<Worker> workers = new ArrayList<>();
 
     @Override
@@ -55,6 +46,8 @@ public class AdminUIController extends WorkerUIController implements Initializab
         this.worker = worker;
 
         setupWorkerInfo();
+
+        setupCheckLockHistory();
 
 //        setupStartGamePage();
     }
@@ -97,8 +90,44 @@ public class AdminUIController extends WorkerUIController implements Initializab
             vBox_worker_info.getChildren().add(pane);
 
             AdminLockController controller = loader.getController();
+            controller.setReturnWay(1);
             controller.setAdmin((Admin) this.worker);
             controller.setWorker(worker);
+            controller.setLock(lock);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void setupCheckLockHistory(){
+        check_lock_history_page.getChildren().clear();
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_check_lock_history.fxml"));
+            Pane pane = loader.load();
+            check_lock_history_page.getChildren().add(pane);
+
+            AdminCheckLockHistoryController controller = loader.getController();
+            controller.setAdmin((Admin) worker);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void setupLockHistory(int serialNumber){
+        check_lock_history_page.getChildren().clear();
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_lock.fxml"));
+            Pane pane = loader.load();
+            check_lock_history_page.getChildren().add(pane);
+
+            Lock lock = new Lock(-1, LockStatus.OFF,-1);
+            lock.setSerialNumber(serialNumber);
+
+            AdminLockController controller = loader.getController();
+            controller.setReturnWay(2);
+            controller.setAdmin((Admin) this.worker);
             controller.setLock(lock);
         }
         catch (IOException e){
@@ -119,5 +148,11 @@ public class AdminUIController extends WorkerUIController implements Initializab
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @FXML
+    void logout_btn_click(ActionEvent event){
+        MainController.deleteController(this);
+        ((MainController) Main.controllers.get("MainController")).logout();
     }
 }

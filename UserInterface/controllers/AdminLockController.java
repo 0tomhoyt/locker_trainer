@@ -30,6 +30,7 @@ public class AdminLockController implements Initializable, Controller {
     private Admin admin;
     private Worker worker;
     private Lock lock;
+    private int returnWay; //1是从AdminWorkerTrainingHistoryController, 2是从AdminCheckLockHistoryController
     @FXML
     private Button return_btn;
     @FXML
@@ -37,7 +38,11 @@ public class AdminLockController implements Initializable, Controller {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        MainController.addController(this);
+//        MainController.addController(this);
+    }
+
+    public void setReturnWay(int returnWay){
+        this.returnWay = returnWay;
     }
 
     public void setAdmin(Admin admin){
@@ -55,7 +60,12 @@ public class AdminLockController implements Initializable, Controller {
 
     @FXML
     void return_btn_click(ActionEvent event) {
-        ((AdminUIController) Main.controllers.get("AdminUIController")).setupWorkerTrainingHistory(worker);
+        if(returnWay == 1){
+            ((AdminUIController) Main.controllers.get("AdminUIController")).setupWorkerTrainingHistory(worker);
+        }
+        else if(returnWay == 2) {
+            ((AdminUIController) Main.controllers.get("AdminUIController")).setupCheckLockHistory();
+        }
     }
 
     private boolean getLockHistory(){
@@ -67,26 +77,31 @@ public class AdminLockController implements Initializable, Controller {
             String data = future.get(5, TimeUnit.SECONDS);
             System.out.println(data);
             JSONObject jsonObject = Tools.transferToJSONObject(data);
+            popup.hide();
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
                 JSONArray array = jsonObject.getJSONArray("unlocks");
-                for(int i=0;i<array.length();i++){
-                    JSONObject object = array.getJSONObject(i);
-                    int unlockId = object.getInt("unlockId");
-                    String unlockTime = object.getString("unlockTime");
-                    int unlockDuration = object.getInt("unlockDuration");
-                    int trainingId = object.getInt("trainingId");
-                    int lockId = object.getInt("lockId");
-                    int lockSerialNum = object.getInt("lockSerialNum");
-                    String lockName = Tools.unicodeToChinese(object.getString("lockName"));
-                    int difficulty = object.getInt("difficulty");
-                    Lock lock = new Lock(lockId, LockStatus.OFF, -1);
-                    lock.setSerialNumber(lockSerialNum);
-                    lock.setLockName(lockName);
-                    lock.setDifficulty(difficulty);
-                    locks.add(lock);
-                    setupPage(unlockTime, unlockDuration, lock);
+                if(array.length() == 0){
+                    MainController.popUpAlter("ERROR","","没有找到记录");
                 }
-                popup.hide();
+                else {
+                    for(int i=0;i<array.length();i++){
+                        JSONObject object = array.getJSONObject(i);
+                        int unlockId = object.getInt("unlockId");
+                        String unlockTime = object.getString("unlockTime");
+                        int unlockDuration = object.getInt("unlockDuration");
+                        int trainingId = object.getInt("trainingId");
+                        int lockId = object.getInt("lockId");
+                        int lockSerialNum = object.getInt("lockSerialNum");
+                        String lockName = Tools.unicodeToChinese(object.getString("lockName"));
+                        int difficulty = object.getInt("difficulty");
+                        Lock lock = new Lock(lockId, LockStatus.OFF, -1);
+                        lock.setSerialNumber(lockSerialNum);
+                        lock.setLockName(lockName);
+                        lock.setDifficulty(difficulty);
+                        locks.add(lock);
+                        setupPage(unlockTime, unlockDuration, lock);
+                    }
+                }
                 return true;
             }
             else {

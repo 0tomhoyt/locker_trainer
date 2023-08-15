@@ -42,7 +42,7 @@ public class AdminWorkerTrainingHistoryController implements Initializable, Cont
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        MainController.addController(this);
+//        MainController.addController(this);
 
         setupDatePicker();
     }

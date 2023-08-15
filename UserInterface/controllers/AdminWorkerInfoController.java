@@ -31,7 +31,7 @@ public class AdminWorkerInfoController implements Initializable, Controller {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        MainController.addController(this);
+//        MainController.addController(this);
     }
 
     public void setAdmin(Admin admin){

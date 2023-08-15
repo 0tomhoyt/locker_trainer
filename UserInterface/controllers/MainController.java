@@ -37,16 +37,21 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 //1.更新每把锁的开锁时间，event在stoptraining的时候同时带上这个数据 如果锁的序列号是0，就不带 更新列表：侯宇腾
 //2.每把锁需要可以设置型号名称和序列号和难度，每次需要从服务器更新并且显示。 管理员界面可以单独单人训练  //志勇
 //3.管理员需要可以查看每个工人的训练历史和每个锁的开锁信息。//符讯
 public class MainController implements Initializable, Controller {
     public List<Lock> locks;//120 6行20列
     private Machine machine;
+    private FXMLLoader outerLoader;
     @FXML
     private Button joinMatchButton1;
     @FXML
     private Button joinMatchButton2;
+    @FXML
+    private AnchorPane adminTab;
     public static Stage primaryStage;
 
     @Override
@@ -117,6 +122,16 @@ public class MainController implements Initializable, Controller {
         if (flag) {
             Main.controllers.put(controller.getClass().getSimpleName(), controller);
         }
+    }
+
+    public static void deleteController(Object controller){
+        Main.controllers = Main.controllers.entrySet().stream()
+                .filter(entry -> !entry.getValue().equals(controller))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public void setOuterLoader(FXMLLoader outerLoader){
+        this.outerLoader = outerLoader;
     }
 
     public void setMachine(Machine machine) throws JSONException, IOException {
@@ -260,5 +275,23 @@ public class MainController implements Initializable, Controller {
         Tools.socketConnect(lock.updateJSON(worker));
     }
 
+    public void logout(){
+        adminTab.getChildren().clear();
+        try{
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
+//            Pane pane = loader.load();
+//            adminTab.getChildren().add(pane);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
+            loader.setRoot(outerLoader.getNamespace().get("adminTab"));
+            loader.load();
 
+            LoginAdminController controller = loader.getController();
+            controller.setMachine(machine);
+            controller.setOuterFXMLLoader(outerLoader);
+            controller.setPanePosition("adminTab");
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 }
