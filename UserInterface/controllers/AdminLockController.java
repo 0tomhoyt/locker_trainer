@@ -125,7 +125,7 @@ public class AdminLockController implements Initializable, Controller {
 
     private void setupPage(String unlockTime, int unlockDuration, Lock lock){
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/lock_card_serialNum.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/lock_card_serialNum.fxml"));
             Pane pane = loader.load();
             vBox.getChildren().add(pane);
 

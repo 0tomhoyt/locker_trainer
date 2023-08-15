@@ -4,8 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.stage.Popup;
-import main.Main;
 import org.json.JSONException;
 import org.json.JSONObject;
 import util.Tools;
@@ -13,10 +11,6 @@ import util.Tools;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class RegisterController implements Controller, Initializable {
     @FXML

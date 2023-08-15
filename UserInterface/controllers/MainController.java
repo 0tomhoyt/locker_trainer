@@ -1,8 +1,5 @@
 package controllers;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -10,33 +7,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import main.Main;
-import javafx.fxml.Initializable;
 import models.Lock;
 import models.LockStatus;
 import models.Machine;
-import org.apache.commons.text.StringEscapeUtils;
 
 import models.Worker;
 import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
-import socketClient.SocketClient2;
 import util.Tools;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 //1.更新每把锁的开锁时间，event在stoptraining的时候同时带上这个数据 如果锁的序列号是0，就不带 更新列表：侯宇腾
@@ -281,7 +269,7 @@ public class MainController implements Initializable, Controller {
 //            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
 //            Pane pane = loader.load();
 //            adminTab.getChildren().add(pane);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login_admin.fxml"));
             loader.setRoot(outerLoader.getNamespace().get("adminTab"));
             loader.load();
 

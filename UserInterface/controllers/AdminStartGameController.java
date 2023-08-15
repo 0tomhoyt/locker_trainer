@@ -1,7 +1,5 @@
 package controllers;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -92,7 +90,7 @@ public class AdminStartGameController implements Initializable,Controller {
     private void setupVbox() {
         for(int i=0;i<machines.size();i++){
             try{
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/connected_machine_card.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/connected_machine_card.fxml"));
                 Pane pane =  loader.load();
                 connected_machine_vbox.getChildren().add(pane);
 

@@ -131,7 +131,7 @@ public class AdminWorkerTrainingHistoryController implements Initializable, Cont
         vBox.getChildren().clear();
         for(TrainingHistory t : showingTrainingHistories){
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/history_card.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/history_card.fxml"));
                 Pane pane = loader.load();
                 vBox.getChildren().add(pane);
 

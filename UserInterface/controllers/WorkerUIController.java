@@ -34,8 +34,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static controllers.MainController.primaryStage;
-
 public class WorkerUIController implements Initializable, Controller {
     private List<Lock> locks = new ArrayList<>(60);
     private List<Label> labels = new ArrayList<>(50);

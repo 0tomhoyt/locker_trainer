@@ -7,23 +7,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Popup;
 import main.Main;
 import models.*;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import util.Tools;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class AdminUIController extends WorkerUIController implements Initializable, Controller {
     @FXML
@@ -55,7 +46,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
     public void setupWorkerInfo(){
         vBox_worker_info.getChildren().clear();
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_worker_info.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_worker_info.fxml"));
             Pane pane = loader.load();
             vBox_worker_info.getChildren().add(pane);
 
@@ -70,7 +61,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
     public void setupWorkerTrainingHistory(Worker worker){
         vBox_worker_info.getChildren().clear();
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_worker_training_history.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_worker_training_history.fxml"));
             Pane pane = loader.load();
             vBox_worker_info.getChildren().add(pane);
 
@@ -85,7 +76,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
     public void setupLock(Lock lock, Worker worker){
         vBox_worker_info.getChildren().clear();
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_lock.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_lock.fxml"));
             Pane pane = loader.load();
             vBox_worker_info.getChildren().add(pane);
 
@@ -103,7 +94,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
     public void setupCheckLockHistory(){
         check_lock_history_page.getChildren().clear();
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_check_lock_history.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_check_lock_history.fxml"));
             Pane pane = loader.load();
             check_lock_history_page.getChildren().add(pane);
 
@@ -118,7 +109,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
     public void setupLockHistory(int serialNumber){
         check_lock_history_page.getChildren().clear();
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_lock.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_lock.fxml"));
             Pane pane = loader.load();
             check_lock_history_page.getChildren().add(pane);
 
@@ -138,7 +129,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
     private void setupStartGamePage(){
         start_game_page.getChildren().clear();
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/admin_start_game.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_start_game.fxml"));
             start_game_page.getChildren().add(loader.load());
 
             AdminStartGameController adminStartGameController = loader.getController();

@@ -82,7 +82,7 @@ public class AdminWorkerInfoController implements Initializable, Controller {
     private void setupPage(){
         for (Worker worker : workers) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/work_card.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/work_card.fxml"));
                 Pane pane = loader.load();
                 vBox.getChildren().add(pane);
 
