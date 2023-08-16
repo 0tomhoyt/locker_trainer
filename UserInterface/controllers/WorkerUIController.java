@@ -72,6 +72,8 @@ public class WorkerUIController implements Initializable, Controller {
     @FXML
     private Button end_btn;
 
+    private MainController mainController;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         MainController.addController(this);
@@ -84,6 +86,12 @@ public class WorkerUIController implements Initializable, Controller {
 
         //设置Button
         end_btn.setDisable(true);
+    }
+	public void setMainController(MainController mainController){
+        this.mainController = mainController;
+    }
+    public MainController getMainController(){
+        return this.mainController;
     }
 
     //初始化

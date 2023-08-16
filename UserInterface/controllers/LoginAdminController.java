@@ -42,6 +42,7 @@ public class LoginAdminController extends LoginWorkerController implements Initi
 
             AdminUIController adminUIController = innerLoader.getController();
             adminUIController.setWorker(worker);//这里还需要写写，UI相关
+            adminUIController.setMainController(this.getMainController());
 
             MainController.deleteController(this);
         } catch (Exception e) {

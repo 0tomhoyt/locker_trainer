@@ -59,16 +59,19 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         loginWorkerController1.setOuterFXMLLoader(outerLoader);
         loginWorkerController1.setPanePosition("insertionPoint1");
         loginWorkerController1.setMachine(machine);
+        loginWorkerController1.setMainController(mainController);
 
         LoginWorkerController loginWorkerController2 = innerLoader2.getController();
         loginWorkerController2.setOuterFXMLLoader(outerLoader);
         loginWorkerController2.setPanePosition("insertionPoint2");
         loginWorkerController2.setMachine(machine);
+        loginWorkerController2.setMainController(mainController);
 
         LoginAdminController loginAdminController = tabAdminLoader.getController();
         loginAdminController.setOuterFXMLLoader(outerLoader);//这里为什么是outerloader
         loginAdminController.setPanePosition("adminTab");
         loginAdminController.setMachine(machine);
+        loginAdminController.setMainController(mainController);
 
         // 页面出现
         Scene scene = new Scene(root);

@@ -28,6 +28,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
     private AnchorPane start_game_page;
     public List<Worker> workers = new ArrayList<>();
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         MainController.addController(this);

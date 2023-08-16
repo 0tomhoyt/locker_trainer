@@ -34,6 +34,7 @@ public class LoginWorkerController implements Initializable, Controller {
     protected TextField field_username;
     @FXML
     protected TextField field_password;
+    private MainController mainController;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -52,6 +53,14 @@ public class LoginWorkerController implements Initializable, Controller {
         this.machine = machine;
     }
 
+    public void setMainController(MainController mainController){
+        this.mainController = mainController;
+    }
+
+    public MainController getMainController(){
+        return this.mainController;
+    }
+
     @FXML
     void login_btn_click(Event event) throws IOException, JSONException {
         String username = field_username.getText();
@@ -63,7 +72,6 @@ public class LoginWorkerController implements Initializable, Controller {
         System.out.println(worker.getLoginJson());
         login(worker);
     }
-
     protected boolean login(Worker worker) throws IOException, JSONException {
         Future<String> future = Main.executorService.submit(() -> {
 //            try{
@@ -121,6 +129,7 @@ public class LoginWorkerController implements Initializable, Controller {
 
             WorkerUIController workerUIController = innerLoader.getController();
             workerUIController.setWorker(worker);
+            workerUIController.setMainController(this.getMainController());
         } catch (Exception e) {
             e.printStackTrace();
         }

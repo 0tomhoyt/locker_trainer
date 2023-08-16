@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
+import util.SerialPortConnection;
 import util.Tools;
 
 import java.io.IOException;
@@ -44,61 +45,126 @@ public class MainController implements Initializable, Controller {
     private AnchorPane adminTab;
     public static Stage primaryStage;
 
+    public SerialPortConnection serialPortConnection;
+
+    public String startDeviceCommand = "AA 00 01 01 00 02 55 00 00";
+    public String stopDeviceCommand = "AA 00 02 01 00 02 55 00 00";
+    public  List<String> lookStatusCommand = new ArrayList<>();
+
+    private Thread hardwareThread;
+
+    private volatile boolean stopThread = false;
+
+
+
+
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Main.controllers.put(this.getClass().getSimpleName(), this);
+        try {
+            this.serialPortConnection = new SerialPortConnection("COM2",115200);
+            this.serialPortConnection.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String lookStatusCommandString = "AA 0X 00 01 00 02 55 00 00";
+        String command;
+        for(int i = 1;i<=9;i++){
+            command = lookStatusCommandString.replace("X",String.valueOf(i));
+            this.lookStatusCommand.add(command);
+        }
+        this.lookStatusCommand.add("AA 0A 00 01 00 02 55 00 00");
+        this.lookStatusCommand.add("AA 0B 00 01 00 02 55 00 00");
+        this.lookStatusCommand.add("AA 0C 00 01 00 02 55 00 00");
+
+
         locks = new ArrayList<>();
         for (int i = 0; i < 60; i++) {
             // You can replace the arguments with the appropriate values for your LockStatus and workStation
-            Lock lock = new Lock(i, LockStatus.ON, 1);
+            Lock lock = new Lock(i, LockStatus.UNCONNECT, 1);
             locks.add(lock);
         }
         for (int i = 0; i < 60; i++) {
             // You can replace the arguments with the appropriate values for your LockStatus and workStation
-            Lock lock = new Lock(i + 60, LockStatus.ON, 2);
+            Lock lock = new Lock(i + 60, LockStatus.UNCONNECT, 2);
             locks.add(lock);
         }
+
         finalLocks = locks;
-//        locks = new ArrayList<>(Collections.nCopies(120, -1));
-        // Create and start thread for sending COM interface messages
-        Thread sendCOMThread = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(1000); // 等待1000毫秒，即1秒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-//                System.out.println("1");
-            }
-        });
-        sendCOMThread.start();
-
-        // Create and start thread for receiving COM interface messages
-        Thread receiveCOMThread = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(1000); // 等待1000毫秒，即1秒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-//                System.out.println("2");
-            }
-        });
-        receiveCOMThread.start();
-
-        // Create and start thread for receiving socket messages
-        Thread receiveSocketThread = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(1000); // 等待1000毫秒，即1秒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-//                System.out.println("3");
-            }
-        });
-        receiveSocketThread.start();
     }
+    public void startHardware(){
+        this.serialPortConnection.sendByHexString(this.startDeviceCommand);
+        this.startCheckingHardwareThread();
+    }
+
+    public void stopHardware(){
+        stopCheckingHardwareThread();
+        this.serialPortConnection.sendByHexString(this.stopDeviceCommand);
+        this.checkHardware();
+    }
+
+    public void stopCheckingHardwareThread(){
+        this.stopThread = true;
+    }
+    public void startCheckingHardwareThread(){
+		stopThread = false;
+        hardwareThread = new Thread(() -> {
+            while (!stopThread) {
+				checkHardware();
+            }
+        });
+        hardwareThread.start();
+    }
+
+    public void checkHardware(){
+        for(int i = 0; i<12 ;i++){
+            this.serialPortConnection.sendByHexString(this.lookStatusCommand.get(i));
+        }
+        try {
+            Thread.sleep(500); // 等待1000毫秒
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            byte[] receivedData = this.serialPortConnection.receiveData(3,TimeUnit.SECONDS);
+            if(receivedData!=null)
+            	handleReceivedData(receivedData);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleReceivedData(byte[] receivedData) {
+        int index = 0;
+        if (receivedData.length <54 || receivedData[0] != (byte)0xAA || receivedData[2]!= (byte)0x00) {
+            System.out.println("不是正确数据，不处理");
+            return;
+        }
+        int deviceindex = receivedData[1]-1;
+        for(int i = 0;i<10;i++){
+            int statuscode = receivedData[i*5+4];
+            if(statuscode == 0){
+                locks.get(deviceindex*12+i).setStatus(LockStatus.UNCONNECT);
+            } else if (statuscode == 1 ) {
+                locks.get(deviceindex*12+i).setStatus(LockStatus.OFF);
+            } else if (statuscode==2) {
+                locks.get(deviceindex*12+i).setStatus(LockStatus.ON);
+            } else if (statuscode==3) {
+                locks.get(deviceindex*12+i).setStatus(LockStatus.FINISHED);
+            }
+            byte[] segment = Arrays.copyOfRange(receivedData, i * 5 + 4, (i + 1) * 5 + 4);
+            String lockTime = getLockTime(segment);
+            locks.get(deviceindex * 12 + i).setTime(lockTime);
+        }
+    }
+    private String getLockTime(byte[] data) {
+        int t_100ms = (data[1] & 0xFF) + ((data[2] & 0xFF) << 8) + ((data[3] & 0xFF) << 16) + ((data[4] & 0xFF) << 24);
+        float t = (float) t_100ms / 10;
+        return String.format("%.1f", t);
+    }
+
 
     public void setJoinMatchButtonsVisible(int buttonNum, boolean visible) {
         if (buttonNum == 1)
