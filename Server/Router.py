@@ -335,11 +335,11 @@ def main_server_event_router(event, data, main_server_client):
     # message: 字符串，表示查询状态。
     # code: 整数，表示HTTP状态代码，如200表示成功。
     elif event == "addUser":
-        if "authToken" not in data or 'userName' not in data or 'password' not in data or 'role' not in data:
+        if 'userName' not in data or 'password' not in data or 'role' not in data:
             print(f'getWorkerStatus: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'addUser: 收到的data包不正确{data}', "code": 500})
-        return UserController.addUser(data['authToken'], data['userName'], data['password'], data['role'])
+        return UserController.addUser( data['userName'], data['password'], data['role'])
 
     #获取每把锁的名称，序列号，难度
     # data输入

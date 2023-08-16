@@ -146,15 +146,13 @@ def getAllWorkersController(authToken):
     return json.dumps({"workers": workers_list, "message": "查询成功", "code": 200})
 
 
-def addUser(authToken, userName, password, role):
+def addUser( userName, password, role):
     try:
         cnx = DBconnect.databaseConnect()
     except Exception as e:
         print("连接数据库失败：", e)
         return json.dumps({"message": f"连接数据库失败:{e}"})
-    isAdmin = UserDB.checkAdminToken(cnx, authToken)
-    if isAdmin != 1:
-        return json.dumps({"message": "权限不足", "code": 403})
+
 
     new_token = Util.generate_auth_token(30)
     UserDB.createUser(cnx, userName, password, role, new_token, '', datetime.today())
