@@ -396,26 +396,41 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         }
     }
 
+//    private void updateLocks(JSONArray jsonArray) throws JSONException {
+//        for (int i = 0; i < jsonArray.length(); i++) {
+//            JSONObject jsonObject = jsonArray.getJSONObject(i);
+//            int l = jsonObject.getInt("lockId");
+//            int serialNum = jsonObject.getInt("lockSerialNumber");
+//            String lockName = jsonObject.getString("lockName");
+////            System.out.println(jsonArray.getJSONObject(i) +" "+ i);
+////            labels.get(l).setOnMouseClicked(e ->{
+////                System.out.println("special one");//可以拿到，但是是竖着来的，怪
+////            });
+//            locks.get(l).setSerialNumber(serialNum);
+//            locks.get(l).setLockName(lockName);
+//        }
+//    }
+
+    private String getLocksJSON() {
+        return String.format("{ \"event\": \"getLocks\", \"data\": { \"authToken\":\"%s\", \"workstationId\": \"%d\"} }",
+                admin.getAuthToken(),
+                1
+        );
+    }
+
     private void updateLocks(JSONArray jsonArray) throws JSONException {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             int l = jsonObject.getInt("lockId");
             int serialNum = jsonObject.getInt("lockSerialNumber");
             String lockName = jsonObject.getString("lockName");
-//            System.out.println(jsonArray.getJSONObject(i) +" "+ i);
-//            labels.get(l).setOnMouseClicked(e ->{
-//                System.out.println("special one");//可以拿到，但是是竖着来的，怪
-//            });
-            locks.get(l).setSerialNumber(serialNum);
-            locks.get(l).setLockName(lockName);
+            int difficulty = jsonObject.getInt("difficulty");
+//            更新锁的数据 因为是地址类型的，可以影响外面
+            Lock lock = locks.get(l);
+            lock.setSerialNumber(serialNum);
+            lock.setLockName(lockName);
+            lock.setDifficulty(difficulty);
         }
-    }
-
-    private String getLocksJSON() {
-        return String.format("{ \"event\": \"getLocks\", \"data\": { \"authToken\":\"%s\", \"workstationId\": \"%d\"} }",
-                admin.getAuthToken(),
-                admin.getWorkStationID()
-        );
     }
 
     //得到锁的数组
@@ -426,7 +441,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         return jsonArray;
     }
 
-//    //    这个页面的入口函数↓
+////    //    这个页面的入口函数↓
 //    public void setAdmin(Admin admin) throws JSONException, IOException {
 //        int lockNum = 120;
 ////        this.admin = admin;//好像没什么用
@@ -465,6 +480,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
 //                gridPane.add(labels.get(i * column + j), j, i);//j是列 i是行, 这里改好之后就是横着来的了
 //            }
 //        }
+
 ////定义好线程
 ////        由于硬件返回的是一个整数，单位为0.1s 这里只是做个模拟
 //
@@ -485,7 +501,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
 //        });
 ////        按下按钮
 //        pressbutton(timeCounter);
-//
+
 //    }
 //
 //    private void showtime(int i) {
@@ -511,7 +527,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
 //    }
 //
 //
-//    //获取锁的socket的格式
+    //获取锁的socket的格式
 //    private String getLocksJSON1(Admin admin) {
 //        return String.format("{ \"event\": \"getLocks\", \"data\": { \"authToken\":\"%s\", \"workstationId\": \"%d\"} }",
 //                admin.getAuthToken(),
@@ -526,7 +542,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
 //        );
 //    }
 //
-//    //得到锁的数组
+    //得到锁的数组
 //    private JSONArray getLocksStatus(Admin admin) throws IOException, JSONException {
 ////        JSONObject jsonObject1 = Tools.transferToJSONObject(Tools.socketConnect(getLocksJSON1(admin)));
 ////        JSONObject jsonObject2 = Tools.transferToJSONObject(Tools.socketConnect(getLocksJSON2(admin)));//先保留，还不知道这个workstationId怎么搞
