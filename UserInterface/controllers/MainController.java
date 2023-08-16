@@ -50,8 +50,6 @@ public class MainController implements Initializable, Controller {
     public String stopDeviceCommand = "AA 00 02 01 00 02 55 00 00";
     public  List<String> lookStatusCommand = new ArrayList<>();
 
-    private Thread hardwareThread;
-
     private volatile boolean stopThread = false;
 
 
@@ -65,6 +63,7 @@ public class MainController implements Initializable, Controller {
         try {
             this.serialPortConnection = new SerialPortConnection("COM2",115200);
             this.serialPortConnection.start();
+            System.out.println("COM2连接成功");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,7 +89,8 @@ public class MainController implements Initializable, Controller {
             Lock lock = new Lock(i + 60, LockStatus.UNCONNECTED, 2);
             locks.add(lock);
         }
-
+        this.startHardware();
+        this.stopHardware();
         finalLocks = locks;
     }
     public void startHardware(){
@@ -109,9 +109,9 @@ public class MainController implements Initializable, Controller {
     }
     public void startCheckingHardwareThread(){
 		stopThread = false;
-        hardwareThread = new Thread(() -> {
+        Thread hardwareThread = new Thread(() -> {
             while (!stopThread) {
-				checkHardware();
+                checkHardware();
             }
         });
         hardwareThread.start();
