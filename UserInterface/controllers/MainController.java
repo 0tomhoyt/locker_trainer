@@ -51,8 +51,6 @@ public class MainController implements Initializable, Controller {
     public String stopDeviceCommand = "AA 00 02 01 00 02 55 00 00";
     public  List<String> lookStatusCommand = new ArrayList<>();
 
-    private Thread hardwareThread;
-
     private volatile boolean stopThread = false;
 
 
@@ -110,9 +108,9 @@ public class MainController implements Initializable, Controller {
     }
     public void startCheckingHardwareThread(){
 		stopThread = false;
-        hardwareThread = new Thread(() -> {
+        Thread hardwareThread = new Thread(() -> {
             while (!stopThread) {
-				checkHardware();
+                checkHardware();
             }
         });
         hardwareThread.start();
