@@ -64,6 +64,7 @@ public class MainController implements Initializable, Controller {
         try {
             this.serialPortConnection = new SerialPortConnection("COM2",115200);
             this.serialPortConnection.start();
+            System.out.println("COM2连接成功");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,7 +90,8 @@ public class MainController implements Initializable, Controller {
             Lock lock = new Lock(i + 60, LockStatus.UNCONNECT, 2);
             locks.add(lock);
         }
-
+        this.startHardware();
+        this.stopHardware();
         finalLocks = locks;
     }
     public void startHardware(){
