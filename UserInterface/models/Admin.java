@@ -36,6 +36,15 @@ public class Admin extends Worker{
         return true;
     }
 
+    public String getStartTrainingJson(TrainingHistory trainingHistory){
+        return String.format("{ \"event\": \"startNewTraining\", \"data\": { \"authToken\": \"%s\", \"workstationID\": %d, \"difficulty\": %d, \"totalTime\": %d} }",
+                authToken,
+                1,
+                trainingHistory.getDifficulty(),
+                trainingHistory.getTotalTime()
+        );
+    }
+
     public String getWorkerList(){
         return String.format("{\"event\": \"getWorkerStatus\", \"data\": { \"authToken\": \"%s\"} }",
                 authToken

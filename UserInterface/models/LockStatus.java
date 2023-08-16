@@ -1,5 +1,5 @@
 package models;
 
 public enum LockStatus {
-    ON, OFF, ERROR,UNCONNECT,FINISHED
+    ON, OFF, ERROR, UNCONNECTED, FINISHED
 }

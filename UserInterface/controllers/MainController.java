@@ -16,7 +16,6 @@ import models.LockStatus;
 import models.Machine;
 
 import models.Worker;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
@@ -83,12 +82,12 @@ public class MainController implements Initializable, Controller {
         locks = new ArrayList<>();
         for (int i = 0; i < 60; i++) {
             // You can replace the arguments with the appropriate values for your LockStatus and workStation
-            Lock lock = new Lock(i, LockStatus.UNCONNECT, 1);
+            Lock lock = new Lock(i, LockStatus.UNCONNECTED, 1);
             locks.add(lock);
         }
         for (int i = 0; i < 60; i++) {
             // You can replace the arguments with the appropriate values for your LockStatus and workStation
-            Lock lock = new Lock(i + 60, LockStatus.UNCONNECT, 2);
+            Lock lock = new Lock(i + 60, LockStatus.UNCONNECTED, 2);
             locks.add(lock);
         }
 
@@ -146,7 +145,7 @@ public class MainController implements Initializable, Controller {
         for(int i = 0;i<10;i++){
             int statuscode = receivedData[i*5+4];
             if(statuscode == 0){
-                locks.get(deviceindex*12+i).setStatus(LockStatus.UNCONNECT);
+                locks.get(deviceindex*12+i).setStatus(LockStatus.UNCONNECTED);
             } else if (statuscode == 1 ) {
                 locks.get(deviceindex*12+i).setStatus(LockStatus.OFF);
             } else if (statuscode==2) {

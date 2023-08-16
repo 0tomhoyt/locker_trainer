@@ -48,7 +48,6 @@ public class AdminUIController extends WorkerUIController implements Initializab
         catch (IOException | JSONException e){
             e.printStackTrace();
         }
-
     }
     @Override
     public void setWorker(Worker worker) {
@@ -59,8 +58,6 @@ public class AdminUIController extends WorkerUIController implements Initializab
         setupCheckLockHistory();
 
         setStart_training_page();
-
-
 
 //        setupStartGamePage();
     }

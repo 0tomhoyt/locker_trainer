@@ -1,11 +1,16 @@
 package models;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class Worker {
     private int id;
@@ -174,10 +179,25 @@ public class Worker {
         );
     }
 
-    public String getEndTrainingJson(TrainingHistory trainingHistory){
-        return String.format("{ \"event\": \"stopTraining\", \"data\": { \"authToken\": \"%s\", \"trainingID\": %d} }",
+    public String getEndTrainingJson(TrainingHistory trainingHistory, List<Lock> locks){
+        JSONArray jsonArray = new JSONArray();
+        for (Lock lock : locks) {
+            try {
+                jsonArray.put(new JSONObject()
+                        .put("duration", lock.getTime())
+                        .put("lockId", lock.getId())
+                );
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return String.format("{ \"event\": \"stopTraining\", \"data\": { \"authToken\": \"%s\", \"trainingID\": %d, \"score\": %d, \"unlockedNum\": %d, \"unlocks\": %s } }",
                 authToken,
-                trainingHistory.getId()
+                trainingHistory.getId(),
+                trainingHistory.getScore(),
+                trainingHistory.getDifficulty(),
+                jsonArray
         );
     }
 

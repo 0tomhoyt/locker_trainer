@@ -36,7 +36,7 @@ import java.util.concurrent.TimeoutException;
 
 public class WorkerUIController implements Initializable, Controller {
     private List<Lock> locks = new ArrayList<>(60);
-    private List<Label> labels = new ArrayList<>(50);
+    private List<Label> labels = new ArrayList<>(60);
     private Timeline timer;
     private TimerStrategy timerStrategy;
     protected Worker worker;
@@ -298,7 +298,9 @@ public class WorkerUIController implements Initializable, Controller {
     }
 
     @FXML
-    void start_btn_click(ActionEvent event) throws IOException, JSONException {
+    void start_btn_click(ActionEvent event) throws JSONException {
+        ((MainController) Main.controllers.get("MainController")).startHardware();
+
         updateTrainingHistory();
 
         if (!(trainingHistory.getTotalTime() == 0 && timerStrategy instanceof ConstantTimeStrategy)) {
@@ -322,12 +324,15 @@ public class WorkerUIController implements Initializable, Controller {
     }
 
     @FXML
-    void end_btn_click(ActionEvent event) throws JSONException, IOException {
+    void end_btn_click(ActionEvent event) throws JSONException {
         notifyEndingTrain();
     }
 
     //被ConstantTimerStrategy调用，进行结束训练后的操作
-    public void notifyEndingTrain() throws JSONException, IOException {
+    public void notifyEndingTrain() throws JSONException {
+        ((MainController) Main.controllers.get("MainController")).stopHardware();
+        locks = ((MainController) Main.controllers.get("MainController")).locks;
+
         timer.stop();
         updateTrainingHistory();
 
@@ -582,13 +587,14 @@ public class WorkerUIController implements Initializable, Controller {
 //        int code = jsonObject.getInt("code");
 //        return code == 200;
 
-        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getEndTrainingJson(trainingHistory)));
+        Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getEndTrainingJson(trainingHistory, locks)));
 
         Popup popup = MainController.showLoadingPopup("结束任务中");
 
         try {
             JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
+                System.out.println(jsonObject.getString("message"));
                 popup.hide();
                 return true;
             }

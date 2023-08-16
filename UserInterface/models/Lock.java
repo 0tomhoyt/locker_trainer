@@ -1,5 +1,7 @@
 package models;
 
+import javafx.scene.paint.Color;
+
 public class Lock {
     private int id;
     private LockStatus status;
@@ -64,11 +66,34 @@ public class Lock {
     }
 
     public String getTime() {
-        return time;
+        if(time.equals("")){
+            return "0";
+        }
+        else {
+            return time;
+        }
     }
 
     public void setTime(String Time) {
         this.time = Time;
+    }
+
+    public Color getColorByStatus(){
+        if(status == LockStatus.ON){
+            return Color.YELLOWGREEN;
+        }
+        else if(status == LockStatus.OFF){
+            return Color.GRAY;
+        }
+        else if(status == LockStatus.UNCONNECTED){
+            return Color.YELLOW;
+        }
+        else if(status == LockStatus.FINISHED){
+            return Color.GREEN;
+        }
+        else{
+            return Color.RED;
+        }
     }
 
     //"lockId": 5, "lockName": "2号锁", "lockSerialNumber": 8988,"difficulty":2}
