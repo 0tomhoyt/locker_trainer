@@ -44,14 +44,11 @@ public class AdminStartTrainingController extends WorkerUIController implements 
     private List<Label> labels = new ArrayList<>(120);
     private Timeline timer;
     private TimerStrategy timerStrategy;
+
     @FXML
     private RadioButton const_time_btn;
     @FXML
     private RadioButton var_time_btn;
-    @FXML
-    private Label difficulty_label;
-    @FXML
-    private Label score_label;
     @FXML
     private Label time_label;
     @FXML
@@ -69,6 +66,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
 //    private Label lockStatus;
 //    @FXML
 //    private Button pressBtn;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -126,9 +124,6 @@ public class AdminStartTrainingController extends WorkerUIController implements 
             if (trainingHistory.isOn()) {
                 List<Lock> newLocks = ((MainController) Main.controllers.get("MainController")).locks;
                 updateOldListByNewList(locks,newLocks);
-
-                difficulty_label.setText("难度：" + trainingHistory.getDifficulty());
-                score_label.setText("分值：" + trainingHistory.getScore());
                 time_label.setText(trainingHistory.getTime() + "s");
 
                 try {
@@ -180,7 +175,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         //需要获得worker的workStationID之后才可以创建lock
         //模拟：通过URAT接收锁的状态
         for(int i=0;i<120;i++){
-            Lock lock = new Lock(i,LockStatus.ON, admin.getWorkStationID());
+            Lock lock = new Lock(i,LockStatus.UNCONNECTED, admin.getWorkStationID());
             locks.add(lock);
 
 
@@ -191,11 +186,6 @@ public class AdminStartTrainingController extends WorkerUIController implements 
                 Popup lockDetail = MainController.lockDetail(lock, admin);//有个问题就是，一直点的话内存占用会越来越高XD，因为一直在新建，哪怕是点同一个，但搞了半天暂时只能想到这个逻辑了
 //                lockDetail.hide();//默认是弹出的
                 lockDetail.setAutoHide(true);//点击其他地方会消失
-
-//                if (lockDetail.isShowing())
-//                    lockDetail.hide();
-//                else
-//                    lockDetail.show(primaryStage);
 
                 System.out.println(lock.getLockName());
             });
@@ -248,9 +238,6 @@ public class AdminStartTrainingController extends WorkerUIController implements 
 
         if (!(trainingHistory.getTotalTime() == 0 && timerStrategy instanceof ConstantTimeStrategy)) {
             time_label.setText(trainingHistory.getTime() + "s");
-            score_label.setText("分值：" + trainingHistory.getScore());
-            difficulty_label.setText("难度：" + trainingHistory.getDifficulty());
-
             timer.play();
             updateTrainingHistory();
 
@@ -287,9 +274,6 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         end_btn.setDisable(true);
 
         time_label.setText("时间");
-        score_label.setText("分值");
-        difficulty_label.setText("难度");
-
         endTraining();
     }
 

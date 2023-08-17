@@ -2,7 +2,7 @@
 import socketserver
 import json
 
-import Router
+from Controller import Router
 
 global server_conn, client_conn
 

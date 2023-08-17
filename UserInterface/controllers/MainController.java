@@ -59,6 +59,7 @@ public class MainController implements Initializable, Controller {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         Main.controllers.put(this.getClass().getSimpleName(), this);
         try {
             this.serialPortConnection = new SerialPortConnection("COM2",115200);
@@ -81,12 +82,12 @@ public class MainController implements Initializable, Controller {
         locks = new ArrayList<>();
         for (int i = 0; i < 60; i++) {
             // You can replace the arguments with the appropriate values for your LockStatus and workStation
-            Lock lock = new Lock(i, LockStatus.UNCONNECTED, 1);
+            Lock lock = new Lock(i, LockStatus.OFF, 1);
             locks.add(lock);
         }
         for (int i = 0; i < 60; i++) {
             // You can replace the arguments with the appropriate values for your LockStatus and workStation
-            Lock lock = new Lock(i + 60, LockStatus.UNCONNECTED, 2);
+            Lock lock = new Lock(i + 60, LockStatus.OFF, 2);
             locks.add(lock);
         }
         this.startHardware();

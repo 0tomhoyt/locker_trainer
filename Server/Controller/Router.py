@@ -258,12 +258,12 @@ def main_server_event_router(event, data, main_server_client):
     # code: 整数类型，代表响应的状态代码。常见代码有200表示成功，500表示服务器内部错误。
     elif event == 'stopTraining':
         if "authToken" not in data or "trainingID" not in data or "score" not in data \
-                or "unlockedNum" not in data or "unlocks" not in data:
+                or "unlockedNum" not in data or "unlocks" not in data or "totaltime" not in data:
             print(f'stopTraining: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'stopTraining: 收到的data包不正确{data}', "code": 500})
         return TrainingController.stopTrainingController(data["authToken"], data["trainingID"], data["score"],
-                                                         data["unlockedNum"], data["unlocks"])
+                                                         data["unlockedNum"], data["unlocks"],data["totaltime"])
 
     # 输入
     # authToken: 字符串类型，用于验证管理员身份。

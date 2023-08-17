@@ -6,31 +6,33 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.RadioButton?>
 <fx:root fx:id="anchorPane" prefHeight="700.0" prefWidth="900.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterController">
     <children>
-        <Label alignment="CENTER" layoutX="390.0" layoutY="89.0" text="注册页面" textAlignment="CENTER">
+        <Label alignment="CENTER" layoutX="355.0" layoutY="142.0" prefHeight="50.0" prefWidth="189.0" text="注册页面" textAlignment="CENTER">
             <font>
-                <Font size="30.0" />
+                <Font size="40.0" />
             </font>
         </Label>
-        <TextField fx:id="field_username" layoutX="369.0" layoutY="237.0" />
-        <TextField fx:id="field_password" layoutX="369.0" layoutY="297.0" />
-        <TextField fx:id="field_password_again" layoutX="369.0" layoutY="356.0" />
-        <TextField fx:id="authToken" layoutX="370.0" layoutY="410.0" />
-        <Button fx:id="register_btn" layoutX="410.0" layoutY="459.0" mnemonicParsing="false" onAction="#register_btn_click" text="注册">
+        <TextField fx:id="field_username" layoutX="368.0" layoutY="261.0" style="-fx-pref-height: 50;" />
+        <TextField fx:id="field_password" layoutX="368.0" layoutY="375.0" style="-fx-pref-height: 50;" />
+        <TextField fx:id="field_password_again" layoutX="369.0" layoutY="463.0" style="-fx-pref-height: 50;" />
+        <Button fx:id="register_btn" layoutX="410.0" layoutY="539.0" mnemonicParsing="false" onAction="#register_btn_click" style="-fx-pref-height: 80;" text="注册">
             <font>
                 <Font size="24.0" />
             </font>
         </Button>
-        <Label layoutX="369.0" layoutY="221.0" text="用户名" />
-        <Label layoutX="369.0" layoutY="274.0" text="密码" />
-        <Label layoutX="369.0" layoutY="333.0" text="确认密码" />
-
-      <Label layoutX="370.0" layoutY="387.0" text="令牌" />
-      <Label layoutX="369.0" layoutY="158.0" text="身份，如果是管理员请勾选" />
-
-      <RadioButton fx:id="adminButton" layoutX="367.0" layoutY="182.0" mnemonicParsing="false" text="管理员" />
+        <Label layoutX="367.0" layoutY="220.0" text="用户名">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+        <Label layoutX="367.0" layoutY="350.0" text="密码">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+        <Label layoutX="369.0" layoutY="432.0" text="确认密码">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
 
     </children>
 </fx:root>

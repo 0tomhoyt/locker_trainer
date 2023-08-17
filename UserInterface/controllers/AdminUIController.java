@@ -43,6 +43,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
             start_training_page.getChildren().add(pane);
 
             AdminStartTrainingController controller = loader.getController();
+            controller.setMainController(this.getMainController());
             controller.setAdmin((Admin) worker);
         }
         catch (IOException | JSONException e){

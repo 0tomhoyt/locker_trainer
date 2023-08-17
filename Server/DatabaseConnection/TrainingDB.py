@@ -4,7 +4,6 @@ import datetime
 from DatabaseConnection.DBconnect import execute_query
 
 
-
 # 创建一个训练记录
 def createTraining(cnx, IsMatch, MatchID, UserID, WorkstationID, Score, UnlockedNum, TotalTime, TrainingType,
                    Difficulty, IsOn):
@@ -72,6 +71,17 @@ def updateTrainingUnlockedNum(cnx, TrainingID, UnlockedNum):
     else:
         cnx.commit()
         return 1
+
+
+def update_score_unlockedNum_ison_totaltime(cnx, TrainingID, score, unlockedNum, ison, totaltime):
+    query = f"UPDATE trainings SET Score = {score}, UnlockedNum = {unlockedNum}, IsOn = {ison}, TotalTime = {totaltime} WHERE TrainingID = {TrainingID}"
+    result = execute_query(cnx, query)
+    if type(result) == str:
+        return result
+    else:
+        cnx.commit()
+        return 1
+
 
 
 # 更新训练记录的总时间
@@ -184,7 +194,6 @@ def getTrainingCreationTime(TrainingID):
     # 将Unix时间戳转换为datetime对象
     dt_object = datetime.datetime.fromtimestamp(timestamp)
     return dt_object
-
 
 # if __name__ == "__main__":
 #     try:

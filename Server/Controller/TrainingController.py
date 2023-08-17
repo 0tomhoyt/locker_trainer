@@ -121,7 +121,7 @@ def updateTrainingController(authToken, trainingID, score, unlockedNum, IsOn):
     return json.dumps({"message": "更新训练成功", "code": 200})
 
 
-def stopTrainingController(authToken, trainingID, score, unlockedNum, unlocks):
+def stopTrainingController(authToken, trainingID, score, unlockedNum, unlocks, totalTime):
     try:
         cnx = DBconnect.databaseConnect()
     except Exception as e:
@@ -137,16 +137,8 @@ def stopTrainingController(authToken, trainingID, score, unlockedNum, unlocks):
     except Exception as e:
         return json.dumps({"message": f"{e}", "code": 500})
 
-    # 更新训练记录的得分
-    update_result_score = TrainingDB.updateTrainingScore(cnx, trainingID, score)
-    if type(update_result_score) == str:
-        return json.dumps({"message": f"更新得分失败:{update_result_score}", "code": 500})
-    # 更新训练记录的解锁数量
-    update_result_unlockedNum = TrainingDB.updateTrainingUnlockedNum(cnx, trainingID, unlockedNum)
-    if type(update_result_unlockedNum) == str:
-        return json.dumps({"message": f"更新解锁数量失败:{update_result_unlockedNum}", "code": 500})
-    # 更新结束训练
-    update_result_IsOn = TrainingDB.setTrainingOff(cnx, trainingID)
+    update_result_IsOn = TrainingDB.update_score_unlockedNum_ison_totaltime(cnx, trainingID, score, unlockedNum, 0,
+                                                                            totalTime)
     if type(update_result_IsOn) == str:
         return json.dumps({"message": f"更新状态失败:{update_result_IsOn}", "code": 500})
 

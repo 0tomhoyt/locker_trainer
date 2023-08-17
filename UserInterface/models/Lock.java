@@ -86,7 +86,7 @@ public class Lock {
             return Color.GRAY;
         }
         else if(status == LockStatus.UNCONNECTED){
-            return Color.YELLOW;
+            return Color.RED;
         }
         else if(status == LockStatus.FINISHED){
             return Color.GREEN;

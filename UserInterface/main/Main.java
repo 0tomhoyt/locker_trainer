@@ -27,6 +27,8 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         machine = new Machine(true);
         machine.setId(1);
 
+
+
         FXMLLoader outerLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = outerLoader.load();
 
@@ -78,6 +80,7 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.setTitle("lockerTrainer");
+        primaryStage.setFullScreen(true);
         primaryStage.show();
     }
 

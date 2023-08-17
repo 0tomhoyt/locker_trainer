@@ -6,12 +6,16 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminStartGameController">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminStartGameController">
    <children>
-      <Label layoutX="110.0" layoutY="30.0" text="选择比赛时长" />
-      <Spinner fx:id="min_spinner" layoutX="110.0" layoutY="45.0" prefHeight="23.0" prefWidth="62.0" />
-      <Spinner fx:id="sec_spinner" layoutX="220.0" layoutY="45.0" prefHeight="23.0" prefWidth="61.0" />
+      <Label layoutX="110.0" layoutY="14.0" text="选择比赛时长">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
+      <Spinner fx:id="min_spinner" layoutX="251.0" layoutY="13.0" prefHeight="22.0" prefWidth="96.0" />
+      <Spinner fx:id="sec_spinner" layoutX="383.0" layoutY="13.0" prefHeight="23.0" prefWidth="96.0" />
     <AnchorPane layoutX="110.0" layoutY="82.0" minHeight="0.0" minWidth="0.0" prefHeight="460.0" prefWidth="715.0">
          <children>
             <ScrollPane prefHeight="460.0" prefWidth="715.0">
@@ -21,6 +25,9 @@
             </ScrollPane>
          </children>
       </AnchorPane>
-      <Button fx:id="start_game_btn" layoutX="418.0" layoutY="560.0" mnemonicParsing="false" onAction="#start_game_btn_click" text="开始比赛" />
+      <Button fx:id="start_game_btn" layoutX="374.0" layoutY="542.0" mnemonicParsing="false" onAction="#start_game_btn_click" prefHeight="45.0" prefWidth="151.0" text="开始比赛">
+         <font>
+            <Font size="16.0" />
+         </font></Button>
    </children>
 </AnchorPane>

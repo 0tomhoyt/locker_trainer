@@ -181,23 +181,29 @@ public class Worker {
 
     public String getEndTrainingJson(TrainingHistory trainingHistory, List<Lock> locks){
         JSONArray jsonArray = new JSONArray();
+        int i = 0;
         for (Lock lock : locks) {
             try {
-                jsonArray.put(new JSONObject()
-                        .put("duration", lock.getTime())
-                        .put("lockId", lock.getId())
-                );
+                if(lock.getStatus() == LockStatus.FINISHED){
+                    i++;
+                    jsonArray.put(new JSONObject()
+                            .put("duration", lock.getTime())
+                            .put("lockId", lock.getId())
+                    );
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        System.out.println(jsonArray);
 
-        return String.format("{ \"event\": \"stopTraining\", \"data\": { \"authToken\": \"%s\", \"trainingID\": %d, \"score\": %d, \"unlockedNum\": %d, \"unlocks\": %s } }",
+        return String.format("{ \"event\": \"stopTraining\", \"data\": { \"authToken\": \"%s\", \"trainingID\": %d, \"score\": %d, \"unlockedNum\": %d, \"unlocks\": %s,\"totaltime\": %d } }",
                 authToken,
                 trainingHistory.getId(),
                 trainingHistory.getScore(),
-                trainingHistory.getDifficulty(),
-                jsonArray
+                i,
+                jsonArray,
+                trainingHistory.getTotalTime()
         );
     }
 

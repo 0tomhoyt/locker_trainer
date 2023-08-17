@@ -22,17 +22,14 @@ public class RegisterController implements Controller, Initializable {
     private TextField field_password_again;
 //    @FXML
 //    private TextField role;
-    @FXML
-    private TextField authToken;
-    @FXML
-    private RadioButton adminButton;
+
     @FXML
     public boolean register_btn_click() throws IOException, JSONException {
         String username = field_username.getText();
         String password = field_password.getText();
         String passwordAgain = field_password_again.getText();
         String finalPassword = "1";
-        int role = 2;
+        int role = 1;
         if (passwordAgain.equals(password)){
             finalPassword = Tools.MD5hash(password);
         }
@@ -45,8 +42,6 @@ public class RegisterController implements Controller, Initializable {
             return false;
         }
 
-        if(adminButton.isSelected())
-            role = 1;
 
 
         String s = Tools.socketConnect(registerJSON(finalPassword,role));
@@ -72,14 +67,13 @@ public class RegisterController implements Controller, Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        adminButton.setSelected(true);
         MainController.addController(this);
     }
 
     private String registerJSON(String hashedPassword, int role){
 
         return String.format("{ \"event\": \"addUser\", \"data\": { \"authToken\":\"%s\", \"userName\":\"%s\", \"password\" : \"%s\" ,\"role\":\"%d\"}}",
-                authToken.getText(),
+                " ",
                 field_username.getText(),
                 hashedPassword,
                 role

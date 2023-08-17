@@ -7,27 +7,27 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminUIController">
+<fx:root type="AnchorPane" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminUIController">
    <children>
       <ToolBar prefHeight="40.0" prefWidth="900.0">
         <items>
-          <Button fx:id="logout_btn" mnemonicParsing="false" onAction="#logout_btn_click" text="登出" />
+          <Button fx:id="logout_btn" mnemonicParsing="false" onAction="#logout_btn_click" style="-fx-pref-width: 150px; -fx-pref-height: 30px;" text="登出" />
         </items>
       </ToolBar>
       <AnchorPane layoutY="40.0" prefHeight="660.0" prefWidth="900.0">
           <children>
               <TabPane prefHeight="660.0" prefWidth="900.0">
                   <tabs>
-                  <Tab closable="false" text="开始训练">
+                  <Tab closable="false" style="-fx-pref-width: 100px; -fx-pref-height: 50px;" text="开始训练">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <AnchorPane fx:id="start_training_page" prefHeight="640.0" prefWidth="900.0" />
+                              <AnchorPane fx:id="start_training_page" prefHeight="660.0" prefWidth="900.0" />
                            </children>
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab closable="false" text="工人信息">
+                  <Tab closable="false" style="-fx-pref-width: 150px; -fx-pref-height: 50px;" text="工人信息">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                           <children>
@@ -36,7 +36,7 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab closable="false" text="开锁信息">
+                  <Tab closable="false" style="-fx-pref-width: 150px; -fx-pref-height: 50px;" text="开锁信息">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="640.0" prefWidth="900.0">
                            <children>
@@ -44,15 +44,6 @@
                            </children>
                         </AnchorPane>
                     </content>
-                  </Tab>
-                      <Tab closable="false" text="开始比赛">
-                     <content>
-                        <AnchorPane prefHeight="640.0" prefWidth="900.0">
-                           <children>
-                              <AnchorPane fx:id="start_game_page" prefHeight="640.0" prefWidth="900.0" />
-                           </children>
-                        </AnchorPane>
-                     </content>
                   </Tab>
                   </tabs>
               </TabPane>

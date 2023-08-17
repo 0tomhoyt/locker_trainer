@@ -1,7 +1,7 @@
 import socket, json
 import threading
 
-import Router
+from Controller import Router
 from DatabaseConnection import ServerDB, DBconnect
 
 
@@ -124,7 +124,7 @@ class MainServerClient:
     def handle_connection(self, client_conn, addr):
         print(f"Connected to {addr}")
         while True:
-            message_from_client = client_conn.recv(1024).decode('utf-8')
+            message_from_client = client_conn.recv(10240).decode('utf-8')
             print("接收消息", message_from_client)
             # 检查
             try:
@@ -138,7 +138,7 @@ class MainServerClient:
             event = json_data['event']
             data = json_data['data']
 
-            reply_message = json.loads(Router.main_server_event_router(event, data,self))
+            reply_message = json.loads(Router.main_server_event_router(event, data, self))
             if 'clientAddress' in json_data:
                 reply_message['clientAddress'] = json_data['clientAddress']
             reply_message = json.dumps(reply_message)

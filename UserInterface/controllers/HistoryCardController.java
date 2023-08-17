@@ -24,8 +24,7 @@ public class HistoryCardController implements Initializable, Controller {
     private Worker worker;
     @FXML
     private Label time_label;
-    @FXML
-    private Label score_label;
+
     @FXML
     private Label total_time_label;
     @FXML
@@ -48,7 +47,6 @@ public class HistoryCardController implements Initializable, Controller {
         this.trainingHistory = trainingHistory;
 
         time_label.setText("时间："+ trainingHistory.getDateTimeString());
-        score_label.setText("分数："+ trainingHistory.getScore());
         total_time_label.setText("总用时："+ trainingHistory.getTotalTime());
         unlocked_label.setText("未解锁数："+ trainingHistory.getUnlocked());
         difficulty_label.setText("难度："+ trainingHistory.getDifficulty());

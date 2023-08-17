@@ -3,13 +3,25 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="100.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LockCardController">
+<AnchorPane prefHeight="100.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LockCardController">
    <children>
-      <Label fx:id="name_label" layoutX="50.0" layoutY="14.0" text="名字" />
-      <Label fx:id="serial_number_label" layoutX="46.0" layoutY="42.0" text="序列号" />
-      <Label fx:id="difficulty_label" layoutX="47.0" layoutY="71.0" text="难度" />
-      <Button fx:id="check_lock_btn" layoutX="506.0" layoutY="39.0" mnemonicParsing="false" onAction="#check_lock_btn_click" text="查看详情" />
+      <Label fx:id="name_label" layoutX="47.0" text="名字">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+      <Label fx:id="serial_number_label" layoutX="47.0" layoutY="36.0" text="序列号">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+      <Label fx:id="difficulty_label" layoutX="47.0" layoutY="71.0" text="难度">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+      <Button fx:id="check_lock_btn" layoutX="356.0" layoutY="25.0" mnemonicParsing="false" onAction="#check_lock_btn_click" style="-fx-pref-height: 50; -fx-pref-width: 200;" text="查看详情">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
    </children>
 </AnchorPane>
