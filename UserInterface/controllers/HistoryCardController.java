@@ -48,8 +48,7 @@ public class HistoryCardController implements Initializable, Controller {
 
         time_label.setText("时间："+ trainingHistory.getDateTimeString());
         total_time_label.setText("总用时："+ trainingHistory.getTotalTime());
-        unlocked_label.setText("未解锁数："+ trainingHistory.getUnlocked());
-        difficulty_label.setText("难度："+ trainingHistory.getDifficulty());
+        unlocked_label.setText("开锁数："+ trainingHistory.getUnlocked());
 
         if(!(trainingHistory.getUnlocked() == 0)){
             List<Lock> locks = trainingHistory.getLocks();

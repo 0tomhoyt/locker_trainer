@@ -1,19 +1,19 @@
 package util;
 
 import com.fazecast.jSerialComm.SerialPort;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 public class SerialPortConnection {
-    private final LinkedBlockingQueue<byte[]> sendBuffer;
-    private final LinkedBlockingQueue<byte[]> receiveBuffer;
+    private final LinkedBlockingDeque<byte[]> sendBuffer;
+    private final LinkedBlockingDeque<byte[]> receiveBuffer;
     private final SerialPort serialPort;
     private Thread sendThread;
     private Thread receiveThread;
 
     public SerialPortConnection(String portName, int baudRate) {
-        sendBuffer = new LinkedBlockingQueue<>();
-        receiveBuffer = new LinkedBlockingQueue<>();
+        sendBuffer = new LinkedBlockingDeque<>();
+        receiveBuffer = new LinkedBlockingDeque<>();
         serialPort = SerialPort.getCommPort(portName);
         serialPort.setBaudRate(baudRate);
         initSendThread();
@@ -54,11 +54,11 @@ public class SerialPortConnection {
         return sendBuffer.size();
     }
 
-    public LinkedBlockingQueue<byte[]> getReceiveBuffer() {
+    public LinkedBlockingDeque<byte[]> getReceiveBuffer() {
         return receiveBuffer;
     }
 
-    public LinkedBlockingQueue<byte[]> getSendBuffer() {
+    public LinkedBlockingDeque<byte[]> getSendBuffer() {
         return sendBuffer;
     }
 
@@ -74,6 +74,31 @@ public class SerialPortConnection {
             }
         });
     }
+
+    public byte[] readAndRemoveNumOfBytes(LinkedBlockingDeque<byte[]> buffer, int number) throws InterruptedException {
+        byte[] result = new byte[number];
+        int index = 0;
+
+        while (index < number) {
+            byte[] byteArray = buffer.takeFirst();
+            int remainingNeeded = number - index;
+            int toCopy = Math.min(byteArray.length, remainingNeeded);
+
+            // 复制到结果数组
+            System.arraycopy(byteArray, 0, result, index, toCopy);
+            index += toCopy;
+
+            // 如果还有剩余字节，将其放回队列的前端
+            if (byteArray.length > toCopy) {
+                byte[] remainingBytes = new byte[byteArray.length - toCopy];
+                System.arraycopy(byteArray, toCopy, remainingBytes, 0, remainingBytes.length);
+                buffer.offerFirst(remainingBytes);
+            }
+        }
+        return result;
+    }
+
+
 
     private void initReceiveThread() {
         receiveThread = new Thread(() -> {

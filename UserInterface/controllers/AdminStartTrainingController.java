@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -60,7 +61,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
     @FXML
     private Button end_btn;
     @FXML
-    private GridPane gridPane;
+    public GridPane gridPane;
 
 //    @FXML
 //    private Label lockStatus;
@@ -122,15 +123,9 @@ public class AdminStartTrainingController extends WorkerUIController implements 
                 throw new RuntimeException(e);
             }
             if (trainingHistory.isOn()) {
-                List<Lock> newLocks = ((MainController) Main.controllers.get("MainController")).locks;
-                updateOldListByNewList(locks,newLocks);
+                locks = ((MainController) Main.controllers.get("MainController")).locks;
+                updateLockUI();
                 time_label.setText(trainingHistory.getTime() + "s");
-
-                try {
-                    updateTraining();
-                } catch (IOException | JSONException e) {
-                    throw new RuntimeException(e);
-                }
             }
             updateTrainingHistory();
 
@@ -138,33 +133,53 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         timer.setCycleCount(Animation.INDEFINITE);
     }
 
-    private void updateOldListByNewList(List<Lock> oldList, List<Lock> newList) {
-        // 添加在newList中，但不在oldList中的元素
-        for (int i=0;i<newList.size();i++) {
-            Lock item = newList.get(i);
-            if (!oldList.contains(item)) {
-                oldList.add(item);
-                updateLockUI(i);
-            }
-        }
+//    private void updateOldListByNewList( List<Lock> newList) {
+//        // 添加在newList中，但不在oldList中的元素
+//        for (int i=0;i<newList.size();i++) {
+//            Lock item = newList.get(i);
+//            if (!Objects.equals(locks.get(i).getTime(), item.getTime()) || locks.get(i).getStatus()!=item.getStatus()) {
+//                this.locks.set(i,item);
+//                updateLockUI();
+//            }
+//        }
+//    }
 
-        oldList.removeIf(item -> !newList.contains(item));
-    }
+    private void updateLockUI(){
 
-    private void updateLockUI(int i){
-        int row = i / 20;
-        int column = i % 20;
+//        for (int i = 0; i < 6; i++) {
+//            for (int j = 0; j < 20; j++) {
+//                int lockIndex = i * 10 + j % 10; // 根据你的locks列表的构造方式计算对应的索引
+//                if (lockIndex < locks.size()) { // 确保索引在locks的范围内
+//                    Lock lock = locks.get(lockIndex);
+//                    String time = lock.getTime();
+//                    labels.get(i * 20 + j).setText(time);
+//                }
+//            }
+//        }
 
+        int row,column,i;
         for(Node node : gridPane.getChildren()){
-            if(GridPane.getColumnIndex(node) == column && GridPane.getRowIndex(node) == row){
-                Label label = (Label) node;
-                label.setText(locks.get(i).getTime());
-                label.setTextFill(locks.get(i).getColorByStatus());
-//                BackgroundFill backgroundFill = new BackgroundFill(locks.get(i).getColorByStatus(), CornerRadii.EMPTY, Insets.EMPTY);
-//                label.setBackground(new Background(backgroundFill));
+            column = GridPane.getColumnIndex(node);
+            row = GridPane.getRowIndex(node);
+            if (column<10){
+                i = row*10+column;
+            }
+            else {
+                i = row*10+column%10+60;
+            }
+            Label label = (Label) node;
+            label.setBackground(Background.fill(locks.get(i).getColorByStatus()));
+            label.setText(locks.get(i).getTime());
+            if (locks.get(i).getStatus()==LockStatus.ON){
+                label.setStyle("-fx-font-size: 20px;");
+            }
+            else {
+                label.setStyle("-fx-font-size: 12px;");
             }
         }
     }
+
+
 
     public void setAdmin(Admin admin) throws JSONException, IOException {
         this.admin = admin;
@@ -197,9 +212,9 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         for(int i=0;i<6;i++){
             for(int j=0;j<20;j++){
                 gridPane.add(labels.get(i * 20 + j), j, i);
-                updateLockUI(i * 20 + j);
             }
         }
+        updateLockUI();
 
         //初始化trainingHistory
         trainingHistory = new TrainingHistory(admin);
@@ -282,7 +297,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
                 .filter(lock -> lock.getStatus() == LockStatus.ON)
                 .count();
         int unlocked = (int) locks.stream()
-                .filter(lock -> lock.getStatus() == LockStatus.OFF)
+                .filter(lock -> lock.getStatus() == LockStatus.FINISHED)
                 .count();
         int trainingType = timerStrategy instanceof VariableTimeStrategy ? 1 : 2;
         boolean isOn = timer.statusProperty().isEqualTo(Animation.Status.RUNNING).get();
@@ -294,7 +309,6 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         trainingHistory.setOn(isOn);
         trainingHistory.setTotalTime(totalTime);
         trainingHistory.setDifficulty(timerStrategy.getDifficulty());
-        System.out.println(trainingHistory.getTotalTime());
     }
 
     //Socket调用，数据库部分
@@ -353,9 +367,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
 
     private boolean endTraining() throws JSONException {
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(admin.getEndTrainingJson(trainingHistory,locks)));
-
         Popup popup = MainController.showLoadingPopup("结束任务中");
-
         try {
             JSONObject jsonObject = Tools.transferToJSONObject(future.get(10,TimeUnit.SECONDS));
             if(jsonObject.has("code") && jsonObject.getInt("code") == 200){
@@ -380,20 +392,6 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         }
     }
 
-//    private void updateLocks(JSONArray jsonArray) throws JSONException {
-//        for (int i = 0; i < jsonArray.length(); i++) {
-//            JSONObject jsonObject = jsonArray.getJSONObject(i);
-//            int l = jsonObject.getInt("lockId");
-//            int serialNum = jsonObject.getInt("lockSerialNumber");
-//            String lockName = jsonObject.getString("lockName");
-////            System.out.println(jsonArray.getJSONObject(i) +" "+ i);
-////            labels.get(l).setOnMouseClicked(e ->{
-////                System.out.println("special one");//可以拿到，但是是竖着来的，怪
-////            });
-//            locks.get(l).setSerialNumber(serialNum);
-//            locks.get(l).setLockName(lockName);
-//        }
-//    }
 
     private String getLocksJSON() {
         return String.format("{ \"event\": \"getLocks\", \"data\": { \"authToken\":\"%s\", \"workstationId\": \"%d\"} }",
@@ -414,6 +412,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
             lock.setSerialNumber(serialNum);
             lock.setLockName(lockName);
             lock.setDifficulty(difficulty);
+            locks.set(l,lock);
         }
     }
 

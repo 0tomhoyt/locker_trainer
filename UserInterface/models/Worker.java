@@ -186,10 +186,12 @@ public class Worker {
             try {
                 if(lock.getStatus() == LockStatus.FINISHED){
                     i++;
+                    System.out.println(lock.getSerialNumber());
                     jsonArray.put(new JSONObject()
                             .put("duration", lock.getTime())
                             .put("lockId", lock.getId())
                     );
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

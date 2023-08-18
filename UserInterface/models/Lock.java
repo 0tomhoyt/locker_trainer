@@ -2,6 +2,9 @@ package models;
 
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Lock {
     private int id;
     private LockStatus status;
@@ -112,5 +115,25 @@ public class Lock {
                 authToken,
                 serialNumber
         );
+    }
+
+    public static void main(String[] args) {
+//        byte a = (byte)0b00000001;
+//        System.out.println(a);
+
+        List<String> lookStatusCommand = new ArrayList<>();
+        String lookStatusCommandString = "AA 0X 00 01 00 02 55 00 00";
+        String command;
+        for(int i = 1;i<=9;i++){
+            command = lookStatusCommandString.replace("X",String.valueOf(i));
+            lookStatusCommand.add(command);
+        }
+        lookStatusCommand.add("AA 0A 00 01 00 02 55 00 00");
+        lookStatusCommand.add("AA 0B 00 01 00 02 55 00 00");
+        lookStatusCommand.add("AA 0C 00 01 00 02 55 00 00");
+        for(int i = 0; i<12 ;i++){
+//            this.serialPortConnection.sendByHexString(this.lookStatusCommand.get(i));
+            System.out.println(lookStatusCommand.get(i));
+        }
     }
 }

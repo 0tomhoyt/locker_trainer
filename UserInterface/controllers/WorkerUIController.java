@@ -235,10 +235,6 @@ public class WorkerUIController implements Initializable, Controller {
             int l = jsonObject.getInt("lockId");
             int serialNum = jsonObject.getInt("lockSerialNumber");
             String lockName = jsonObject.getString("lockName");
-//            System.out.println(jsonArray.getJSONObject(i) +" "+ i);
-//            labels.get(l).setOnMouseClicked(e ->{
-//                System.out.println("special one");//可以拿到，但是是竖着来的，怪
-//            });
             locks.get(l).setSerialNumber(serialNum);
             locks.get(l).setLockName(lockName);
         }

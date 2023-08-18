@@ -5,8 +5,11 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -50,7 +53,11 @@ public class MainController implements Initializable, Controller {
     public String stopDeviceCommand = "AA 00 02 01 00 02 55 00 00";
     public  List<String> lookStatusCommand = new ArrayList<>();
 
-    private volatile boolean stopThread = false;
+    private volatile boolean stopThread1 = false;
+
+    private volatile boolean stopThread2 = false;
+
+    private boolean a = false;
 
 
 
@@ -80,57 +87,132 @@ public class MainController implements Initializable, Controller {
 
 
         locks = new ArrayList<>();
-        for (int i = 0; i < 60; i++) {
-            // You can replace the arguments with the appropriate values for your LockStatus and workStation
-            Lock lock = new Lock(i, LockStatus.OFF, 1);
-            locks.add(lock);
+        for (int i = 0;i<12;i++){
+            for(int j = 0;j<10;j++){
+                Lock lock = new Lock(i*10+j, LockStatus.FINISHED, 1);
+                lock.setTime(String.valueOf(i));
+                locks.add(lock);
+            }
         }
-        for (int i = 0; i < 60; i++) {
-            // You can replace the arguments with the appropriate values for your LockStatus and workStation
-            Lock lock = new Lock(i + 60, LockStatus.OFF, 2);
-            locks.add(lock);
-        }
-        this.startHardware();
-        this.stopHardware();
         finalLocks = locks;
     }
+
     public void startHardware(){
-        this.serialPortConnection.sendByHexString(this.startDeviceCommand);
+        for (int i =0;i<3;i++) {
+            this.serialPortConnection.sendByHexString(this.startDeviceCommand);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
         this.startCheckingHardwareThread();
+        this.startHardwareReceiveThread();
     }
 
     public void stopHardware(){
         stopCheckingHardwareThread();
-        this.serialPortConnection.sendByHexString(this.stopDeviceCommand);
-        this.checkHardware();
+        for (int i =0;i<3;i++) {
+            this.serialPortConnection.sendByHexString(this.stopDeviceCommand);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        try {
+            this.checkHardware();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        this.stopCheckingHardwareThread();
+        this.stopHardwareReceiveThread();
     }
 
     public void stopCheckingHardwareThread(){
-        this.stopThread = true;
+        this.stopThread1 = true;
     }
     public void startCheckingHardwareThread(){
-		stopThread = false;
+        stopThread1 = false;
         Thread hardwareThread = new Thread(() -> {
-            while (!stopThread) {
-                checkHardware();
+            while (!stopThread1) {
+                try {
+                    checkHardware();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        hardwareThread.start();
+    }
+    public void checkHardware() throws InterruptedException {
+        for(int i = 0; i<12 ;i++){
+            this.serialPortConnection.sendByHexString(this.lookStatusCommand.get(i));
+            Thread.sleep(100);
+        }
+    }
+
+    public void stopHardwareReceiveThread(){
+        this.stopThread2 = true;
+    }
+    public void startHardwareReceiveThread(){
+        stopThread2 = false;
+        Thread hardwareThread = new Thread(() -> {
+            while (!stopThread2) {
+                harwareReceive();
             }
         });
         hardwareThread.start();
     }
 
-    public void checkHardware(){
-        for(int i = 0; i<12 ;i++){
-            this.serialPortConnection.sendByHexString(this.lookStatusCommand.get(i));
-        }
+
+
+    public void harwareReceive(){
         try {
-            Thread.sleep(500); // 等待1000毫秒
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        try {
-            byte[] receivedData = this.serialPortConnection.receiveData(3,TimeUnit.SECONDS);
-            if(receivedData!=null)
-            	handleReceivedData(receivedData);
+            Lock lock;
+            byte[] receivedbyte = this.serialPortConnection.readAndRemoveNumOfBytes(this.serialPortConnection.getReceiveBuffer(),1);
+            while (receivedbyte[0]!=(byte) 0xAA){
+                receivedbyte = this.serialPortConnection.readAndRemoveNumOfBytes(this.serialPortConnection.getReceiveBuffer(),1);
+            }
+            byte[] receivedData = this.serialPortConnection.readAndRemoveNumOfBytes(this.serialPortConnection.getReceiveBuffer(),54);
+            System.out.println("received data length:");
+            System.out.println(receivedData.length);
+            if (receivedData[0] == (byte)0x00 || receivedData[1]!= (byte)0x00) {
+                return;
+            }
+            int deviceindex = receivedData[0]-1;
+            System.out.println("deviceindex");
+            System.out.println(deviceindex);
+
+            for (int j = 0;j<10;j++){
+                int index;
+                if (deviceindex == 0){
+                    index = j;
+                }
+                else {
+                    index = deviceindex*10+j;
+                }
+                System.out.println(index);
+                byte statuscode = receivedData[j*5+4];
+                lock = this.locks.get(index);
+                if(statuscode == (byte) 0b10000000){
+                    lock.setStatus(LockStatus.UNCONNECTED);
+                } else if (statuscode == (byte) 0b10000001) {
+                    lock.setStatus(LockStatus.OFF);
+                } else if (statuscode == (byte) 0b10000010) {
+                    lock.setStatus(LockStatus.ON);
+                    System.out.println("seton");
+                } else if (statuscode == (byte) 0b10000011) {
+                    lock.setStatus(LockStatus.FINISHED);
+                    System.out.println("setfinish");
+                }
+                byte[] segment = Arrays.copyOfRange(receivedData, j * 5 + 4, (j + 1) * 5 + 4);
+                String lockTime = getLockTime(segment);
+
+                lock.setTime(lockTime);
+                locks.set(index,lock);
+            }
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -144,15 +226,19 @@ public class MainController implements Initializable, Controller {
         }
         int deviceindex = receivedData[1]-1;
         for(int i = 0;i<10;i++){
-            int statuscode = receivedData[i*5+4];
-            if(statuscode == 0){
+            byte statuscode = receivedData[i*5+4];
+            System.out.println(receivedData[i*5+4]);
+            if(statuscode == (byte) 0b10000000){
                 locks.get(deviceindex*12+i).setStatus(LockStatus.UNCONNECTED);
-            } else if (statuscode == 1 ) {
+            } else if (statuscode == (byte) 0b10000001) {
                 locks.get(deviceindex*12+i).setStatus(LockStatus.OFF);
-            } else if (statuscode==2) {
+            } else if (statuscode == (byte) 0b10000010) {
                 locks.get(deviceindex*12+i).setStatus(LockStatus.ON);
-            } else if (statuscode==3) {
+            } else if (statuscode == (byte) 0b10000011) {
                 locks.get(deviceindex*12+i).setStatus(LockStatus.FINISHED);
+            }
+            else {
+                locks.get(deviceindex*12+i).setStatus(LockStatus.ERROR);
             }
             byte[] segment = Arrays.copyOfRange(receivedData, i * 5 + 4, (i + 1) * 5 + 4);
             String lockTime = getLockTime(segment);
