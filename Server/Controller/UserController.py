@@ -124,6 +124,7 @@ def getAllWorkersController(authToken):
         print("连接数据库失败：", e)
         return json.dumps({"message": f"连接数据库失败:{e}"})
     isAdmin = UserDB.checkAdminToken(cnx, authToken)
+    print(isAdmin)
     if isAdmin != 1:
         return json.dumps({"message": "权限不足", "code": 403})
 

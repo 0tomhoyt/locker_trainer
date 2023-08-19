@@ -141,6 +141,7 @@ def stopTrainingController(authToken, trainingID, score, unlockedNum, unlocks, t
                                                                             totalTime)
     if type(update_result_IsOn) == str:
         return json.dumps({"message": f"更新状态失败:{update_result_IsOn}", "code": 500})
+    locks1 = LockDB.getAllLocksForWorkstation(cnx,1)
 
     for unlock in unlocks:
         Lock = LockDB.getLock(cnx, unlock["lockId"])

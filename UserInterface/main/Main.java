@@ -80,7 +80,7 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.setTitle("lockerTrainer");
-        primaryStage.setFullScreen(true);
+//        primaryStage.setFullScreen(true);
         primaryStage.show();
     }
 

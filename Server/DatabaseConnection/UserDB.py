@@ -34,7 +34,6 @@ def checkAdminToken(cnx, authToken):
     query = f'SELECT * FROM users WHERE AuthToken = {authToken} AND Role = 1'
     result = execute_query(cnx, query)
     result = result.fetchone()
-    print(result)
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     elif result is None:

@@ -25,6 +25,13 @@ def getLock(cnx, LockID):
     else:  # 返回查询结果
         return result.fetchone()
 
+def getAllLocks(cnx):
+    query = f"SELECT * FROM locks"
+    result = DBconnect.execute_query(cnx, query)
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 返回查询结果
+        return result.fetchall()
 
 # 删除锁
 def deleteLock(cnx, LockID):
