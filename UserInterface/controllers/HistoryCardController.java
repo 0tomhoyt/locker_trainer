@@ -46,7 +46,7 @@ public class HistoryCardController implements Initializable, Controller {
     public void setTrainingHistory(TrainingHistory trainingHistory){
         this.trainingHistory = trainingHistory;
 
-        time_label.setText("时间："+ trainingHistory.getDateTimeString());
+        time_label.setText("训练时间："+ trainingHistory.getDateTimeString());
         total_time_label.setText("总用时："+ trainingHistory.getTotalTime());
         unlocked_label.setText("开锁数："+ trainingHistory.getUnlocked());
 
