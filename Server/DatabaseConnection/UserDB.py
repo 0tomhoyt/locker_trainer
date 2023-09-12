@@ -65,6 +65,16 @@ def getUserIdFromAuthToken(cnx, AuthToken):
     else:  # 返回查询结果
         return result
 
+def getUserByUsername(cnx, userName):
+    # 查询数据，AuthToken 为字符串类型
+    query = f"SELECT UserID FROM users WHERE UserName = '{userName}'"
+    result = execute_query(cnx, query)
+    result = result.fetchone()
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 返回查询结果
+        return result
+
 
 # 根据UserID获取AuthToken
 def getAuthTokenFromUserId(cnx, UserID):
