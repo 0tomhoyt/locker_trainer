@@ -6,21 +6,27 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<fx:root fx:id="anchorPane" prefHeight="700.0" prefWidth="900.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginAdminController">
+<fx:root fx:id="anchorPane" prefHeight="700.0" prefWidth="900.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginAdminController">
     <children>
-        <Label alignment="CENTER" layoutX="182.0" layoutY="150.0" text="工位 workstationID 目前为0，这个不知道怎么搞比较好 machineId 为1 在数据库中先添加数据" textAlignment="CENTER">
+        <Label alignment="CENTER" layoutX="369.0" layoutY="91.0" prefHeight="50.0" prefWidth="185.0" text="管理员登陆" textAlignment="CENTER">
             <font>
                 <Font size="30.0" />
             </font>
         </Label>
-        <TextField fx:id="field_username" layoutX="141.0" layoutY="238.0" />
-        <TextField fx:id="field_password" layoutX="141.0" layoutY="339.0" />
-        <Button fx:id="login_btn" layoutX="181.0" layoutY="433.0" mnemonicParsing="false" onAction="#login_btn_click" text="登录"> <!--onAction="#login_btn_click"-->
+        <TextField fx:id="field_username" layoutX="369.0" layoutY="237.0" style="-fx-pref-height: 50; -fx-pref-width: 200;" />
+        <TextField fx:id="field_password" layoutX="369.0" layoutY="338.0" style="-fx-pref-height: 50; -fx-pref-width: 200;" />
+        <Button fx:id="login_btn" layoutX="387.0" layoutY="459.0" mnemonicParsing="false" onAction="#login_btn_click" style="-fx-pref-height: 70; -fx-pref-width: 150;" text="登录"> <!--管理员登录按钮，一切开始的地方-->
             <font>
                 <Font size="24.0" />
             </font>
         </Button>
-        <Label layoutX="141.0" layoutY="222.0" text="用户名" />
-        <Label layoutX="141.0" layoutY="324.0" text="密码" />
+        <Label layoutX="372.0" layoutY="209.0" text="用户名">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+        <Label layoutX="369.0" layoutY="310.0" text="密码">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
     </children>
 </fx:root>

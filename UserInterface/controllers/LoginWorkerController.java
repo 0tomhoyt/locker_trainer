@@ -6,29 +6,35 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Popup;
+import main.Main;
 import models.Machine;
 import models.Worker;
-import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import socketClient.SocketClient;
+import util.Tools;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class LoginWorkerController implements Initializable, Controller {
-    private FXMLLoader outerLoader;
+    protected FXMLLoader outerLoader;
     protected Machine machine;
     protected Worker worker;
     @FXML
-    private AnchorPane anchorPane;
+    protected AnchorPane anchorPane;
     @FXML
     protected String panePosition;
     @FXML
     protected TextField field_username;
     @FXML
     protected TextField field_password;
+    private MainController mainController;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -47,29 +53,18 @@ public class LoginWorkerController implements Initializable, Controller {
         this.machine = machine;
     }
 
-    protected String choosePage(){//方便admin继承
-        return "../fxml/worker_UI.fxml";
+    public void setMainController(MainController mainController){
+        this.mainController = mainController;
     }
-    private void afterLogin(JSONObject jsonObject) {//本来想用这个来继承的，但好像上面那个少一点
-        try {
-            anchorPane.getChildren().clear();
-            FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("../fxml/worker_UI.fxml"));
-            innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
-            innerLoader.load();
 
-            updateWorker(jsonObject);
-
-            WorkerUIController workerUIController = innerLoader.getController();
-            workerUIController.setWorker(worker);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public MainController getMainController(){
+        return this.mainController;
     }
 
     @FXML
     void login_btn_click(Event event) throws IOException, JSONException {
         String username = field_username.getText();
-        String password = field_password.getText();
+        String password = Tools.MD5hash(field_password.getText());
         int machineID = machine.getId();
         int workStationID = panePosition.equals("insertionPoint1") ? 2 * machineID - 1 : 2 * machineID;
 
@@ -77,46 +72,74 @@ public class LoginWorkerController implements Initializable, Controller {
         System.out.println(worker.getLoginJson());
         login(worker);
     }
-
     protected boolean login(Worker worker) throws IOException, JSONException {
-        SocketClient client = new SocketClient("localhost", 12345);
-        client.connect();
+        Future<String> future = Main.executorService.submit(() -> {
+//            try{
+//                Thread.sleep(3000);
+//            }
+//            catch (InterruptedException e){
+//                e.printStackTrace();
+//            }
+            return Tools.socketConnect(worker.getLoginJson());
+        });
 
-        client.send(worker.getLoginJson());
-        String data = client.receive();
-        System.out.println(data + "in LoginWorkerController Login method");
-        // 反转义java字符串
-        String tokenInfoEsca = StringEscapeUtils.unescapeJava(data);
-        // 去除前后的双引号
-        tokenInfoEsca = tokenInfoEsca.substring(1, tokenInfoEsca.length() - 1);
-        // 转换为json对象
-        JSONObject jsonObject = new JSONObject(tokenInfoEsca);
-        boolean loginSuccess = jsonObject.getBoolean("loginSuccess");
-        int machineID = jsonObject.getInt("machineId");
-        int workerStationID = jsonObject.getInt("workstationId");
-        if (loginSuccess && machineID == worker.getMachineID() && workerStationID == worker.getWorkStationID()) {
-//            afterLogin(jsonObject);
-            try {
-                anchorPane.getChildren().clear();
-                FXMLLoader innerLoader = new FXMLLoader(getClass().getResource(choosePage()));//把一个
-                innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
-                innerLoader.load();
+        Popup popup = MainController.showLoadingPopup("登录中");
 
-                updateWorker(jsonObject);
-
-                WorkerUIController workerUIController = innerLoader.getController();
-                workerUIController.setWorker(worker);
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
+            if (jsonObject.has("loginSuccess") && jsonObject.getInt("code") == 200 && jsonObject.getBoolean("loginSuccess")){
+                int machineID = jsonObject.getInt("machineId");
+                int workerStationID = worker.isAdmin() ? 0 : jsonObject.getInt("workstationId");
+                if (machineID == worker.getMachineID() && workerStationID == worker.getWorkStationID()) {
+                    updateWorker(jsonObject);
+                    popup.hide();
+                    afterLogin();
+                    return true;
+                }
+                else {
+                    popup.hide();
+                    MainController.popUpAlter("ERROR","","");
+                    return false;
+                }
             }
+            else {
+                popup.hide();
+                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
+                return false;
+            }
+        } catch (TimeoutException e) {
+            // 超时处理
+            popup.hide();
+            MainController.popUpAlter("ERROR","Time UP","登录超时");
+            return false;
+        } catch (InterruptedException | ExecutionException e) {
+            // 其他异常处理
+            popup.hide();
+            MainController.popUpAlter("ERROR","ERROR","登录失败");
+            return false;
         }
-        client.close();
-        System.out.println("loginStatus:" + loginSuccess);
-        return loginSuccess;
+    }
+
+    protected void afterLogin() throws IOException, JSONException {
+        try {
+            anchorPane.getChildren().clear();
+            FXMLLoader innerLoader = new FXMLLoader(getClass().getResource("/fxml/worker_UI.fxml"));
+            innerLoader.setRoot(outerLoader.getNamespace().get(panePosition));
+            innerLoader.load();
+
+            WorkerUIController workerUIController = innerLoader.getController();
+            workerUIController.setWorker(worker);
+            workerUIController.setMainController(this.getMainController());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
-    private void updateWorker(JSONObject object) throws JSONException {
+
+
+
+    protected void updateWorker(JSONObject object) throws JSONException {
         worker.setAuthToken(object.getString("authToken"));
         worker.setHeaderURL(object.getString("headerURL"));
         worker.setWorkLength(object.getInt("worklength"));

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="100.0" prefWidth="715.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ConnectedMachineCardController">
+   <children>
+      <Label fx:id="machine_label" layoutX="54.0" layoutY="33.0" text="Machine">
+         <font>
+            <Font size="25.0" />
+         </font></Label>
+      <ChoiceBox fx:id="worker_choiceBox" layoutX="471.0" layoutY="25.0" prefWidth="150.0" style="-fx-pref-height: 50; -fx-pref-width: 200;" />
+   </children>
+</AnchorPane>

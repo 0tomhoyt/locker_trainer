@@ -1,18 +1,20 @@
 import time
 import datetime
+
 from DatabaseConnection.DBconnect import execute_query
 
 
 # 创建一个训练记录
 def createTraining(cnx, IsMatch, MatchID, UserID, WorkstationID, Score, UnlockedNum, TotalTime, TrainingType,
                    Difficulty, IsOn):
-    TrainingID = int(time.time() * 10)  # 乘以10来保留时间戳小数点后一位
+    TrainingID = int(time.time() * 100)  # 乘以100来保留时间戳小数点后两位
     query = f'''INSERT INTO trainings (TrainingID, IsMatch, MatchID, UserID, WorkstationID, Score, UnlockedNum, TotalTime, TrainingType, Difficulty, IsOn) 
                 VALUES ({TrainingID}, {IsMatch}, {MatchID}, {UserID}, {WorkstationID}, {Score}, {UnlockedNum}, {TotalTime}, {TrainingType}, {Difficulty}, {IsOn})'''
     result = execute_query(cnx, query)
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return TrainingID
 
 
@@ -23,6 +25,7 @@ def setTrainingOn(cnx, TrainingID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -33,6 +36,7 @@ def setTrainingOff(cnx, TrainingID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -43,6 +47,7 @@ def updateTrainingDifficulty(cnx, TrainingID, Difficulty):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -53,6 +58,7 @@ def updateTrainingScore(cnx, TrainingID, Score):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -63,7 +69,19 @@ def updateTrainingUnlockedNum(cnx, TrainingID, UnlockedNum):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
+
+
+def update_score_unlockedNum_ison_totaltime(cnx, TrainingID, score, unlockedNum, ison, totaltime):
+    query = f"UPDATE trainings SET Score = {score}, UnlockedNum = {unlockedNum}, IsOn = {ison}, TotalTime = {totaltime} WHERE TrainingID = {TrainingID}"
+    result = execute_query(cnx, query)
+    if type(result) == str:
+        return result
+    else:
+        cnx.commit()
+        return 1
+
 
 
 # 更新训练记录的总时间
@@ -73,6 +91,7 @@ def updateTrainingTotalTime(cnx, TrainingID, TotalTime):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -83,6 +102,7 @@ def updateTrainingUserID(cnx, TrainingID, UserID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -163,6 +183,7 @@ def deleteTraining(cnx, TrainingID):
     if type(result) == str:
         return result
     else:
+        cnx.commit()
         return 1
 
 
@@ -173,3 +194,10 @@ def getTrainingCreationTime(TrainingID):
     # 将Unix时间戳转换为datetime对象
     dt_object = datetime.datetime.fromtimestamp(timestamp)
     return dt_object
+
+# if __name__ == "__main__":
+#     try:
+#         cnx = DBconnect.databaseConnect()
+#     except Exception as e:
+#         print("连接数据库失败：", e)
+#     print(setTrainingOn(cnx,22))

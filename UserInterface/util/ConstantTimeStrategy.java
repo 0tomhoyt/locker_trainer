@@ -1,45 +1,52 @@
 package util;
 
-import controllers.Controller;
 import controllers.WorkerUIController;
-import javafx.scene.control.Label;
-import main.Main;
+import models.TrainingHistory;
+import org.json.JSONException;
+
+import java.io.IOException;
 
 public class ConstantTimeStrategy implements TimerStrategy{
-    private Label label;
-    private int seconds;
-    private int max;
+    private TrainingHistory trainingHistory;
     private WorkerUIController workerUIController;
     @Override
-    public void doWork() {
-        if(seconds == 0){
+    public void doWork() throws JSONException, IOException {
+        if(trainingHistory.getTime() == 0)
             workerUIController.notifyEndingTrain();
-        }
-        else{
-            seconds--;
-            label.setText(seconds+"s");
+        else {
+            trainingHistory.decSeconds();
         }
     }
 
     @Override
     public void reset() {
-        label.setText("时间");
-        seconds = max;
+        trainingHistory.setTime(trainingHistory.getTotalTime());
     }
 
     @Override
-    public int getSeconds() {
-        return seconds;
+    public int getDifficulty() {
+        if(trainingHistory.getTotalTime() < 60){
+            return 5;
+        }
+        else if(trainingHistory.getTotalTime() < 2 * 60){
+            return 4;
+        }
+        else if(trainingHistory.getTotalTime() < 3 * 60){
+            return 3;
+        }
+        else if(trainingHistory.getTotalTime() < 4 * 60){
+            return 2;
+        }
+        else {
+            return 1;
+        }
     }
 
-    @Override
-    public void setSeconds(int seconds) {
-        this.seconds = seconds * 60;
-        this.max = seconds * 60;
-    }
-
-    public ConstantTimeStrategy(Label label, WorkerUIController workerUIController) {
-        this.label = label;
+    public ConstantTimeStrategy(TrainingHistory trainingHistory, WorkerUIController workerUIController) {
+        this.trainingHistory = trainingHistory;
         this.workerUIController = workerUIController;
+    }
+
+    public ConstantTimeStrategy() {
     }
 }

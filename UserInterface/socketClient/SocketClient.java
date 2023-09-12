@@ -2,6 +2,7 @@ package socketClient;
 
 import java.net.*;
 import java.io.*;
+import java.util.concurrent.*;
 
 
 public class SocketClient {
@@ -21,9 +22,11 @@ public class SocketClient {
     }
 
     public void send(String message) throws IOException {
+        client.setSendBufferSize(8192 * 2);
+
         OutputStream os = client.getOutputStream();
         PrintWriter pw = new PrintWriter(os);
-        pw.write(message);
+        pw.write(message+"\n");
         pw.flush();
 
         client.shutdownOutput();
@@ -44,13 +47,46 @@ public class SocketClient {
     }
 
     public static void main(String[] args) throws IOException {
-        SocketClient client = new SocketClient("localhost", 12345);
-        client.connect();
+//        SocketClient client = new SocketClient("localhost", 5001);
+//        client.connect();
+//
+//        String jsonString = "{ \"event\": \"workerLogin\", \"data\": { \"username\": \"hyt\", \"password\": \"123\", \"machineId\": 1, \"workstationId\": 1 } }";
+//        client.send(jsonString);
+//
+//        System.out.println("Server says " + client.receive());
+//        client.close();
 
-        String jsonString = "{ \"event\": \"workerLogin\", \"data\": { \"username\": \"hyt\", \"password\": \"hjqCYS1301\", \"machineId\": 1, \"workstationId\": 1 } }";
-        client.send(jsonString);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Future<String> future = (Future<String>) executorService.submit(() -> {
+            try {
+                // 接收消息
+                SocketClient client = new SocketClient("localhost", 5001);
+                client.connect();
 
-        System.out.println("Server says " + client.receive());
-        client.close();
+                String jsonString = "{ \"event\": \"workerLogin\", \"data\": { \"username\": \"hyt\", \"password\": \"123\", \"machineId\": 1, \"workstationId\": 1 } }";
+                client.send(jsonString);
+
+                System.out.println("Server says " + client.receive());
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        try {
+            String receivedMessage = future.get(5, TimeUnit.SECONDS); // 设置超时时间为5秒
+            // 处理接收到的消息
+            System.out.println("Received message: " + receivedMessage);
+        } catch (TimeoutException e) {
+            // 超时处理
+            System.out.println("Socket receive timeout: " + e.getMessage());
+        } catch (InterruptedException | ExecutionException e) {
+            // 其他异常处理
+            e.printStackTrace();
+        } finally {
+            executorService.shutdown();
+        }
+
+        System.out.println("hello world!");
     }
 }

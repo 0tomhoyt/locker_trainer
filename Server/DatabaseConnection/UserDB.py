@@ -1,6 +1,7 @@
 from DatabaseConnection.DBconnect import execute_query
 
 
+
 # 创建新用户
 def createUser(cnx, UserName, Password, Role, AuthToken, HeadUrl, EnrolledDate):
     # 插入数据
@@ -11,6 +12,7 @@ def createUser(cnx, UserName, Password, Role, AuthToken, HeadUrl, EnrolledDate):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -27,6 +29,17 @@ def login(cnx, UserName, Password):
 
     return result
 
+
+def checkAdminToken(cnx, authToken):
+    query = f'SELECT * FROM users WHERE AuthToken = "{authToken}" AND Role = 1'
+    result = execute_query(cnx, query)
+    result = result.fetchone()
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    elif result is None:
+        return 0
+    else:
+        return 1
 
 
 # 获取用户信息
@@ -51,6 +64,7 @@ def getUserIdFromAuthToken(cnx, AuthToken):
         return result
     else:  # 返回查询结果
         return result
+
 
 # 根据UserID获取AuthToken
 def getAuthTokenFromUserId(cnx, UserID):
@@ -96,6 +110,7 @@ def updateUserRole(cnx, UserID, Role):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -107,6 +122,7 @@ def updateUserHeadUrl(cnx, UserID, HeadUrl):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -118,6 +134,7 @@ def updateUserEnrolledDate(cnx, UserID, EnrolledDate):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
 
 
@@ -129,4 +146,22 @@ def deleteUser(cnx, UserID):
     if type(result) == str:  # 捕获错误，返回错误信息
         return result
     else:  # 操作成功，返回1
+        cnx.commit()
         return 1
+
+def getAllWorker(cnx):
+    query = "SELECT * FROM users"
+    result = execute_query(cnx, query)
+    result = result.fetchall()
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 返回查询结果
+        return result
+
+# if __name__ == "__main__":
+#     try:
+#         cnx = DBconnect.databaseConnect()
+#     except Exception as e:
+#         print("连接数据库失败：", e)
+#     print(checkAdminToken(cnx,"123456"))
+#     print(checkAdminToken(cnx,"888666"))

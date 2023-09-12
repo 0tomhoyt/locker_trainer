@@ -11,6 +11,7 @@ def add_server(cnx, is_main_server, server_ip_address, client_ip_address, is_sel
 
     query = f'INSERT INTO server (isMainServer, serverIpAddress, clientIpAddress, isSelf) VALUES ({is_main_server}, "{server_ip_address}", "{client_ip_address}", {is_self})'
     result = execute_query(cnx, query)
+    cnx.commit()
     return 1 if type(result) != str else result
 
 
@@ -32,6 +33,7 @@ def delete_server(cnx, server_id):
     # 删除指定服务器
     query = f'DELETE FROM server WHERE serverId = {server_id}'
     result = execute_query(cnx, query)
+    cnx.commit()
     return 1 if type(result) != str else result
 
 
@@ -39,6 +41,7 @@ def change_server_ip_address(cnx, server_id, new_ip_address):
     # 修改指定服务器的IP地址
     query = f'UPDATE server SET serverIpAddress = "{new_ip_address}" WHERE serverId = {server_id}'
     result = execute_query(cnx, query)
+    cnx.commit()
     return 1 if type(result) != str else result
 
 
@@ -46,6 +49,7 @@ def change_client_ip_address(cnx, server_id, new_ip_address):
     # 修改指定服务器的客户端IP地址
     query = f'UPDATE server SET clientIpAddress = "{new_ip_address}" WHERE serverId = {server_id}'
     result = execute_query(cnx, query)
+    cnx.commit()
     return 1 if type(result) != str else result
 
 
@@ -53,12 +57,14 @@ def reset_all_main_server(cnx):
     # 将所有服务器的 isMainServer 设置为 0
     query = f'UPDATE server SET isMainServer = 0'
     execute_query(cnx, query)
+    cnx.commit()
 
 
 def reset_all_self(cnx):
     # 将所有服务器的 isSelf 设置为 0
     query = f'UPDATE server SET isSelf = 0'
     execute_query(cnx, query)
+    cnx.commit()
 
 
 def change_main_server(cnx, server_id, is_main_server):
@@ -69,6 +75,7 @@ def change_main_server(cnx, server_id, is_main_server):
 
     query = f'UPDATE server SET isMainServer = {is_main_server} WHERE serverId = {server_id}'
     result = execute_query(cnx, query)
+    cnx.commit()
     return 1 if type(result) != str else result
 
 
@@ -80,6 +87,7 @@ def change_self(cnx, server_id, is_self):
 
     query = f'UPDATE server SET isSelf = {is_self} WHERE serverId = {server_id}'
     result = execute_query(cnx, query)
+    cnx.commit()
     return 1 if type(result) != str else result
 
 

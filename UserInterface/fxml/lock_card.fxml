@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="100.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LockCardController">
+   <children>
+      <Label fx:id="name_label" layoutX="47.0" layoutY="4.0" text="锁名">
+         <font>
+            <Font size="15.0" />
+         </font></Label>
+      <Label fx:id="serial_number_label" layoutX="47.0" layoutY="29.0" text="序列号">
+         <font>
+            <Font size="15.0" />
+         </font></Label>
+      <Label fx:id="difficulty_label" layoutX="47.0" layoutY="60.0" text="难度">
+         <font>
+            <Font size="15.0" />
+         </font></Label>
+      <Button fx:id="check_lock_btn" layoutX="370.0" layoutY="29.0" mnemonicParsing="false" onAction="#check_lock_btn_click" prefHeight="41.0" prefWidth="195.0" style="-fx-pref-height: 40; -fx-pref-width: 200;" text="查看总开锁记录">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
+   </children>
+</AnchorPane>

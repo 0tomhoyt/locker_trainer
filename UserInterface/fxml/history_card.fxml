@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="200.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HistoryCardController">
+<AnchorPane prefHeight="200.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HistoryCardController">
    <children>
-      <Label fx:id="time_label" layoutX="42.0" layoutY="39.0" text="时间" />
-      <Label fx:id="score_label" layoutX="39.0" layoutY="117.0" text="分数" />
-      <Label fx:id="total_time_label" layoutX="135.0" layoutY="117.0" text="总用时" />
-      <Label fx:id="unlocked_label" layoutX="225.0" layoutY="117.0" text="未开锁数" />
-      <Label fx:id="operator_label" layoutX="312.0" layoutY="117.0" text="操作人数" />
+      <Label fx:id="time_label" layoutX="13.0" layoutY="7.0" text="训练时间">
+         <font>
+            <Font size="15.0" />
+         </font></Label>
+      <Label fx:id="total_time_label" layoutX="30.0" layoutY="55.0" text="总用时">
+         <font>
+            <Font size="15.0" />
+         </font></Label>
+      <Label fx:id="unlocked_label" layoutX="30.0" layoutY="100.0" text="开锁数">
+         <font>
+            <Font size="15.0" />
+         </font></Label>
+    <AnchorPane layoutX="280.0" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="620.0">
+         <children>
+            <ScrollPane>
+               <content>
+                  <VBox fx:id="vBox" prefHeight="200.0" prefWidth="620.0" />
+               </content>
+            </ScrollPane>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

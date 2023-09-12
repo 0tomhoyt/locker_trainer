@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="100.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.WorkerCardController">
+    <children>
+
+        <Label fx:id="username" layoutX="30.0" layoutY="50.0" text="姓名">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+        <Label fx:id="userid" layoutX="368.0" layoutY="50.0" text="工号">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+        <Label fx:id="workLength" layoutX="209.0" layoutY="50.0" text="工龄">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+        <Label fx:id="unlocked_label" layoutX="221.0" layoutY="124.0" />
+      <Button fx:id="check_training_history_btn" layoutX="681.0" layoutY="39.0" mnemonicParsing="false" onAction="#check_training_history_btn_click" style="-fx-pref-height: 50;" text="查看训练历史">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
+
+    </children>
+</AnchorPane>
