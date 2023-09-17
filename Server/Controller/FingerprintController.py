@@ -150,3 +150,12 @@ def WorkerLoginFingerprint(username, machineId, workstationId):
             "worklength": user[6],
             "message": "登录成功"
         })
+
+def main():
+    String_to_be_test = "abcd"
+    worker_add_fingerprint("hFiyLTixQMR1p4hUFYHAPuYPCO7ZkJ")
+
+    WorkerLoginFingerprint("符讯",1,1)
+
+if __name__ == "__main__":
+    main()
