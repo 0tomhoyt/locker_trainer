@@ -1,6 +1,6 @@
 import json
 
-from Controller import LockController,MachineController, UserController, TrainingController, MatchController
+from Controller import LockController,MachineController, UserController, TrainingController, MatchController,FingerprintController
 
 # 1. machineStart：启动指定的机器。
 # 输入：machineId（机器ID）。
@@ -433,6 +433,42 @@ def main_server_event_router(event, data, main_server_client):
             return json.dumps(
                 {"replyMessage": True, "message": f'startMatch: 收到的data包不正确{data}', "code": 500})
         return MatchController.start_match_controller(data['authToken'], data['trainings'],main_server_client)
+
+    # 功能，添加用户指纹
+    # 输入，authtoken和user_id
+    # 之后等待服务器反馈（硬件由服务器调用） 最长需要十秒
+    # 输出：message +code
+    elif event == "addFingerprint":
+        if "authToken" not in data :
+            print(f'addFingerprint: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'addFingerprint: 收到的data包不正确{data}', "code": 500})
+        return FingerprintController.worker_add_fingerprint(data['authToken'])
+
+    # 功能，添加用户指纹
+    # 输入，username,machineId,workstationId
+    # 之后等待服务器反馈（硬件由服务器调用） 最长需要十秒
+    # 输出"loginSuccess": True,
+    #             "code": 200,
+    #             "authToken": AuthToken,
+    #             "machineId": machineId,
+    #             "userName": userName,
+    #             "headerURL": headerUrl,
+    #             "worklength": worklength,
+    #             "message": "登录成功"
+    #         })
+    #     或者
+    #         return json.dumps({
+    #             "loginSucess": False,
+    #             "code": 500,
+    #             "message": "没有管理员权限"
+    elif event == "loginFingerprint":
+        if "username" not in data or "machineId" not in data or "workstationId" not in data:
+            print(f'loginFingerprint: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'loginFingerprint: 收到的data包不正确{data}', "code": 500})
+        return FingerprintController.WorkerLoginFingerprint(data['username'],data['machineId'],data['workstationId'])
+
 
 
 

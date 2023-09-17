@@ -1,46 +1,9 @@
 import json
-from DatabaseConnection import UserDB, DBconnect, WorkStationDB,FingerPrintDB
+from DatabaseConnection import UserDB, DBconnect, WorkStationDB
 from datetime import datetime
 from Util import Util
 
-def WorkerLoginFingerprint(username, fingerprintString,machineId,workstationId):
-    try:
-        cnx = DBconnect.databaseConnect()
-    except Exception as e:
-        print("连接数据库失败：", e)
-        return json.dumps({"message": f"连接数据库失败:{e}"})
-    user = UserDB.getUserByUsername(cnx,username)
-    user_id = user[0]
-    AuthToken = user[4]
-    compare_result = 0
-    try:
-        fingerprints = FingerPrintDB.get_fingerprint(cnx,user_id)
-        for fingerprint in fingerprints:
-            ##compare
-            print("compare")
-            if 1:
-                compare_result = 1
-    except Exception as e:
-        return json.dumps(({"message": f"获取指纹数据失败:{e}"}))
 
-    if compare_result==0:
-        return json.dumps({
-            "loginSuccess": False,
-            "code": 403,
-            "message": "匹配失败"
-        })
-    else:
-        return json.dumps({
-            "loginSuccess": True,
-            "code": 200,
-            "authToken": AuthToken,
-            "machineId": machineId,
-            "workstationId": workstationId,
-            "userName": username,
-            "headerURL": user[5],
-            "worklength": user[6],
-            "message": "登录成功"
-        })
 
 def WorkerLogin(username, password, machineId, workstationId):
     try:
