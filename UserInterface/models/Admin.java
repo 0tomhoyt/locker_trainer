@@ -4,10 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class Admin extends Worker{
@@ -15,7 +11,6 @@ public class Admin extends Worker{
     * getLoginJson
     * isAdmin
     * */
-
 
     public Admin(String username, String password, int machineID) {
         super(username,password,0,machineID);
@@ -81,5 +76,9 @@ public class Admin extends Worker{
         );
     }
 
-
+    public String addFingerLoginJson(){
+        return String.format("{\"event\": \"addFingerprint\", \"data\": { \"authToken\": \"%s\" } }",
+                authToken
+        );
+    }
 }

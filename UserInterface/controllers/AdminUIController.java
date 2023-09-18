@@ -26,6 +26,8 @@ public class AdminUIController extends WorkerUIController implements Initializab
     private AnchorPane check_lock_history_page;
     @FXML
     private AnchorPane start_game_page;
+    @FXML
+    private AnchorPane add_figurePrint_page;
     public List<Worker> workers = new ArrayList<>();
 
 
@@ -59,6 +61,8 @@ public class AdminUIController extends WorkerUIController implements Initializab
         setupCheckLockHistory();
 
         setStart_training_page();
+
+        setAdd_figurePrint_page();
 
 //        setupStartGamePage();
     }
@@ -141,6 +145,21 @@ public class AdminUIController extends WorkerUIController implements Initializab
             controller.setReturnWay(2);
             controller.setAdmin((Admin) this.worker);
             controller.setLock(lock);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void setAdd_figurePrint_page(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_add_fingerPrint.fxml"));
+            Pane pane = loader.load();
+
+            add_figurePrint_page.getChildren().add(pane);
+
+            AdminAddFingerPrintController controller = loader.getController();
+            controller.setAdmin((Admin) worker);
         }
         catch (IOException e){
             e.printStackTrace();

@@ -145,6 +145,14 @@ public class Worker {
         );
     }
 
+    public String getFigureLoginJson(){
+        return String.format("{ \"event\": \"loginFingerprint\", \"data\": { \"username\": \"%s\", \"machineId\": \"%d\", \"workstationId\": %d } }",
+                username,
+                machineID,
+                workStationID
+        );
+    }
+
     public String getLogoutJson(){
         return String.format("{ \"event\": \"workerLogout\", \"data\": { \"machineId\": %d, \"workstationId\": %d } }",
                 machineID,
