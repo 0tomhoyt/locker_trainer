@@ -72,7 +72,7 @@ def worker_add_fingerprint(authtoken):
         return json.dumps({"message": f"连接数据库失败:{e}", "code": 500})
 
     try:
-        userid = UserDB.getUserIdFromAuthToken(cnx, authtoken)
+        userid = UserDB.getUserIdFromAuthToken(cnx, authtoken)[0]
         if userid is None:
             return json.dumps({"message": "找不到对应的用户ID", "code": 500})
     except Exception as e:
@@ -82,13 +82,17 @@ def worker_add_fingerprint(authtoken):
     result = 0
     for i in range(3):
         try:
-            result = get_fp()
+            # result = get_fp()
+            result = "abcdaaa"
         except Exception as e:
             print(e)
         if result != 0:
             continue
     if result == 0:
         return json.dumps({"message": f"获取指纹失败", "code": 500})
+    print(exist_fingerprint)
+    print(userid)
+    print(result)
     if len(exist_fingerprint) > 2:
         FingerPrintDB.delete_fingerprint(cnx, exist_fingerprint[0][0])
         FingerPrintDB.create_fingerprint(cnx, userid, result)
@@ -126,9 +130,10 @@ def WorkerLoginFingerprint(username, machineId, workstationId):
         fingerprints = FingerPrintDB.get_fingerprint(cnx, user_id)
         for fingerprint in fingerprints:
             ##compare
-            similarity = match_fp(fingerprint, result)
+            similarity = match_fp(fingerprint[2], result)
             if similarity > 50:
                 compare_result = 1
+
     except Exception as e:
         return json.dumps(({"message": f"获取指纹数据失败:{e}", "code": 500}))
 
@@ -153,9 +158,16 @@ def WorkerLoginFingerprint(username, machineId, workstationId):
 
 def main():
     String_to_be_test = "abcd"
-    worker_add_fingerprint("hFiyLTixQMR1p4hUFYHAPuYPCO7ZkJ")
+    print(worker_add_fingerprint("kaCgWVfG3D2M0yvmecWsSq22Zk80mP"))
+    # WorkerLoginFingerprint("符讯",1,1)
+    try:
+        cnx = DBconnect.databaseConnect()
+    except Exception as e:
+        print("连接数据库失败：", e)
+        return json.dumps({"message": f"连接数据库失败:{e}", "code": 500})
+    print(FingerPrintDB.create_fingerprint(cnx,1,String_to_be_test))
 
-    WorkerLoginFingerprint("符讯",1,1)
+
 
 if __name__ == "__main__":
     main()
