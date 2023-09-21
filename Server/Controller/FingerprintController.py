@@ -82,8 +82,8 @@ def worker_add_fingerprint(authtoken):
     result = 0
     for i in range(3):
         try:
-            # result = get_fp()
-            result = "abcdaaa"
+            result = get_fp()
+            # result = "abcdaaa"
         except Exception as e:
             print(e)
         if result != 0:
