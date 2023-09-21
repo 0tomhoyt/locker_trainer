@@ -5,6 +5,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.stage.Popup;
 import main.Main;
 import models.*;
@@ -25,6 +26,7 @@ public class LoginAdminController extends LoginWorkerController implements Initi
     login_btn_click，
     afterLogin
 */
+    private Alert alert;
 
     @Override
     void login_btn_click(Event event) throws IOException, JSONException {
@@ -59,16 +61,22 @@ public class LoginAdminController extends LoginWorkerController implements Initi
     }
 
     @FXML
-    void figure_login_btn_click(ActionEvent event) throws JSONException, IOException {
+    void figure_login_btn_click(ActionEvent event) throws JSONException {
         String username = field_username.getText();
         int machineID = machine.getId();
 
         worker = new Admin(username, "0", machineID);
 
+        alert = new Alert(Alert.AlertType.INFORMATION, "请按手指!");
+        alert.setTitle("注意");
+        alert.setHeaderText("提示");
+
+        alert.showAndWait();
+
         figureLogin(worker);
     }
 
-    private boolean figureLogin(Worker worker) throws IOException, JSONException {
+    private boolean figureLogin(Worker worker) throws JSONException {
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getFigureLoginJson()));
 
         Popup popup = MainController.showLoadingPopup("登录中");
@@ -78,6 +86,7 @@ public class LoginAdminController extends LoginWorkerController implements Initi
             System.out.println(data);
             JSONObject jsonObject = Tools.transferToJSONObject(data);
             if (jsonObject.has("loginSuccess") && jsonObject.getInt("code") == 200 && jsonObject.getBoolean("loginSuccess")){
+                alert.close();
                 int machineID = jsonObject.getInt("machineId");
                 int workerStationID = worker.isAdmin() ? 0 : jsonObject.getInt("workstationId");
                 if (machineID == worker.getMachineID() && workerStationID == worker.getWorkStationID()) {
@@ -93,17 +102,20 @@ public class LoginAdminController extends LoginWorkerController implements Initi
                 }
             }
             else {
+                alert.close();
                 popup.hide();
                 MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
                 return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
+            alert.close();
             popup.hide();
             MainController.popUpAlter("ERROR","Time UP","登录超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
+            alert.close();
             popup.hide();
             MainController.popUpAlter("ERROR","ERROR","登录失败");
             return false;
