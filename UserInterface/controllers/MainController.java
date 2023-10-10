@@ -7,10 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import main.Main;
@@ -44,7 +41,7 @@ public class MainController implements Initializable, Controller {
     @FXML
     private Button joinMatchButton2;
     @FXML
-    private AnchorPane adminTab;
+    private AnchorPane main_page;
     public static Stage primaryStage;
 
     public SerialPortConnection serialPortConnection;
@@ -59,15 +56,13 @@ public class MainController implements Initializable, Controller {
 
     private boolean a = false;
 
-
-
-
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         Main.controllers.put(this.getClass().getSimpleName(), this);
+
+        setupPage();
+
         try {
             this.serialPortConnection = new SerialPortConnection("COM2",115200);
             this.serialPortConnection.start();
@@ -95,6 +90,21 @@ public class MainController implements Initializable, Controller {
             }
         }
         finalLocks = locks;
+    }
+
+    private void setupPage(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login_admin.fxml"));
+            Pane pane = loader.load();
+            main_page.getChildren().add(pane);
+
+            LoginAdminController controller = (LoginAdminController) loader.getController();
+            controller.setMachine(machine);
+            controller.setMainController(this);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public void startHardware(){
@@ -164,8 +174,6 @@ public class MainController implements Initializable, Controller {
         });
         hardwareThread.start();
     }
-
-
 
     public void harwareReceive(){
         try {
@@ -360,6 +368,49 @@ public class MainController implements Initializable, Controller {
         return loadingPopup;
     }
 
+    public void goToLogin(){
+        main_page.getChildren().clear();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login_admin.fxml"));
+            Pane pane = loader.load();
+            main_page.getChildren().add(pane);
+
+            LoginAdminController controller = loader.getController();
+            controller.setMainController(this);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void goToRegister(){
+        main_page.getChildren().clear();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
+            Pane pane = loader.load();
+            main_page.getChildren().add(pane);
+
+            RegisterController controller = loader.getController();
+            controller.setMainController(this);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void goToRegisterFinger(){
+        main_page.getChildren().clear();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/register_finger.fxml"));
+            Pane pane = loader.load();
+            main_page.getChildren().add(pane);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
     /******************************
      锁的部分
      ********************************/
@@ -429,7 +480,7 @@ public class MainController implements Initializable, Controller {
     }
 
     public void logout() {
-        adminTab.getChildren().clear();
+        main_page.getChildren().clear();
         try {
 //            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
 //            Pane pane = loader.load();

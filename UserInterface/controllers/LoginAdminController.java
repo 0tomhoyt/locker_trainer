@@ -122,6 +122,11 @@ public class LoginAdminController extends LoginWorkerController implements Initi
         }
     }
 
+    @FXML
+    void register_btn_click(ActionEvent event){
+        mainController.goToRegister();
+    }
+
     public static void main(String[] args) {
         System.out.println(Tools.MD5hash("123456"));
     }

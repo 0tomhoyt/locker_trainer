@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.TextField;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -34,7 +35,7 @@ public class LoginWorkerController implements Initializable, Controller {
     protected TextField field_username;
     @FXML
     protected TextField field_password;
-    private MainController mainController;
+    protected MainController mainController;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -134,10 +135,6 @@ public class LoginWorkerController implements Initializable, Controller {
             e.printStackTrace();
         }
     }
-
-
-
-
 
     protected void updateWorker(JSONObject object) throws JSONException {
         worker.setAuthToken(object.getString("authToken"));

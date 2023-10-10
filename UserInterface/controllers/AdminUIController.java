@@ -37,6 +37,21 @@ public class AdminUIController extends WorkerUIController implements Initializab
 
     }
 
+    @Override
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+
+        setupWorkerInfo();
+
+        setupCheckLockHistory();
+
+        setStart_training_page();
+
+        setAdd_figurePrint_page();
+
+//        setupStartGamePage();
+    }
+
     private void setStart_training_page(){
         start_training_page.getChildren().clear();
         try{
@@ -51,20 +66,6 @@ public class AdminUIController extends WorkerUIController implements Initializab
         catch (IOException | JSONException e){
             e.printStackTrace();
         }
-    }
-    @Override
-    public void setWorker(Worker worker) {
-        this.worker = worker;
-
-        setupWorkerInfo();
-
-        setupCheckLockHistory();
-
-        setStart_training_page();
-
-        setAdd_figurePrint_page();
-
-//        setupStartGamePage();
     }
 
     public void setupWorkerInfo(){

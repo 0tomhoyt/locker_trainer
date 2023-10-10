@@ -6,33 +6,38 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<fx:root fx:id="anchorPane" prefHeight="700.0" prefWidth="900.0" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterController">
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterController">
     <children>
-        <Label alignment="CENTER" layoutX="355.0" layoutY="142.0" prefHeight="50.0" prefWidth="189.0" text="注册页面" textAlignment="CENTER">
+        <Label alignment="CENTER" layoutX="369.0" layoutY="91.0" prefHeight="50.0" prefWidth="185.0" text="注册页面" textAlignment="CENTER">
             <font>
                 <Font size="40.0" />
             </font>
         </Label>
-        <TextField fx:id="field_username" layoutX="368.0" layoutY="261.0" style="-fx-pref-height: 50;" />
-        <TextField fx:id="field_password" layoutX="368.0" layoutY="375.0" style="-fx-pref-height: 50;" />
-        <TextField fx:id="field_password_again" layoutX="369.0" layoutY="463.0" style="-fx-pref-height: 50;" />
-        <Button fx:id="register_btn" layoutX="410.0" layoutY="539.0" mnemonicParsing="false" onAction="#register_btn_click" style="-fx-pref-height: 80;" text="注册">
+        <TextField fx:id="field_username" layoutX="369.0" layoutY="197.0" prefHeight="50.0" prefWidth="200.0" style="-fx-pref-height: 50;" />
+        <TextField fx:id="field_password" layoutX="368.0" layoutY="298.0" prefHeight="50.0" prefWidth="200.0" style="-fx-pref-height: 50;" />
+        <TextField fx:id="field_password_again" layoutX="369.0" layoutY="403.0" prefHeight="50.0" prefWidth="200.0" style="-fx-pref-height: 50;" />
+        <Button fx:id="register_btn" layoutX="393.0" layoutY="486.0" mnemonicParsing="false" onAction="#register_btn_click" prefHeight="70.0" prefWidth="150.0" style="-fx-pref-height: 80;" text="注册">
             <font>
                 <Font size="24.0" />
             </font>
         </Button>
-        <Label layoutX="367.0" layoutY="220.0" text="用户名">
+        <Label layoutX="372.0" layoutY="169.0" text="用户名">
          <font>
             <Font size="20.0" />
          </font></Label>
-        <Label layoutX="367.0" layoutY="350.0" text="密码">
+        <Label layoutX="369.0" layoutY="270.0" text="密码">
          <font>
             <Font size="20.0" />
          </font></Label>
-        <Label layoutX="369.0" layoutY="432.0" text="确认密码">
+        <Label layoutX="369.0" layoutY="376.0" text="确认密码">
          <font>
             <Font size="20.0" />
          </font></Label>
+      <Button fx:id="login_btn" layoutX="393.0" layoutY="592.0" mnemonicParsing="false" onAction="#login_btn_click" prefHeight="70.0" prefWidth="150.0" style="-fx-pref-height: 80;" text="登录">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Button>
 
     </children>
-</fx:root>
+</AnchorPane>

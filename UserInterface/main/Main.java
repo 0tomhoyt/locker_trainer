@@ -27,28 +27,26 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         machine = new Machine(true);
         machine.setId(1);
 
-
-
         FXMLLoader outerLoader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = outerLoader.load();
 
-        FXMLLoader innerLoader1 = new FXMLLoader(getClass().getResource("/fxml/login_worker.fxml"));
-        innerLoader1.setRoot(outerLoader.getNamespace().get("insertionPoint1"));
-        innerLoader1.load();
-
-        FXMLLoader innerLoader2 = new FXMLLoader(getClass().getResource("/fxml/login_worker.fxml"));
-        innerLoader2.setRoot(outerLoader.getNamespace().get("insertionPoint2"));
-        innerLoader2.load();
-
-        //加载管理员标签的登录页面
-        FXMLLoader tabAdminLoader = new FXMLLoader(getClass().getResource("/fxml/login_admin.fxml"));
-        tabAdminLoader.setRoot(outerLoader.getNamespace().get("adminTab"));
-        tabAdminLoader.load();
+//        FXMLLoader innerLoader1 = new FXMLLoader(getClass().getResource("/fxml/login_worker.fxml"));
+//        innerLoader1.setRoot(outerLoader.getNamespace().get("insertionPoint1"));
+//        innerLoader1.load();
+//
+//        FXMLLoader innerLoader2 = new FXMLLoader(getClass().getResource("/fxml/login_worker.fxml"));
+//        innerLoader2.setRoot(outerLoader.getNamespace().get("insertionPoint2"));
+//        innerLoader2.load();
 
         //加载管理员标签的登录页面
-        FXMLLoader tabRegisterLoader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
-        tabRegisterLoader.setRoot(outerLoader.getNamespace().get("registerTab"));
-        tabRegisterLoader.load();
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login_admin.fxml"));
+//        loader.setRoot(outerLoader.getNamespace().get("main_page"));
+//        loader.load();
+
+        //加载管理员标签的登录页面
+//        FXMLLoader tabRegisterLoader = new FXMLLoader(getClass().getResource("/fxml/register.fxml"));
+//        tabRegisterLoader.setRoot(outerLoader.getNamespace().get("registerTab"));
+//        tabRegisterLoader.load();
 
         //fxml加载完成
 
@@ -57,23 +55,23 @@ public class Main extends Application {//继承抽象类，重写抽象函数
         mainController.setOuterLoader(outerLoader);
         mainController.setMachine(machine);
 
-        LoginWorkerController loginWorkerController1 = innerLoader1.getController();
-        loginWorkerController1.setOuterFXMLLoader(outerLoader);
-        loginWorkerController1.setPanePosition("insertionPoint1");
-        loginWorkerController1.setMachine(machine);
-        loginWorkerController1.setMainController(mainController);
+//        LoginWorkerController loginWorkerController1 = innerLoader1.getController();
+//        loginWorkerController1.setOuterFXMLLoader(outerLoader);
+//        loginWorkerController1.setPanePosition("insertionPoint1");
+//        loginWorkerController1.setMachine(machine);
+//        loginWorkerController1.setMainController(mainController);
+//
+//        LoginWorkerController loginWorkerController2 = innerLoader2.getController();
+//        loginWorkerController2.setOuterFXMLLoader(outerLoader);
+//        loginWorkerController2.setPanePosition("insertionPoint2");
+//        loginWorkerController2.setMachine(machine);
+//        loginWorkerController2.setMainController(mainController);
 
-        LoginWorkerController loginWorkerController2 = innerLoader2.getController();
-        loginWorkerController2.setOuterFXMLLoader(outerLoader);
-        loginWorkerController2.setPanePosition("insertionPoint2");
-        loginWorkerController2.setMachine(machine);
-        loginWorkerController2.setMainController(mainController);
-
-        LoginAdminController loginAdminController = tabAdminLoader.getController();
-        loginAdminController.setOuterFXMLLoader(outerLoader);//这里为什么是outerloader
-        loginAdminController.setPanePosition("adminTab");
-        loginAdminController.setMachine(machine);
-        loginAdminController.setMainController(mainController);
+//        LoginAdminController loginAdminController = loader.getController();
+//        loginAdminController.setOuterFXMLLoader(outerLoader);//这里为什么是outerloader
+//        loginAdminController.setPanePosition("adminTab");
+//        loginAdminController.setMachine(machine);
+//        loginAdminController.setMainController(mainController);
 
         // 页面出现
         Scene scene = new Scene(root);
