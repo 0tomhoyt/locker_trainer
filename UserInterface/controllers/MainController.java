@@ -61,8 +61,6 @@ public class MainController implements Initializable, Controller {
 
         Main.controllers.put(this.getClass().getSimpleName(), this);
 
-        setupPage();
-
         try {
             this.serialPortConnection = new SerialPortConnection("COM2",115200);
             this.serialPortConnection.start();
@@ -98,7 +96,7 @@ public class MainController implements Initializable, Controller {
             Pane pane = loader.load();
             main_page.getChildren().add(pane);
 
-            LoginAdminController controller = (LoginAdminController) loader.getController();
+            LoginAdminController controller = loader.getController();
             controller.setMachine(machine);
             controller.setMainController(this);
         }
@@ -293,6 +291,8 @@ public class MainController implements Initializable, Controller {
 
     public void setMachine(Machine machine) throws JSONException, IOException {
         this.machine = machine;
+        System.out.println("this is "+this.machine+machine.getId());
+        setupPage();
         start();
     }
 
@@ -375,8 +375,11 @@ public class MainController implements Initializable, Controller {
             Pane pane = loader.load();
             main_page.getChildren().add(pane);
 
+            System.out.println(machine);
+
             LoginAdminController controller = loader.getController();
             controller.setMainController(this);
+            controller.setMachine(machine);
         }
         catch (IOException e){
             e.printStackTrace();
@@ -405,6 +408,22 @@ public class MainController implements Initializable, Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/register_finger.fxml"));
             Pane pane = loader.load();
             main_page.getChildren().add(pane);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void goToAdminUI(Worker worker){
+        main_page.getChildren().clear();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_UI.fxml"));
+            Pane pane = loader.load();
+            main_page.getChildren().add(pane);
+
+            AdminUIController adminUIController = loader.getController();
+            adminUIController.setWorker(worker);
+            adminUIController.setMainController(this);
         }
         catch (IOException e){
             e.printStackTrace();
@@ -480,22 +499,19 @@ public class MainController implements Initializable, Controller {
     }
 
     public void logout() {
-        main_page.getChildren().clear();
-        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
-//            Pane pane = loader.load();
-//            adminTab.getChildren().add(pane);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login_admin.fxml"));
-            loader.setRoot(outerLoader.getNamespace().get("adminTab"));
-            loader.load();
-
-            LoginAdminController controller = loader.getController();
-            controller.setMachine(machine);
-            controller.setOuterFXMLLoader(outerLoader);
-            controller.setPanePosition("adminTab");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        main_page.getChildren().clear();
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("../fxml/login_admin.fxml"));
+//        Pane pane = loader.load();
+//        adminTab.getChildren().add(pane);
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login_admin.fxml"));
+//        loader.setRoot(outerLoader.getNamespace().get("adminTab"));
+//        loader.load();
+//
+//        LoginAdminController controller = loader.getController();
+//        controller.setMachine(machine);
+//        controller.setOuterFXMLLoader(outerLoader);
+//        controller.setPanePosition("adminTab");
+        goToLogin();
     }
 
 //    public static void setLocks(List<Lock> locksOut){
