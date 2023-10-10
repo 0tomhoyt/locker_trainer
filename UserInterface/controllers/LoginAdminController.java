@@ -19,6 +19,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 
 public class LoginAdminController extends LoginWorkerController implements Initializable, Controller {
 /*
@@ -63,64 +68,72 @@ public class LoginAdminController extends LoginWorkerController implements Initi
 
     @FXML
     void figure_login_btn_click(ActionEvent event) throws JSONException {
-        String username = field_username.getText();
         int machineID = machine.getId();
 
-        worker = new Admin(username, "0", machineID);
+        worker = new Admin("", "0", machineID);
 
-        alert = new Alert(Alert.AlertType.INFORMATION, "请按手指!");
-        alert.setTitle("注意");
-        alert.setHeaderText("提示");
+//        alert = new Alert(Alert.AlertType.INFORMATION, "请按手指!");
+//        alert.setTitle("注意");
+//        alert.setHeaderText("提示");
 
-        alert.showAndWait();
+//        alert.showAndWait();
 
-        figureLogin(worker);
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        try {
+            final int[] elapsedTime = {0};
+
+            ScheduledFuture<?> handle = scheduler.scheduleAtFixedRate(() -> {
+                if (elapsedTime[0] >= 120) {  // 超过60秒则停止
+                    scheduler.shutdown();
+                    return;
+                }
+                try {
+                    if (figureLogin(worker)) {
+                        scheduler.shutdown(); // 登录成功则停止
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                elapsedTime[0] += 2;  // 每次增加2秒
+            }, 0, 2, TimeUnit.SECONDS);  // 初始延迟0秒，每2秒执行一次
+        } finally {
+            scheduler.shutdown();
+        }
     }
 
     private boolean figureLogin(Worker worker) throws JSONException {
         Future<String> future = Main.executorService.submit(() -> Tools.socketConnect(worker.getFigureLoginJson()));
 
-        Popup popup = MainController.showLoadingPopup("登录中");
+//        Popup popup = MainController.showLoadingPopup("登录中");
 
         try {
             String data = future.get(10, TimeUnit.SECONDS);
             System.out.println(data);
             JSONObject jsonObject = Tools.transferToJSONObject(data);
-            if (jsonObject.has("loginSuccess") && jsonObject.getInt("code") == 200 && jsonObject.getBoolean("loginSuccess")){
-                alert.close();
+            if (jsonObject.has("loginSuccess") && jsonObject.getInt("code") == 200 && jsonObject.getBoolean("loginSuccess")) {
                 int machineID = jsonObject.getInt("machineId");
                 int workerStationID = worker.isAdmin() ? 0 : jsonObject.getInt("workstationId");
+                worker.setUsername(jsonObject.getString("userName"));
                 if (machineID == worker.getMachineID() && workerStationID == worker.getWorkStationID()) {
                     updateWorker(jsonObject);
-                    popup.hide();
+//                    popup.hide();
                     afterLogin();
                     return true;
                 }
-                else {
-                    popup.hide();
-                    MainController.popUpAlter("ERROR","","");
-                    return false;
-                }
-            }
-            else {
-                alert.close();
-                popup.hide();
-                MainController.popUpAlter("ERROR","",Tools.unicodeToChinese(jsonObject.getString("message")));
-                return false;
             }
         } catch (TimeoutException e) {
             // 超时处理
-            alert.close();
-            popup.hide();
-            MainController.popUpAlter("ERROR","Time UP","登录超时");
+//            alert.close();
+//            MainController.popUpAlter("ERROR","Time UP","登录超时");
             return false;
         } catch (InterruptedException | ExecutionException e) {
             // 其他异常处理
-            alert.close();
-            popup.hide();
-            MainController.popUpAlter("ERROR","ERROR","登录失败");
+//            alert.close();
+//            MainController.popUpAlter("ERROR","ERROR","登录失败");
             return false;
         }
+        return false;
     }
 
     @FXML

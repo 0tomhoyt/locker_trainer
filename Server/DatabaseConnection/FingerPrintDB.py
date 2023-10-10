@@ -20,6 +20,15 @@ def get_fingerprint(cnx, user_id):
     else:  # 返回查询结果
         return result.fetchall()
 
+def get_all_fringerprint(cnx):
+    # 查询数据，LockID为整数类型
+    query = f"SELECT * FROM finger_print"
+    result = execute_query(cnx, query)
+    if type(result) == str:  # 捕获错误，返回错误信息
+        return result
+    else:  # 返回查询结果
+        return result.fetchall()
+
 
 def delete_fingerprint(cnx, fingerprint_id):
     # 删除数据，LockID为整数类型

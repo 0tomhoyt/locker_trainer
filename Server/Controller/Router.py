@@ -445,8 +445,8 @@ def main_server_event_router(event, data, main_server_client):
                 {"replyMessage": True, "message": f'addFingerprint: 收到的data包不正确{data}', "code": 500})
         return FingerprintController.worker_add_fingerprint(data['authToken'])
 
-    # 功能，添加用户指纹
-    # 输入，username,machineId,workstationId
+    # 使用指纹登陆
+    # 输入,machineId,workstationId
     # 之后等待服务器反馈（硬件由服务器调用） 最长需要十秒
     # 输出"loginSuccess": True,
     #             "code": 200,
@@ -463,11 +463,11 @@ def main_server_event_router(event, data, main_server_client):
     #             "code": 500,
     #             "message": "没有管理员权限"
     elif event == "loginFingerprint":
-        if "username" not in data or "machineId" not in data or "workstationId" not in data:
+        if "machineId" not in data or "workstationId" not in data:
             print(f'loginFingerprint: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'loginFingerprint: 收到的data包不正确{data}', "code": 500})
-        return FingerprintController.WorkerLoginFingerprint(data['username'],data['machineId'],data['workstationId'])
+        return FingerprintController.WorkerLoginFingerprint(data['machineId'],data['workstationId'])
 
 
 

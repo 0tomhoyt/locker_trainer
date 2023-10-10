@@ -102,18 +102,12 @@ def worker_add_fingerprint(authtoken):
         return json.dumps({"message": f"已添加新指纹", "code": 200})
 
 
-def WorkerLoginFingerprint(username, machineId, workstationId):
+def WorkerLoginFingerprint(machineId,workstationId):
     try:
         cnx = DBconnect.databaseConnect()
     except Exception as e:
         print("连接数据库失败：", e)
         return json.dumps({"message": f"连接数据库失败:{e}", "code": 500})
-    user = UserDB.getUserByUsername(cnx, username)
-    if user is None:
-        return json.dumps({"message": f"不存在用户", "code": 500})
-    user_id = user[0]
-    AuthToken = user[4]
-    compare_result = 0
     try:
         # 硬件获取指纹
         result = 0
@@ -126,35 +120,91 @@ def WorkerLoginFingerprint(username, machineId, workstationId):
                 continue
         if result == 0:
             return json.dumps({"message": f"获取指纹失败", "code": 500})
-        # 数据库获取指纹
-        fingerprints = FingerPrintDB.get_fingerprint(cnx, user_id)
-        for fingerprint in fingerprints:
-            ##compare
-            similarity = match_fp(fingerprint[2], result)
-            if similarity > 50:
-                compare_result = 1
-
     except Exception as e:
         return json.dumps(({"message": f"获取指纹数据失败:{e}", "code": 500}))
 
-    if compare_result == 0:
-        return json.dumps({
-            "loginSuccess": False,
-            "code": 403,
-            "message": "匹配失败"
-        })
-    else:
-        return json.dumps({
-            "loginSuccess": True,
-            "code": 200,
-            "authToken": AuthToken,
-            "machineId": machineId,
-            "workstationId": workstationId,
-            "userName": username,
-            "headerURL": user[5],
-            "worklength": user[6],
-            "message": "登录成功"
-        })
+
+    # 数据库获取指纹
+    fingerprints = FingerPrintDB.get_all_fringerprint(cnx)
+    for fingerprint in fingerprints:
+        ##compare
+        similarity = match_fp(fingerprint[2], result)
+        if similarity > 50:
+            compare_result = 1
+            user_id = fingerprint[1]
+            user = UserDB.getUser(cnx,user_id)
+            return json.dumps({
+                "loginSuccess": True,
+                "code": 200,
+                "authToken": user[4],
+                "machineId": machineId,
+                "workstationId": workstationId,
+                "userName": user[1],
+                "headerURL": user[5],
+                "worklength": 0,
+                "message": "登录成功"
+            })
+    return json.dumps({
+        "loginSuccess": False,
+        "code": 403,
+        "message": "匹配失败"
+    })
+
+
+
+# def WorkerLoginFingerprint(machineId, workstationId):
+#     try:
+#         cnx = DBconnect.databaseConnect()
+#     except Exception as e:
+#         print("连接数据库失败：", e)
+#         return json.dumps({"message": f"连接数据库失败:{e}", "code": 500})
+#     user = UserDB.getUserByUsername(cnx, username)
+#     if user is None:
+#         return json.dumps({"message": f"不存在用户", "code": 500})
+#     user_id = user[0]
+#     AuthToken = user[4]
+#     compare_result = 0
+#     try:
+#         # 硬件获取指纹
+#         result = 0
+#         for i in range(3):
+#             try:
+#                 result = get_fp()
+#             except Exception as e:
+#                 print(e)
+#             if result != 0:
+#                 continue
+#         if result == 0:
+#             return json.dumps({"message": f"获取指纹失败", "code": 500})
+#         # 数据库获取指纹
+#         fingerprints = FingerPrintDB.get_fingerprint(cnx, user_id)
+#         for fingerprint in fingerprints:
+#             ##compare
+#             similarity = match_fp(fingerprint[2], result)
+#             if similarity > 50:
+#                 compare_result = 1
+#
+#     except Exception as e:
+#         return json.dumps(({"message": f"获取指纹数据失败:{e}", "code": 500}))
+#
+#     if compare_result == 0:
+#         return json.dumps({
+#             "loginSuccess": False,
+#             "code": 403,
+#             "message": "匹配失败"
+#         })
+#     else:
+#         return json.dumps({
+#             "loginSuccess": True,
+#             "code": 200,
+#             "authToken": AuthToken,
+#             "machineId": machineId,
+#             "workstationId": workstationId,
+#             "userName": username,
+#             "headerURL": user[5],
+#             "worklength": user[6],
+#             "message": "登录成功"
+#         })
 
 def main():
     String_to_be_test = "abcd"
