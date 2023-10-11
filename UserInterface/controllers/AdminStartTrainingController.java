@@ -161,21 +161,30 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         for(Node node : gridPane.getChildren()){
             column = GridPane.getColumnIndex(node);
             row = GridPane.getRowIndex(node);
-            if (column<10){
-                i = row*10+column;
-            }
-            else {
-                i = row*10+column%10+60;
-            }
-            Label label = (Label) node;
-            label.setBackground(Background.fill(locks.get(i).getColorByStatus()));
-            label.setText(locks.get(i).getTime());
-            if (locks.get(i).getStatus()==LockStatus.ON){
-                label.setStyle("-fx-font-size: 20px;");
-            }
-            else {
-                label.setStyle("-fx-font-size: 12px;");
-            }
+//            if(column == 10)// this if else is for the middle line
+//            {
+//                Label label = (Label) node;
+//                label.setText("|");
+//            }
+//            else{
+                if (column<10){
+                    i = row*10+column;
+                }
+                else {
+                    i = row*10+column%10+60;
+                }
+                Label label = (Label) node;
+                label.setBackground(Background.fill(locks.get(i).getColorByStatus()));
+                label.setText(locks.get(i).getTime());
+
+                if (locks.get(i).getStatus()==LockStatus.ON){
+                    label.setStyle("-fx-font-size: 20px;");
+                }
+                else {
+                    label.setStyle("-fx-font-size: 12px;");
+                }
+//            }
+
         }
     }
 

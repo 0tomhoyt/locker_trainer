@@ -443,6 +443,9 @@ public class MainController implements Initializable, Controller {
         int serialNumber = lock.getSerialNumber();
         int difficulty = lock.getDifficulty();
 
+        Label lockNameLabel = new Label("锁名 ： ");
+        Label serialNumLabel = new Label("序列数 ： ");
+        Label difficultyLabel = new Label("难度 ： ");
         TextField lockNameField = new TextField(lockName);
         TextField serialNumField = new TextField("" + serialNumber);
         TextField difficultyField = new TextField("" + difficulty);
@@ -473,9 +476,15 @@ public class MainController implements Initializable, Controller {
         // 创建等待页面内容
         VBox popupContent = new VBox();
         popupContent.getChildren().addAll(
+                lockNameLabel,
                 lockNameField,
+
+                serialNumLabel,
                 serialNumField,
+
+                difficultyLabel,
                 difficultyField,
+
                 button
 
         ); // 加载提示信息

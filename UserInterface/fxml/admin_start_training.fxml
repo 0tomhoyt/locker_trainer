@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <!--<?xml version="1.0" encoding="UTF-8"?>-->
@@ -77,20 +78,24 @@
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+<!--6-->
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+<!--                12-->
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+<!--                18-->
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+<!--                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>-->
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -102,15 +107,20 @@
             </rowConstraints>
         </GridPane>
         <RadioButton fx:id="const_time_btn" layoutX="736.0" layoutY="5.0" mnemonicParsing="false" onAction="#const_time_btn_click" prefHeight="34.0" prefWidth="123.0" style="-fx-pref-height: 50; -fx-pref-width: 150;" text="定时训练">
-         <font>
-            <Font size="20.0" />
-         </font></RadioButton>
+            <font>
+                <Font size="20.0" />
+            </font>
+        </RadioButton>
         <RadioButton fx:id="var_time_btn" layoutX="736.0" layoutY="48.0" mnemonicParsing="false" onAction="#var_time_btn_click" style="-fx-pref-width: 150; -fx-pref-height: 50;" text="计时训练">
-         <font>
-            <Font size="20.0" />
-         </font></RadioButton>
+            <font>
+                <Font size="20.0" />
+            </font>
+        </RadioButton>
         <Spinner fx:id="sec_spinner" layoutX="670.0" layoutY="56.0" prefHeight="27.0" prefWidth="64.0" />
         <Button fx:id="end_btn" layoutX="471.0" layoutY="510.0" mnemonicParsing="false" onAction="#end_btn_click" prefHeight="56.0" prefWidth="112.0" text="结束" />
         <Spinner fx:id="min_spinner" layoutX="606.0" layoutY="56.0" prefHeight="27.0" prefWidth="64.0" />
+      <Line endY="390.0" layoutX="230.0" layoutY="110.0" />
+      <Line endX="450.0" endY="110.0" layoutX="-20.0" startX="450.0" startY="500.0" />
+      <Line endX="-20.0" endY="390.0" layoutX="650.0" layoutY="110.0" startX="-20.0" />
     </children>
 </AnchorPane>
