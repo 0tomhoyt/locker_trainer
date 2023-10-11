@@ -252,8 +252,20 @@ public class MainController implements Initializable, Controller {
     }
     private String getLockTime(byte[] data) {
         int t_100ms = (data[1] & 0xFF) + ((data[2] & 0xFF) << 8) + ((data[3] & 0xFF) << 16) + ((data[4] & 0xFF) << 24);
-        float t = (float) t_100ms / 10;
-        return String.format("%.1f", t);
+
+        String lockstring = "0.0";
+        try{
+            float t = (float) t_100ms / 10;
+            if (t >= 0 && t <= 100) {  // 这里的条件仅作为示例，你可以根据实际需求更改
+                lockstring = String.format("%.1f", t);
+            } else {
+                lockstring = "default_value";  // 这里设置你想要的默认值
+            }
+        }
+        catch (Exception exception){
+            return "0.0";
+        }
+        return lockstring;
     }
 
 
