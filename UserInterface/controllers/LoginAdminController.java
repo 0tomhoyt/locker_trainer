@@ -72,33 +72,35 @@ public class LoginAdminController extends LoginWorkerController implements Initi
 
         worker = new Admin("", "0", machineID);
 
-//        alert = new Alert(Alert.AlertType.INFORMATION, "请按手指!");
-//        alert.setTitle("注意");
-//        alert.setHeaderText("提示");
 
-//        alert.showAndWait();
-
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-        try {
-            final int[] elapsedTime = {0};
-
-            ScheduledFuture<?> handle = scheduler.scheduleAtFixedRate(() -> {
-                if (elapsedTime[0] >= 120) {  // 超过60秒则停止
-                    scheduler.shutdown();
-                    return;
-                }
-                try {
-                    if (figureLogin(worker)) {
-                        scheduler.shutdown(); // 登录成功则停止
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                elapsedTime[0] += 2;  // 每次增加2秒
-            }, 0, 2, TimeUnit.SECONDS);  // 初始延迟0秒，每2秒执行一次
-        } finally {
-            scheduler.shutdown();
+//        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+//
+//        try {
+//            final int[] elapsedTime = {0};
+//            ScheduledFuture<?> handle = scheduler.scheduleAtFixedRate(() -> {
+//                System.out.println("elapsedTime");
+//                if (elapsedTime[0] >= 120) {  // 超过60秒则停止
+//                    System.out.println("abc");
+//                    scheduler.shutdown();
+//                    return;
+//                }
+//                try {
+//                    System.out.println("abc");
+//                    if (figureLogin(worker)) {
+//                        scheduler.shutdown(); // 登录成功则停止
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                elapsedTime[0] += 2;  // 每次增加2秒
+//            }, 0, 2, TimeUnit.SECONDS);  // 初始延迟0秒，每2秒执行一次
+//        } finally {
+//            scheduler.shutdown();
+//        }
+        System.out.println("abc");
+        boolean loggedin = false;
+        for (int i = 0;i<50&& !loggedin;i++){
+			loggedin = figureLogin(worker);
         }
     }
 

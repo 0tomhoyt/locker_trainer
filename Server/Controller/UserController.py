@@ -159,4 +159,4 @@ def addUser( userName, password, role):
     new_token = Util.generate_auth_token(30)
     UserDB.createUser(cnx, userName, password, role, new_token, '', datetime.today())
 
-    return json.dumps({ "message": "添加成功", "code": 200})
+    return json.dumps({ "message": "添加成功","authToken": new_token, "code": 200})

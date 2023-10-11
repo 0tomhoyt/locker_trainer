@@ -1,5 +1,5 @@
 import time, json
-from DatabaseConnection import UserDB, DBconnect,  FingerPrintDB
+from DatabaseConnection import UserDB, DBconnect, FingerPrintDB
 from ctypes import *
 import base64
 import os
@@ -95,14 +95,57 @@ def worker_add_fingerprint(authtoken):
     print(result)
     if len(exist_fingerprint) > 2:
         FingerPrintDB.delete_fingerprint(cnx, exist_fingerprint[0][0])
-        FingerPrintDB.create_fingerprint(cnx, userid, result)
-        return json.dumps({"message": f"已删除一个指纹并添加新指纹", "code": 200})
+        id = FingerPrintDB.create_fingerprint(cnx, userid, result)
+        return json.dumps({"message": f"已删除一个指纹并添加新指纹", "fingerprint_id": id, "code": 200})
     else:
-        FingerPrintDB.create_fingerprint(cnx, userid, result)
-        return json.dumps({"message": f"已添加新指纹", "code": 200})
+        id = FingerPrintDB.create_fingerprint(cnx, userid, result)
+        return json.dumps({"message": f"已添加新指纹", "fingerprint_id": id, "code": 200})
 
 
-def WorkerLoginFingerprint(machineId,workstationId):
+def worker_check_fingerprint(authtoken, fingerprint_id):
+    try:
+        cnx = DBconnect.databaseConnect()
+    except Exception as e:
+        print("连接数据库失败：", e)
+        return json.dumps({"message": f"连接数据库失败:{e}", "code": 500})
+
+    try:
+        userid = UserDB.getUserIdFromAuthToken(cnx, authtoken)[0]
+        if userid is None:
+            return json.dumps({"message": "找不到对应的用户ID", "code": 500})
+    except Exception as e:
+        return json.dumps({"message": f"{e}", "code": 500})
+
+    try:
+        exist_fingerprint = FingerPrintDB.get_fingerprint_by_id(cnx, fingerprint_id)
+        result = 0
+        for i in range(3):
+            try:
+                result = get_fp()
+                # result = "abcdaaa"
+            except Exception as e:
+                print(e)
+            if result != 0:
+                continue
+        if result == 0:
+            return json.dumps({"message": f"获取指纹失败", "code": 500})
+        print(exist_fingerprint)
+        print(result)
+        similarity = match_fp(result, exist_fingerprint[2])
+        if similarity > 50:
+            return json.dumps({
+                "code": 200,
+                "id": fingerprint_id,
+                "message": "验证成功"
+            })
+        else:
+            FingerPrintDB.delete_fingerprint(cnx,fingerprint_id)
+            return json.dumps({"message": f"验证指纹失败", "id": fingerprint_id, "code": 500})
+    except Exception as e:
+        return json.dumps({"message": f"验证指纹失败{e}", "id": fingerprint_id, "code": 500})
+
+
+def WorkerLoginFingerprint(machineId, workstationId):
     try:
         cnx = DBconnect.databaseConnect()
     except Exception as e:
@@ -123,7 +166,6 @@ def WorkerLoginFingerprint(machineId,workstationId):
     except Exception as e:
         return json.dumps(({"message": f"获取指纹数据失败:{e}", "code": 500}))
 
-
     # 数据库获取指纹
     fingerprints = FingerPrintDB.get_all_fringerprint(cnx)
     for fingerprint in fingerprints:
@@ -132,7 +174,7 @@ def WorkerLoginFingerprint(machineId,workstationId):
         if similarity > 50:
             compare_result = 1
             user_id = fingerprint[1]
-            user = UserDB.getUser(cnx,user_id)
+            user = UserDB.getUser(cnx, user_id)
             return json.dumps({
                 "loginSuccess": True,
                 "code": 200,
@@ -149,7 +191,6 @@ def WorkerLoginFingerprint(machineId,workstationId):
         "code": 403,
         "message": "匹配失败"
     })
-
 
 
 # def WorkerLoginFingerprint(machineId, workstationId):
@@ -215,8 +256,7 @@ def main():
     except Exception as e:
         print("连接数据库失败：", e)
         return json.dumps({"message": f"连接数据库失败:{e}", "code": 500})
-    print(FingerPrintDB.create_fingerprint(cnx,1,String_to_be_test))
-
+    print(FingerPrintDB.create_fingerprint(cnx, 1, String_to_be_test))
 
 
 if __name__ == "__main__":

@@ -11,11 +11,8 @@ import javafx.scene.layout.*;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import main.Main;
-import models.Lock;
-import models.LockStatus;
-import models.Machine;
+import models.*;
 
-import models.Worker;
 import org.json.JSONException;
 import org.json.JSONObject;
 import socketClient.SocketClient;
@@ -53,6 +50,8 @@ public class MainController implements Initializable, Controller {
     private volatile boolean stopThread1 = false;
 
     private volatile boolean stopThread2 = false;
+
+    public Admin admin;
 
     private boolean a = false;
 
@@ -309,7 +308,7 @@ public class MainController implements Initializable, Controller {
         Popup popup = showLoadingPopup("开启机器中");
 
         try {
-            String data = future.get(5, TimeUnit.SECONDS);
+            String data = future.get(10, TimeUnit.SECONDS);
             System.out.println(data);
             JSONObject jsonObject = Tools.transferToJSONObject(data);
             if (jsonObject.has("code") && jsonObject.getInt("code") == 200) {
@@ -408,6 +407,10 @@ public class MainController implements Initializable, Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/register_finger.fxml"));
             Pane pane = loader.load();
             main_page.getChildren().add(pane);
+
+            RegisterFingerController registerFingerController = loader.getController();
+            registerFingerController.setMainController(this);
+            registerFingerController.setAdmin(admin);
         }
         catch (IOException e){
             e.printStackTrace();

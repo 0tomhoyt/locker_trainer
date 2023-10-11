@@ -1,6 +1,8 @@
 import json
 
-from Controller import LockController,MachineController, UserController, TrainingController, MatchController,FingerprintController
+from Controller import LockController, MachineController, UserController, TrainingController, MatchController, \
+    FingerprintController
+
 
 # 1. machineStart：启动指定的机器。
 # 输入：machineId（机器ID）。
@@ -263,7 +265,7 @@ def main_server_event_router(event, data, main_server_client):
             return json.dumps(
                 {"replyMessage": True, "message": f'stopTraining: 收到的data包不正确{data}', "code": 500})
         return TrainingController.stopTrainingController(data["authToken"], data["trainingID"], data["score"],
-                                                         data["unlockedNum"], data["unlocks"],data["totaltime"])
+                                                         data["unlockedNum"], data["unlocks"], data["totaltime"])
 
     # 输入
     # authToken: 字符串类型，用于验证管理员身份。
@@ -334,14 +336,15 @@ def main_server_event_router(event, data, main_server_client):
     # 输出
     # message: 字符串，表示查询状态。
     # code: 整数，表示HTTP状态代码，如200表示成功。
+    # authToken
     elif event == "addUser":
         if 'userName' not in data or 'password' not in data or 'role' not in data:
             print(f'getWorkerStatus: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'addUser: 收到的data包不正确{data}', "code": 500})
-        return UserController.addUser( data['userName'], data['password'], data['role'])
+        return UserController.addUser(data['userName'], data['password'], data['role'])
 
-    #获取每把锁的名称，序列号，难度
+    # 获取每把锁的名称，序列号，难度
     # data输入
     # authToken: 字符串类型，用于验证管理员身份。
     # workstationId:int
@@ -355,11 +358,11 @@ def main_server_event_router(event, data, main_server_client):
             print(f'getLocks: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'getLocks: 收到的data包不正确{data}', "code": 500})
-        return LockController.getLocksController(data['authToken'],data['workstationId'])
+        return LockController.getLocksController(data['authToken'], data['workstationId'])
 
 
 
-    #更新每把锁的名称，序列号，难度
+    # 更新每把锁的名称，序列号，难度
     # data输入
     # authToken: 字符串类型，用于验证管理员身份。
     # lockId:int
@@ -371,14 +374,15 @@ def main_server_event_router(event, data, main_server_client):
     # code: 整数，表示HTTP状态代码，如200表示成功。
     elif event == "updateLockInfo":
         if "authToken" not in data or "lockId" not in data or "lockName" not in data or \
-                "lockSerialNumber" not in data\
+                "lockSerialNumber" not in data \
                 or "difficulty" not in data:
             print(f'updateLockInfo: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'updateLockInfo: 收到的data包不正确{data}', "code": 500})
-        return LockController.updateLockInfo(data['authToken'],data['lockId'],data['lockName'],data['lockSerialNumber'],data['difficulty'])
+        return LockController.updateLockInfo(data['authToken'], data['lockId'], data['lockName'],
+                                             data['lockSerialNumber'], data['difficulty'])
 
-    #更新每把锁的名称，序列号，难度
+    # 更新每把锁的名称，序列号，难度
     # data输入
     # authToken: 字符串类型，用于验证管理员身份。
     # serialNum :锁的序列号
@@ -402,7 +406,7 @@ def main_server_event_router(event, data, main_server_client):
             print(f'getUnlockInfoBySerialNum: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'getUnlockInfoBySerialNum: 收到的data包不正确{data}', "code": 500})
-        return LockController.getUnlockInfoBySerialNum(data['authToken'],data['serialNum'])
+        return LockController.getUnlockInfoBySerialNum(data['authToken'], data['serialNum'])
 
 
 
@@ -432,18 +436,29 @@ def main_server_event_router(event, data, main_server_client):
             print(f'getWorkerStatus: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'startMatch: 收到的data包不正确{data}', "code": 500})
-        return MatchController.start_match_controller(data['authToken'], data['trainings'],main_server_client)
+        return MatchController.start_match_controller(data['authToken'], data['trainings'], main_server_client)
 
     # 功能，添加用户指纹
-    # 输入，authtoken和user_id
+    # 输入，authtoken
     # 之后等待服务器反馈（硬件由服务器调用） 最长需要十秒
     # 输出：message +code
     elif event == "addFingerprint":
-        if "authToken" not in data :
+        if "authToken" not in data:
             print(f'addFingerprint: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'addFingerprint: 收到的data包不正确{data}', "code": 500})
         return FingerprintController.worker_add_fingerprint(data['authToken'])
+
+    # 功能，检查用户指纹
+    # 输入，authtoken ,fingerprint_id
+    # 之后等待服务器反馈（硬件由服务器调用） 最长需要十秒
+    # 输出：message +code
+    elif event == "checkFingerprint":
+        if "authToken" not in data or "fingerprint_id" not in data:
+            print(f'checkFingerprint: 收到的data包不正确{data}')
+            return json.dumps(
+                {"replyMessage": True, "message": f'addFingerprint: 收到的data包不正确{data}', "code": 500})
+        return FingerprintController.worker_check_fingerprint(data['authToken'], data['fingerprint_id'])
 
     # 使用指纹登陆
     # 输入,machineId,workstationId
@@ -467,7 +482,7 @@ def main_server_event_router(event, data, main_server_client):
             print(f'loginFingerprint: 收到的data包不正确{data}')
             return json.dumps(
                 {"replyMessage": True, "message": f'loginFingerprint: 收到的data包不正确{data}', "code": 500})
-        return FingerprintController.WorkerLoginFingerprint(data['machineId'],data['workstationId'])
+        return FingerprintController.WorkerLoginFingerprint(data['machineId'], data['workstationId'])
 
 
 

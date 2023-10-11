@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import models.Admin;
 import org.json.JSONException;
 import org.json.JSONObject;
 import util.Tools;
@@ -45,9 +46,20 @@ public class RegisterController implements Controller, Initializable {
         int role = 1;
         if (passwordAgain.equals(password)){
             finalPassword = Tools.MD5hash(password);
-
-            mainController.goToRegisterFinger();
-
+            String s = Tools.socketConnect(registerJSON(username,finalPassword,role));
+            JSONObject jsonObject = Tools.transferToJSONObject(s);
+            Admin admin = new Admin(username,finalPassword,0);
+            admin.setAuthToken(jsonObject.getString("authToken"));
+            mainController.admin = admin;
+            if (jsonObject.getInt("code") == 200){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("注册成功");
+                alert.setHeaderText(null);
+                alert.setContentText("用户注册成功！请录入指纹");
+                alert.showAndWait();
+                mainController.goToRegisterFinger();
+                return true;
+            }
             return true;
         }
         else{
@@ -84,11 +96,11 @@ public class RegisterController implements Controller, Initializable {
         mainController.goToLogin();
     }
 
-    private String registerJSON(String hashedPassword, int role){
+    private String registerJSON(String username,String hashedPassword, int role){
 
         return String.format("{ \"event\": \"addUser\", \"data\": { \"authToken\":\"%s\", \"userName\":\"%s\", \"password\" : \"%s\" ,\"role\":\"%d\"}}",
                 " ",
-                field_username.getText(),
+                username,
                 hashedPassword,
                 role
 
