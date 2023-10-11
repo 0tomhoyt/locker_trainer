@@ -87,7 +87,7 @@ public class LoginWorkerController implements Initializable, Controller {
         Popup popup = MainController.showLoadingPopup("登录中");
 
         try {
-            JSONObject jsonObject = Tools.transferToJSONObject(future.get(5,TimeUnit.SECONDS));
+            JSONObject jsonObject = Tools.transferToJSONObject(future.get(10,TimeUnit.SECONDS));
             if (jsonObject.has("loginSuccess") && jsonObject.getInt("code") == 200 && jsonObject.getBoolean("loginSuccess")){
                 int machineID = jsonObject.getInt("machineId");
                 int workerStationID = worker.isAdmin() ? 0 : jsonObject.getInt("workstationId");

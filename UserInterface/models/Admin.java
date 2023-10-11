@@ -81,4 +81,10 @@ public class Admin extends Worker{
                 authToken
         );
     }
+
+    public String checkFingerPrintJson(String fingerprint_id){
+        return String.format("{\"event\": \"checkFingerprint\", \"data\": { \"authToken\": \"%s\", \"fingerprint_id\": %s } }",
+                authToken,fingerprint_id
+        );
+    }
 }
