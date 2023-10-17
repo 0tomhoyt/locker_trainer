@@ -31,11 +31,13 @@ public class AdminUIController extends WorkerUIController implements Initializab
     public List<Worker> workers = new ArrayList<>();
 
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         MainController.addController(this);
 
     }
+
 
     @Override
     public void setWorker(Worker worker) {

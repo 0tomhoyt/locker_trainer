@@ -55,6 +55,7 @@ public class MainController implements Initializable, Controller {
 
     private boolean a = false;
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -357,6 +358,7 @@ public class MainController implements Initializable, Controller {
         alert.showAndWait();
     }
 
+
     public static Popup showLoadingPopup(String message) {
         // 创建 Popup
         Popup loadingPopup = new Popup();
@@ -457,8 +459,8 @@ public class MainController implements Initializable, Controller {
         int serialNumber = lock.getSerialNumber();
         int difficulty = lock.getDifficulty();
 
-        Label lockNameLabel = new Label("锁名 ： ");
-        Label serialNumLabel = new Label("序列数 ： ");
+        Label lockNameLabel = new Label("品牌名称 ： ");
+        Label serialNumLabel = new Label("序列号 ： ");
         Label difficultyLabel = new Label("难度 ： ");
         TextField lockNameField = new TextField(lockName);
         TextField serialNumField = new TextField("" + serialNumber);
@@ -520,6 +522,8 @@ public class MainController implements Initializable, Controller {
         System.out.println("更新!");
         Tools.socketConnect(lock.updateJSON(worker));
     }
+
+
 
     public void logout() {
 //        main_page.getChildren().clear();

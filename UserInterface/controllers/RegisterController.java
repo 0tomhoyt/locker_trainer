@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import models.Admin;
 import org.json.JSONException;
@@ -35,6 +36,18 @@ public class RegisterController implements Controller, Initializable {
 
     public void setMainController(MainController mainController){
         this.mainController = mainController;
+    }
+
+    public void onTextFieldClicked(MouseEvent event) {
+        openVirtualKeyboard();
+    }
+    private void openVirtualKeyboard() {
+        try {
+            // 启动虚拟键盘的代码
+            Runtime.getRuntime().exec("cmd /c C:\\Windows\\System32\\osk.exe");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @FXML

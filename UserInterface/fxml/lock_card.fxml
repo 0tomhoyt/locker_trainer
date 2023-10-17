@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="100.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LockCardController">
    <children>
-      <Label fx:id="name_label" layoutX="47.0" layoutY="4.0" text="锁名">
+      <Label fx:id="name_label" layoutX="47.0" layoutY="4.0" text="品牌名">
          <font>
             <Font size="15.0" />
          </font></Label>

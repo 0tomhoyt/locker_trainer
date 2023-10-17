@@ -9,7 +9,10 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 
@@ -59,8 +62,7 @@ public class AdminStartTrainingController extends WorkerUIController implements 
     private Button end_btn;
     @FXML
     public GridPane gridPane;
-//    FXML
-//    private AnchorPane anchorPane;@
+
 //    @FXML
 //    private Label lockStatus;
 //    @FXML
@@ -79,9 +81,8 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         //设置Button
         end_btn.setDisable(true);
 
-        //尝试自动宽度
-//        anchorPane.prefHeightProperty().bind(P);
     }
+
 
     private void setupToggleGroup() {
         ToggleGroup toggleGroup_tab1 = new ToggleGroup();
@@ -162,27 +163,29 @@ public class AdminStartTrainingController extends WorkerUIController implements 
         for(Node node : gridPane.getChildren()){
             column = GridPane.getColumnIndex(node);
             row = GridPane.getRowIndex(node);
-//            if want more nodes, first go to fxml then go to a forloop in setAdmin()
-            if(column != 10){// skip the middle line
+//            if(column == 10)// this if else is for the middle line
+//            {
+//                Label label = (Label) node;
+//                label.setText("|");
+//            }
+//            else{
                 if (column<10){
                     i = row*10+column;
                 }
                 else {
-//                    i = row*10+column%10+60;
-                    i = row*10+(column-1)%10+60; // if skip the middle line
+                    i = row*10+column%10+60;
                 }
                 Label label = (Label) node;
                 label.setBackground(Background.fill(locks.get(i).getColorByStatus()));
                 label.setText(locks.get(i).getTime());
 
                 if (locks.get(i).getStatus()==LockStatus.ON){
-                    label.setStyle("-fx-font-size: 20px;");
+                    label.setStyle("-fx-font-size: 26px;");
                 }
                 else {
-                    label.setStyle("-fx-font-size: 12px;");
+                    label.setStyle("-fx-font-size: 18px;");
                 }
-            }
-
+//            }
 
         }
     }
@@ -218,9 +221,8 @@ public class AdminStartTrainingController extends WorkerUIController implements 
 
         //添加Label到gridPane
         for(int i=0;i<6;i++){
-            for(int j=0;j<20;j++){//中间空一行
-
-                gridPane.add(labels.get(i * 20 + j), j<10?j:j+1, i);//skip 1 line so j should change
+            for(int j=0;j<20;j++){
+                gridPane.add(labels.get(i * 20 + j), j, i);
             }
         }
         updateLockUI();

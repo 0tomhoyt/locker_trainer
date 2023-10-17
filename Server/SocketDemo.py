@@ -50,7 +50,7 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 # 开启服务器的函数
 def start_server():
     # 设置服务器地址和端口
-    HOST, PORT = "localhost", 5000
+    HOST, PORT = "localhost", 5001
     # 创建服务器实例
     server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
     # 使服务器开始监听并处理连接

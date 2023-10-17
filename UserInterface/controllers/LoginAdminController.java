@@ -7,12 +7,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.stage.Popup;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.scene.Node;
 import main.Main;
 import models.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import util.Tools;
-
+import javafx.scene.input.MouseEvent;
+import javafx.scene.control.TextField;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -32,6 +37,21 @@ public class LoginAdminController extends LoginWorkerController implements Initi
     afterLogin
 */
     private Alert alert;
+
+    public void onTextFieldClicked(MouseEvent event) {
+        openVirtualKeyboard();
+    }
+
+    // 打开虚拟键盘的方法
+    private void openVirtualKeyboard() {
+        try {
+            // 启动虚拟键盘的代码
+            Runtime.getRuntime().exec("cmd /c C:\\Windows\\System32\\osk.exe");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
     @Override
     void login_btn_click(Event event) throws IOException, JSONException {
@@ -102,6 +122,22 @@ public class LoginAdminController extends LoginWorkerController implements Initi
         for (int i = 0;i<50&& !loggedin;i++){
 			loggedin = figureLogin(worker);
         }
+    }
+
+    @FXML
+    private void Switch_to_register_click(ActionEvent event) throws IOException {
+        // 加载目标FXML文件
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("register.fxml"));
+        Parent root = loader.load();
+
+        // 创建新的场景
+        Scene scene = new Scene(root);
+
+        // 获取舞台
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        // 设置新的场景
+        stage.setScene(scene);
     }
 
     private boolean figureLogin(Worker worker) throws JSONException {

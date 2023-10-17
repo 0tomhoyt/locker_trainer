@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import main.Main;
 import models.Admin;
 
@@ -19,6 +20,18 @@ public class AdminCheckLockHistoryController implements Initializable, Controlle
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 //        MainController.addController(this);
+    }
+
+    public void onTextFieldClicked(MouseEvent event) {
+        openVirtualKeyboard();
+    }
+    private void openVirtualKeyboard() {
+        try {
+            // 启动虚拟键盘的代码
+            Runtime.getRuntime().exec("cmd /c C:\\Windows\\System32\\osk.exe");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void setAdmin(Admin admin){
