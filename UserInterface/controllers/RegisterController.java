@@ -73,7 +73,15 @@ public class RegisterController implements Controller, Initializable {
                 mainController.goToRegisterFinger();
                 return true;
             }
-            return true;
+            else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("注册失败");
+                alert.setHeaderText(null);
+                alert.setContentText("注册失败，请重试");
+                alert.showAndWait();
+                mainController.goToRegisterFinger();
+                return true;
+            }
         }
         else{
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
