@@ -39,6 +39,7 @@ public class MainController implements Initializable, Controller {
     private Button joinMatchButton2;
     @FXML
     private AnchorPane main_page;
+
     public static Stage primaryStage;
 
     public SerialPortConnection serialPortConnection;
@@ -60,6 +61,7 @@ public class MainController implements Initializable, Controller {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         Main.controllers.put(this.getClass().getSimpleName(), this);
+        admin = new Admin("","",0);
 
         try {
             this.serialPortConnection = new SerialPortConnection("COM2",115200);
@@ -109,7 +111,7 @@ public class MainController implements Initializable, Controller {
         for (int i =0;i<3;i++) {
             this.serialPortConnection.sendByHexString(this.startDeviceCommand);
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -123,7 +125,7 @@ public class MainController implements Initializable, Controller {
         for (int i =0;i<3;i++) {
             this.serialPortConnection.sendByHexString(this.stopDeviceCommand);
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -175,14 +177,18 @@ public class MainController implements Initializable, Controller {
 
     public void harwareReceive(){
         try {
+            int i=0;
             Lock lock;
             byte[] receivedbyte = this.serialPortConnection.readAndRemoveNumOfBytes(this.serialPortConnection.getReceiveBuffer(),1);
             while (receivedbyte[0]!=(byte) 0xAA){
                 receivedbyte = this.serialPortConnection.readAndRemoveNumOfBytes(this.serialPortConnection.getReceiveBuffer(),1);
+                i++;
+                System.out.println("接收到错误信息");
+                System.out.println(i);
             }
             byte[] receivedData = this.serialPortConnection.readAndRemoveNumOfBytes(this.serialPortConnection.getReceiveBuffer(),54);
-            System.out.println("received data length:");
-            System.out.println(receivedData.length);
+                System.out.println("received data length:");
+                System.out.println(receivedData.length);
             if (receivedData[0] == (byte)0x00 || receivedData[1]!= (byte)0x00) {
                 return;
             }
@@ -436,9 +442,9 @@ public class MainController implements Initializable, Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_UI.fxml"));
             Pane pane = loader.load();
             main_page.getChildren().add(pane);
-
             AdminUIController adminUIController = loader.getController();
             adminUIController.setWorker(worker);
+//            adminUIController.user_name.setText(admin.getUsername());
             adminUIController.setMainController(this);
         }
         catch (IOException e){

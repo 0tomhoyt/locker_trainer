@@ -20,39 +20,39 @@ finger_str4 = 'Rk2KACAyMAAAAAF644444AHgAfwB/AEAAABjNkBvADB2XUDjGTJNVXBcARtvXUCWA
 
 def get_fp():
     # 引用 windows 库
-    # lib_import2 = windll.LoadLibrary(os.getcwd() + '\\lib\\win_64\\fpcore.dll')
-    # # 比对方法
-    # OpenDevice = lib_import2.OpenDevice
-    # OpenDevice.restype = c_int32
-    # CloseDevice = lib_import2.CloseDevice
-    # GetDeviceImage = lib_import2.GetDeviceImage
-    # GetDeviceImage.argtypes = [POINTER(c_ubyte)]
-    # GetDeviceImage.restype = c_bool
-    # OpcDetectFinger = lib_import2.OpcDetectFinger
-    # OpcDetectFinger.argtypes = [POINTER(c_ubyte)]
-    # OpcDetectFinger.restypes = c_int32
-    # CreateTemplate = lib_import2.CreateTemplate
-    # CreateTemplate.argtypes = [POINTER(c_ubyte), POINTER(c_ubyte)]
-    # CreateTemplate.restype = c_bool
-    #
-    # for i in range(30):
-    #     lib_import2.CloseDevice()
-    #     ret = lib_import2.OpenDevice()
-    #     if ret == 0:
-    #         print('open device OK')
-    #         if lib_import2.GetDeviceImage(g_image) == 1:
-    #             if OpcDetectFinger(g_image) == 0:
-    #                 print('Capture OK')
-    #                 if CreateTemplate(g_image, g_feature1):
-    #                     finger_str2 = base64.b64encode(bytes(g_feature1)).decode('utf-8')
-    #                     return finger_str2
-    #     elif ret == 1:
-    #         print('No found device')
-    #     elif ret == 2:
-    #         print('Open Device Fail')
-    #     time.sleep(0.1)
-    # return 0
-    return finger_str5
+    lib_import2 = windll.LoadLibrary(os.getcwd() + '\\lib\\win_64\\fpcore.dll')
+    # 比对方法
+    OpenDevice = lib_import2.OpenDevice
+    OpenDevice.restype = c_int32
+    CloseDevice = lib_import2.CloseDevice
+    GetDeviceImage = lib_import2.GetDeviceImage
+    GetDeviceImage.argtypes = [POINTER(c_ubyte)]
+    GetDeviceImage.restype = c_bool
+    OpcDetectFinger = lib_import2.OpcDetectFinger
+    OpcDetectFinger.argtypes = [POINTER(c_ubyte)]
+    OpcDetectFinger.restypes = c_int32
+    CreateTemplate = lib_import2.CreateTemplate
+    CreateTemplate.argtypes = [POINTER(c_ubyte), POINTER(c_ubyte)]
+    CreateTemplate.restype = c_bool
+
+    for i in range(30):
+        lib_import2.CloseDevice()
+        ret = lib_import2.OpenDevice()
+        if ret == 0:
+            print('open device OK')
+            if lib_import2.GetDeviceImage(g_image) == 1:
+                if OpcDetectFinger(g_image) == 0:
+                    print('Capture OK')
+                    if CreateTemplate(g_image, g_feature1):
+                        finger_str2 = base64.b64encode(bytes(g_feature1)).decode('utf-8')
+                        return finger_str2
+        elif ret == 1:
+            print('No found device')
+        elif ret == 2:
+            print('Open Device Fail')
+        time.sleep(0.1)
+    return 0
+    # return finger_str5
 
 
 def match_fp(finger_str1, finger_str2):

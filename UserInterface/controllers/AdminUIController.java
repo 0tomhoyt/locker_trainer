@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -28,6 +29,10 @@ public class AdminUIController extends WorkerUIController implements Initializab
     private AnchorPane start_game_page;
     @FXML
     private AnchorPane add_figurePrint_page;
+
+    @FXML
+    private Label user_name;
+
     public List<Worker> workers = new ArrayList<>();
 
 
