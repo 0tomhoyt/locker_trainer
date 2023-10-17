@@ -155,7 +155,7 @@ public class MainController implements Initializable, Controller {
     public void checkHardware() throws InterruptedException {
         for(int i = 0; i<12 ;i++){
             this.serialPortConnection.sendByHexString(this.lookStatusCommand.get(i));
-            Thread.sleep(100);
+            Thread.sleep(500);
         }
     }
 
@@ -252,14 +252,13 @@ public class MainController implements Initializable, Controller {
     }
     private String getLockTime(byte[] data) {
         int t_100ms = (data[1] & 0xFF) + ((data[2] & 0xFF) << 8) + ((data[3] & 0xFF) << 16) + ((data[4] & 0xFF) << 24);
-
         String lockstring = "0.0";
         try{
             float t = (float) t_100ms / 10;
-            if (t >= 0 && t <= 100) {  // 这里的条件仅作为示例，你可以根据实际需求更改
+            if (t >= 0 && t <= 100) {
                 lockstring = String.format("%.1f", t);
             } else {
-                lockstring = "default_value";  // 这里设置你想要的默认值
+                lockstring = "0.0";
             }
         }
         catch (Exception exception){

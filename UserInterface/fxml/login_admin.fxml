@@ -1,68 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginAdminController">
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="900.0"  xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginAdminController">
     <children>
-      <VBox alignment="CENTER" layoutX="750.0" layoutY="84.0" prefHeight="900.0" prefWidth="1600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-              <Label alignment="CENTER" prefHeight="50.0" prefWidth="185.0" text="欢迎登陆" textAlignment="CENTER">
-                  <font>
-                      <Font size="30.0" />
-                  </font>
-              </Label>
-              <Label alignment="CENTER" text="用户名">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-              <TextField fx:id="field_username" alignment="TOP_LEFT" maxWidth="-Infinity" prefHeight="84.0" prefWidth="1455.0" style="-fx-pref-height: 50; -fx-pref-width: 200;">
-               <VBox.margin>
-                  <Insets bottom="11.0" top="11.0" />
-               </VBox.margin>
-            </TextField>
-              <Label alignment="CENTER" text="密码">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-              <PasswordField fx:id="field_password" alignment="TOP_LEFT" maxWidth="-Infinity" style="-fx-pref-height: 50; -fx-pref-width: 200;">
-               <VBox.margin>
-                  <Insets bottom="11.0" top="11.0" />
-               </VBox.margin>
-            </PasswordField>
-              <Button fx:id="login_btn" alignment="CENTER" mnemonicParsing="false" onAction="#login_btn_click" style="-fx-pref-height: 70; -fx-pref-width: 150;" text="登录"> <!--管理员登录按钮，一切开始的地方-->
-                  <font>
-                      <Font size="24.0" />
-                  </font>
-               <VBox.margin>
-                  <Insets bottom="11.0" top="11.0" />
-               </VBox.margin>
-              </Button>
-            <Button fx:id="figure_login_btn" alignment="CENTER" mnemonicParsing="false" onAction="#figure_login_btn_click" style="-fx-pref-height: 70; -fx-pref-width: 150;" text="指纹登录">
-               <font>
-                  <Font size="24.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="11.0" top="11.0" />
-               </VBox.margin>
-            </Button>
-            <Button fx:id="register_btn" alignment="CENTER" mnemonicParsing="false" onAction="#register_btn_click" style="-fx-pref-height: 70; -fx-pref-width: 150;" text="注册">
-               <font>
-                  <Font size="24.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="11.0" top="11.0" />
-               </VBox.margin>
-            </Button>
-         </children>
-      </VBox>
+        <Label alignment="CENTER" layoutX="369.0" layoutY="91.0" prefHeight="50.0" prefWidth="185.0" text="欢迎登陆" textAlignment="CENTER">
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Label>
+        <TextField fx:id="field_username" layoutX="369.0" layoutY="197.0" style="-fx-pref-height: 50; -fx-pref-width: 200;" />
+        <PasswordField fx:id="field_password" layoutX="369.0" layoutY="298.0" style="-fx-pref-height: 50; -fx-pref-width: 200;" />
+        <Button fx:id="login_btn" layoutX="387.0" layoutY="394.0" mnemonicParsing="false" onAction="#login_btn_click" style="-fx-pref-height: 70; -fx-pref-width: 150;" text="登录"> <!--管理员登录按钮，一切开始的地方-->
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Button>
+        <Label layoutX="372.0" layoutY="169.0" text="用户名">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+        <Label layoutX="369.0" layoutY="270.0" text="密码">
+         <font>
+            <Font size="20.0" />
+         </font></Label>
+      <Button fx:id="figure_login_btn" layoutX="387.0" layoutY="500.0" mnemonicParsing="false" onAction="#figure_login_btn_click" style="-fx-pref-height: 70; -fx-pref-width: 150;" text="指纹登录">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Button>
+      <Button fx:id="register_btn" layoutX="387.0" layoutY="601.0" mnemonicParsing="false" onAction="#register_btn_click" style="-fx-pref-height: 70; -fx-pref-width: 150;" text="注册">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>

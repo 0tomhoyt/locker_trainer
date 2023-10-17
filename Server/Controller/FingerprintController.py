@@ -20,38 +20,39 @@ finger_str4 = 'Rk2KACAyMAAAAAF644444AHgAfwB/AEAAABjNkBvADB2XUDjGTJNVXBcARtvXUCWA
 
 def get_fp():
     # 引用 windows 库
-    lib_import2 = windll.LoadLibrary(os.getcwd() + '\\lib\\win_64\\fpcore.dll')
-    # 比对方法
-    OpenDevice = lib_import2.OpenDevice
-    OpenDevice.restype = c_int32
-    CloseDevice = lib_import2.CloseDevice
-    GetDeviceImage = lib_import2.GetDeviceImage
-    GetDeviceImage.argtypes = [POINTER(c_ubyte)]
-    GetDeviceImage.restype = c_bool
-    OpcDetectFinger = lib_import2.OpcDetectFinger
-    OpcDetectFinger.argtypes = [POINTER(c_ubyte)]
-    OpcDetectFinger.restypes = c_int32
-    CreateTemplate = lib_import2.CreateTemplate
-    CreateTemplate.argtypes = [POINTER(c_ubyte), POINTER(c_ubyte)]
-    CreateTemplate.restype = c_bool
-
-    for i in range(30):
-        lib_import2.CloseDevice()
-        ret = lib_import2.OpenDevice()
-        if ret == 0:
-            print('open device OK')
-            if lib_import2.GetDeviceImage(g_image) == 1:
-                if OpcDetectFinger(g_image) == 0:
-                    print('Capture OK')
-                    if CreateTemplate(g_image, g_feature1):
-                        finger_str2 = base64.b64encode(bytes(g_feature1)).decode('utf-8')
-                        return finger_str2
-        elif ret == 1:
-            print('No found device')
-        elif ret == 2:
-            print('Open Device Fail')
-        time.sleep(0.1)
-    return 0
+    # lib_import2 = windll.LoadLibrary(os.getcwd() + '\\lib\\win_64\\fpcore.dll')
+    # # 比对方法
+    # OpenDevice = lib_import2.OpenDevice
+    # OpenDevice.restype = c_int32
+    # CloseDevice = lib_import2.CloseDevice
+    # GetDeviceImage = lib_import2.GetDeviceImage
+    # GetDeviceImage.argtypes = [POINTER(c_ubyte)]
+    # GetDeviceImage.restype = c_bool
+    # OpcDetectFinger = lib_import2.OpcDetectFinger
+    # OpcDetectFinger.argtypes = [POINTER(c_ubyte)]
+    # OpcDetectFinger.restypes = c_int32
+    # CreateTemplate = lib_import2.CreateTemplate
+    # CreateTemplate.argtypes = [POINTER(c_ubyte), POINTER(c_ubyte)]
+    # CreateTemplate.restype = c_bool
+    #
+    # for i in range(30):
+    #     lib_import2.CloseDevice()
+    #     ret = lib_import2.OpenDevice()
+    #     if ret == 0:
+    #         print('open device OK')
+    #         if lib_import2.GetDeviceImage(g_image) == 1:
+    #             if OpcDetectFinger(g_image) == 0:
+    #                 print('Capture OK')
+    #                 if CreateTemplate(g_image, g_feature1):
+    #                     finger_str2 = base64.b64encode(bytes(g_feature1)).decode('utf-8')
+    #                     return finger_str2
+    #     elif ret == 1:
+    #         print('No found device')
+    #     elif ret == 2:
+    #         print('Open Device Fail')
+    #     time.sleep(0.1)
+    # return 0
+    return finger_str5
 
 
 def match_fp(finger_str1, finger_str2):
@@ -174,6 +175,7 @@ def WorkerLoginFingerprint(machineId, workstationId):
         if similarity > 50:
             compare_result = 1
             user_id = fingerprint[1]
+            print(user_id)
             user = UserDB.getUser(cnx, user_id)
             return json.dumps({
                 "loginSuccess": True,
@@ -248,15 +250,17 @@ def WorkerLoginFingerprint(machineId, workstationId):
 #         })
 
 def main():
-    String_to_be_test = "abcd"
-    print(worker_add_fingerprint("kaCgWVfG3D2M0yvmecWsSq22Zk80mP"))
+    # String_to_be_test = "abcd"
+    # print(worker_add_fingerprint("kaCgWVfG3D2M0yvmecWsSq22Zk80mP"))
     # WorkerLoginFingerprint("符讯",1,1)
     try:
         cnx = DBconnect.databaseConnect()
     except Exception as e:
         print("连接数据库失败：", e)
         return json.dumps({"message": f"连接数据库失败:{e}", "code": 500})
-    print(FingerPrintDB.create_fingerprint(cnx, 1, String_to_be_test))
+    # print(FingerPrintDB.create_fingerprint(cnx, 1, String_to_be_test))
+    WorkerLoginFingerprint(0,0)
+
 
 
 if __name__ == "__main__":
