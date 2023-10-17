@@ -39,6 +39,9 @@ public class MainController implements Initializable, Controller {
     private Button joinMatchButton2;
     @FXML
     private AnchorPane main_page;
+    @FXML
+    private Label adminname;
+
     public static Stage primaryStage;
 
     public SerialPortConnection serialPortConnection;
@@ -59,6 +62,8 @@ public class MainController implements Initializable, Controller {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         Main.controllers.put(this.getClass().getSimpleName(), this);
+        admin = new Admin("","",0);
+        adminname.setText("");
 
         try {
             this.serialPortConnection = new SerialPortConnection("COM2",115200);
@@ -108,7 +113,7 @@ public class MainController implements Initializable, Controller {
         for (int i =0;i<3;i++) {
             this.serialPortConnection.sendByHexString(this.startDeviceCommand);
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -122,7 +127,7 @@ public class MainController implements Initializable, Controller {
         for (int i =0;i<3;i++) {
             this.serialPortConnection.sendByHexString(this.stopDeviceCommand);
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -434,7 +439,7 @@ public class MainController implements Initializable, Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_UI.fxml"));
             Pane pane = loader.load();
             main_page.getChildren().add(pane);
-
+            adminname.setText(admin.getUsername());
             AdminUIController adminUIController = loader.getController();
             adminUIController.setWorker(worker);
             adminUIController.setMainController(this);
