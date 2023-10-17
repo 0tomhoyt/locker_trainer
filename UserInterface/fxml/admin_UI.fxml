@@ -7,10 +7,8 @@
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminUIController">
+<AnchorPane prefHeight="800.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminUIController">
    <children>
       <ToolBar layoutX="5.0" prefHeight="40.0" prefWidth="1500.0">
         <items>
@@ -26,11 +24,6 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
                               <AnchorPane fx:id="start_training_page" />
-                              <Text fx:id="username" layoutX="843.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="username" wrappingWidth="42.9068603515625">
-                                 <font>
-                                    <Font size="19.0" />
-                                 </font>
-                              </Text>
                            </children>
                         </AnchorPane>
                     </content>

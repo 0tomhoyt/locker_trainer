@@ -31,7 +31,8 @@ public class AdminUIController extends WorkerUIController implements Initializab
     private AnchorPane add_figurePrint_page;
 
     @FXML
-    public Label username;
+    private Label user_name;
+
     public List<Worker> workers = new ArrayList<>();
 
 

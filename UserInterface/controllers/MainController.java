@@ -442,7 +442,7 @@ public class MainController implements Initializable, Controller {
             main_page.getChildren().add(pane);
             AdminUIController adminUIController = loader.getController();
             adminUIController.setWorker(worker);
-            adminUIController.username.setText(admin.getUsername());
+//            adminUIController.user_name.setText(admin.getUsername());
             adminUIController.setMainController(this);
         }
         catch (IOException e){
