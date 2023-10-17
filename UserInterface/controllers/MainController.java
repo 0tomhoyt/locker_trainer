@@ -262,7 +262,7 @@ public class MainController implements Initializable, Controller {
         String lockstring = "0.0";
         try{
             float t = (float) t_100ms / 10;
-            if (t >= 0 && t <= 100) {
+            if (t >= 0 && t <= 500) {
                 lockstring = String.format("%.1f", t);
             } else {
                 lockstring = "0.0";
@@ -444,7 +444,6 @@ public class MainController implements Initializable, Controller {
             main_page.getChildren().add(pane);
             AdminUIController adminUIController = loader.getController();
             adminUIController.setWorker(worker);
-//            adminUIController.user_name.setText(admin.getUsername());
             adminUIController.setMainController(this);
         }
         catch (IOException e){

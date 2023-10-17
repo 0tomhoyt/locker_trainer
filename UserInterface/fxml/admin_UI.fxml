@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminUIController">
+<AnchorPane xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminUIController">
    <children>
       <ToolBar prefHeight="40.0" prefWidth="1050.0">
         <items>
           <Button fx:id="logout_btn" mnemonicParsing="false" onAction="#logout_btn_click" style="-fx-pref-width: 150px; -fx-pref-height: 30px;" text="登出" />
+            <Label fx:id="user_name" prefHeight="26.0" prefWidth="119.0" text="Label">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
         </items>
       </ToolBar>
       <AnchorPane layoutY="40.0" prefHeight="660.0" prefWidth="1050.0">

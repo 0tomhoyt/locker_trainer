@@ -31,7 +31,7 @@ public class AdminUIController extends WorkerUIController implements Initializab
     private AnchorPane add_figurePrint_page;
 
     @FXML
-    private Label user_name;
+    public Label user_name;
 
     public List<Worker> workers = new ArrayList<>();
 
@@ -40,7 +40,6 @@ public class AdminUIController extends WorkerUIController implements Initializab
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         MainController.addController(this);
-
     }
 
 
@@ -54,8 +53,8 @@ public class AdminUIController extends WorkerUIController implements Initializab
 
         setStart_training_page();
 
-        setAdd_figurePrint_page();
-
+//        setAdd_figurePrint_page();
+		user_name.setText(worker.getUsername());
 //        setupStartGamePage();
     }
 
