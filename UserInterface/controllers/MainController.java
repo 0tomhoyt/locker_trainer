@@ -39,8 +39,6 @@ public class MainController implements Initializable, Controller {
     private Button joinMatchButton2;
     @FXML
     private AnchorPane main_page;
-    @FXML
-    private Label adminname;
 
     public static Stage primaryStage;
 
@@ -63,7 +61,6 @@ public class MainController implements Initializable, Controller {
 
         Main.controllers.put(this.getClass().getSimpleName(), this);
         admin = new Admin("","",0);
-        adminname.setText("");
 
         try {
             this.serialPortConnection = new SerialPortConnection("COM2",115200);
@@ -443,9 +440,9 @@ public class MainController implements Initializable, Controller {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin_UI.fxml"));
             Pane pane = loader.load();
             main_page.getChildren().add(pane);
-            adminname.setText(admin.getUsername());
             AdminUIController adminUIController = loader.getController();
             adminUIController.setWorker(worker);
+            adminUIController.username.setText(admin.getUsername());
             adminUIController.setMainController(this);
         }
         catch (IOException e){
