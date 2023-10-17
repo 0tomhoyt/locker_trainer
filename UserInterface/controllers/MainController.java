@@ -179,14 +179,18 @@ public class MainController implements Initializable, Controller {
 
     public void harwareReceive(){
         try {
+            int i=0;
             Lock lock;
             byte[] receivedbyte = this.serialPortConnection.readAndRemoveNumOfBytes(this.serialPortConnection.getReceiveBuffer(),1);
             while (receivedbyte[0]!=(byte) 0xAA){
                 receivedbyte = this.serialPortConnection.readAndRemoveNumOfBytes(this.serialPortConnection.getReceiveBuffer(),1);
+                i++;
+                System.out.println("接收到错误信息");
+                System.out.println(i);
             }
             byte[] receivedData = this.serialPortConnection.readAndRemoveNumOfBytes(this.serialPortConnection.getReceiveBuffer(),54);
-            System.out.println("received data length:");
-            System.out.println(receivedData.length);
+                System.out.println("received data length:");
+                System.out.println(receivedData.length);
             if (receivedData[0] == (byte)0x00 || receivedData[1]!= (byte)0x00) {
                 return;
             }
